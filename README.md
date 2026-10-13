@@ -5,7 +5,8 @@ Panel de administración de Discordia, de uso exclusivo del staff de la platafor
 ## Stack
 
 - Next.js 14 (App Router) + React 18 + TypeScript estricto
-- Tailwind CSS v4 (`@tailwindcss/postcss`, sin archivo de config), con los design tokens de Discordia puenteados desde `@discordia/client-shared/theme.css`, igual que web-client
+- Tailwind CSS v4 (`@tailwindcss/postcss`, sin archivo de config) con los design tokens de Discordia (`@discordia/client-shared/theme.css`)
+- Formularios con `useState` + validación en funciones propias (sin librería)
 - `@discordia/client-shared` para contratos, validaciones y textos compartidos con el resto de los fronts
 - axios para HTTP, lucide-react para iconos, recharts para los gráficos, papaparse para el CSV
 - Vitest + Testing Library (jsdom) para tests
@@ -49,7 +50,7 @@ discordia-backoffice/
 ├── src/
 │   ├── app/                     App Router: cada carpeta con page.tsx es una ruta
 │   │   ├── layout.tsx           layout raíz (fuentes, tema, metadata)
-│   │   ├── globals.css          Tailwind, tokens propios del backoffice y utilidades compartidas
+│   │   ├── globals.css          Tailwind, tokens y estilos base
 │   │   ├── login/               pantalla de acceso
 │   │   ├── (panel)/             route group: las secciones del panel comparten sidebar
 │   │   │   ├── layout.tsx
@@ -59,7 +60,7 @@ discordia-backoffice/
 │   │       └── metrics/
 │   ├── middleware.ts            guardia de rutas (corre antes de cada request)
 │   ├── components/
-│   │   ├── ui/                  piezas genéricas reutilizables (TextField, ThemeToggle, BrandLogo, ...)
+│   │   ├── ui/                  piezas genéricas reutilizables (Button, IconButton, TextField, Card, StateBox, ...)
 │   │   ├── auth/                componentes del login
 │   │   ├── layout/              marco del panel: Sidebar, PanelHeader, PanelShell
 │   │   │   └── hooks/           useSidebar, useStaffAccess
@@ -142,3 +143,7 @@ git config core.hooksPath .githooks
 Si usan VS Code con la extensión oficial de Prettier, también formatea al guardar (ya configurado en .vscode/settings.json).
 
 El CI corre `npm run format:check` como red de seguridad (falla si encuentra archivos sin formatear), por si alguien clonó sin activar el hook.
+
+## Notas
+
+La arquitectura es la misma que la de web-client: mismo stack, cambia el contenido de `src/app` y a qué endpoints del backend le pega.
