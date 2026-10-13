@@ -4,7 +4,7 @@ import { ROUTES, SESSION_COOKIE } from "@/lib/constants";
 import { parseSessionCookie } from "@/services/auth/session-shape";
 
 /** Rutas que exigen sesion. Al crecer el panel se agregan prefijos aca. */
-const PROTECTED_PREFIXES = [ROUTES.home];
+const PROTECTED_PREFIXES = [ROUTES.home, ROUTES.users];
 
 /** Rutas solo para invitados: si ya hay sesion, se redirige al panel. */
 const GUEST_ONLY = [ROUTES.login];

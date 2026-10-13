@@ -6,7 +6,7 @@ import { MetricCard } from "./MetricCard";
 export function MetricCardsGrid({ totals }: { totals: MetricsTotals }) {
   return (
     <section
-      className="mb-5 grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4"
+      className="mb-5 grid grid-cols-1 gap-4 @3xl:grid-cols-3"
       aria-label="Métricas globales"
     >
       <MetricCard

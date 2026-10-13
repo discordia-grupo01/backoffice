@@ -3,6 +3,7 @@
 import { Download } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
+import { IconButton } from "@/components/ui/IconButton";
 import { downloadTextFile } from "@/utils/downloadFile";
 import {
   buildMetricsCsv,
@@ -25,13 +26,24 @@ export function ExportCsvButton({
   }
 
   return (
-    <Button
-      className="w-auto gap-1.5 rounded-lg px-3 py-1.5 text-xs max-[480px]:flex-1"
-      onClick={handleExport}
-      disabled={!metrics}
-    >
-      <Download size={12} aria-hidden="true" />
-      <span>Exportar CSV</span>
-    </Button>
+    <>
+      <div className="sm:hidden">
+        <IconButton
+          icon={Download}
+          label="Exportar CSV"
+          onClick={handleExport}
+          disabled={!metrics}
+        />
+      </div>
+      <Button
+        size="sm"
+        className="hidden sm:inline-flex"
+        onClick={handleExport}
+        disabled={!metrics}
+      >
+        <Download size={12} aria-hidden="true" />
+        <span>Exportar CSV</span>
+      </Button>
+    </>
   );
 }

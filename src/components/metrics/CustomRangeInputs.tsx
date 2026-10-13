@@ -6,7 +6,7 @@ import {
 } from "@/utils/metricsPeriod";
 import type { MetricsPeriod } from "@/types/metrics.types";
 
-const RANGE_FIELD = "max-[480px]:basis-full max-[480px]:*:justify-between";
+const RANGE_FIELD = "*:justify-between sm:*:justify-start";
 
 interface CustomRangeInputsProps {
   value: MetricsPeriod;
@@ -22,7 +22,7 @@ export function CustomRangeInputs({
   const today = toIsoDate(new Date());
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
       <div className={RANGE_FIELD}>
         <DateField
           label="Desde"
