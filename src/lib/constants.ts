@@ -3,6 +3,7 @@ export const BACKOFFICE_NAME = "Backoffice";
 export const THEME_STORAGE_KEY = "discordia:theme";
 
 export const ROUTES = {
-  home: "/",
+  root: "/",
   login: "/login",
+  home: "/dashboard",
 } as const;
