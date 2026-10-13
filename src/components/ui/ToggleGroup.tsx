@@ -13,7 +13,10 @@ interface ToggleGroupProps<T extends string> {
   className?: string;
 }
 
-/** Grupo de botones donde uno está activo, para elegir un filtro. */
+/**
+ * Control segmentado: las opciones comparten una misma pastilla y la activa
+ * se resalta.
+ */
 export function ToggleGroup<T extends string>({
   options,
   value,
@@ -25,7 +28,10 @@ export function ToggleGroup<T extends string>({
     <div
       role="group"
       aria-label={label}
-      className={cn("flex flex-wrap gap-2", className)}
+      className={cn(
+        "bg-surface-input border-line inline-flex gap-1 rounded-xl border p-1",
+        className,
+      )}
     >
       {options.map((option) => (
         <button
@@ -34,9 +40,9 @@ export function ToggleGroup<T extends string>({
           aria-pressed={option.value === value}
           onClick={() => onChange(option.value)}
           className={cn(
-            "border-line-strong text-content-muted cursor-pointer rounded-lg border px-3 py-1.5 text-[13px] font-medium transition-colors min-[481px]:text-xs",
-            "hover:bg-surface-input focus-visible:ring-bo focus-visible:ring-2 focus-visible:outline-none",
-            "aria-pressed:border-bo aria-pressed:bg-bo/14 aria-pressed:text-content aria-pressed:font-semibold",
+            "text-content-muted cursor-pointer rounded-lg px-3.5 py-1.5 text-[13px] font-medium whitespace-nowrap transition-colors",
+            "hover:text-content focus-visible:ring-bo focus-visible:ring-2 focus-visible:outline-none",
+            "aria-pressed:bg-bo/14 aria-pressed:text-content aria-pressed:font-semibold aria-pressed:shadow-[inset_0_0_0_1px_var(--bo-accent)]",
           )}
         >
           {option.label}

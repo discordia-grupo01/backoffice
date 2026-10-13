@@ -9,7 +9,7 @@ export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
   const unit = metrics.granularity === "hour" ? "por hora" : "por día";
 
   return (
-    <div className="grid grid-cols-1 gap-4 min-[1100px]:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 @3xl:grid-cols-2">
       <ChartCard
         wide
         title="Usuarios activos"

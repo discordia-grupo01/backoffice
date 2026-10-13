@@ -18,7 +18,7 @@ export function ChartCard({ title, subtitle, children, wide }: ChartCardProps) {
       as="section"
       className={cn(
         "min-w-0 rounded-[14px] p-4 min-[481px]:px-6 min-[481px]:py-5",
-        wide && "min-[1100px]:col-span-full",
+        wide && "@3xl:col-span-full",
       )}
     >
       <h2 className="text-sm font-semibold">{title}</h2>
