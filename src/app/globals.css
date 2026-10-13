@@ -105,16 +105,6 @@ input {
   pointer-events: none;
   overflow: hidden;
 }
-.auth-glow {
-  position: absolute;
-  top: -160px;
-  left: 50%;
-  width: 720px;
-  height: 480px;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse, var(--bo-glow) 0%, transparent 70%);
-  filter: blur(60px);
-}
 .auth-hex {
   position: absolute;
   inset: 0;

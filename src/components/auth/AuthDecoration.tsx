@@ -17,7 +17,6 @@ export function AuthDecoration() {
 
   return (
     <div className="auth-deco" aria-hidden="true">
-      <div className="auth-glow" />
       <svg
         className="auth-hex"
         viewBox="0 0 980 500"
