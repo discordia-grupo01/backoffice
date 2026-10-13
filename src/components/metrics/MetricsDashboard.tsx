@@ -11,9 +11,9 @@ import { MetricsCharts } from "./MetricsCharts";
 import {
   MetricsEmptyState,
   MetricsErrorState,
-  MetricsSkeleton,
   NoStaffAccess,
 } from "./MetricsStates";
+import { MetricsSkeleton } from "./MetricsSkeleton";
 import { PeriodSelector } from "./PeriodSelector";
 
 export function MetricsDashboard() {

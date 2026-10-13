@@ -436,11 +436,20 @@ a.nav-item:hover {
   border: none;
 }
 .skeleton {
-  animation: pulse 1.4s ease-in-out infinite;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--text) 9%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  background-position: -100% 0;
+  animation: shimmer 1.3s ease-in-out infinite;
 }
-@keyframes pulse {
-  50% {
-    opacity: 0.55;
+@keyframes shimmer {
+  to {
+    background-position: 200% 0;
   }
 }
 
