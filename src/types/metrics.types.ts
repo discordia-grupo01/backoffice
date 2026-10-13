@@ -25,3 +25,8 @@ export interface PlatformMetrics {
   totals: MetricsTotals;
   series: MetricsSeriesPoint[];
 }
+
+/** Lo que devuelve `services/metrics/client.ts` al navegador. */
+export type MetricsResult =
+  | { ok: true; metrics: PlatformMetrics }
+  | { ok: false; status: number; message: string };

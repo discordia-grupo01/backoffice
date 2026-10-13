@@ -2,8 +2,11 @@
 
 import { Download } from "lucide-react";
 
-import { downloadTextFile } from "@/lib/downloadFile";
-import { buildMetricsCsv, metricsCsvFilename } from "@/lib/metricsCsv";
+import { downloadTextFile } from "@/utils/downloadFile";
+import {
+  buildMetricsCsv,
+  metricsCsvFilename,
+} from "@/components/metrics/utils/metricsCsv";
 import type { PlatformMetrics } from "@/types/metrics.types";
 
 export function ExportCsvButton({
@@ -23,11 +26,11 @@ export function ExportCsvButton({
   return (
     <button
       type="button"
-      className="btn-accent font-display"
+      className="btn-accent"
       onClick={handleExport}
       disabled={!metrics}
     >
-      <Download size={16} aria-hidden="true" />
+      <Download size={12} aria-hidden="true" />
       <span>Exportar CSV</span>
     </button>
   );

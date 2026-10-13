@@ -3,10 +3,9 @@
 import { LayoutDashboard, Server, Users, X } from "lucide-react";
 import Link from "next/link";
 
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { ROUTES } from "@/lib/constants";
-import { SIDEBAR_ID } from "@/lib/sidebarIds";
 
-import { BrandLogo } from "./BrandLogo";
 import { useSidebarControls } from "./SidebarContext";
 import { SidebarToggle } from "./SidebarToggle";
 
@@ -19,7 +18,7 @@ export function Sidebar() {
   const { isRail, closeMobile } = useSidebarControls();
 
   return (
-    <aside id={SIDEBAR_ID} className="sidebar" aria-label="Menú lateral">
+    <aside className="sidebar" aria-label="Menú lateral">
       <div className="sidebar-brand">
         <div className="sidebar-logo-box">
           <BrandLogo className="sidebar-logo" />
@@ -35,7 +34,7 @@ export function Sidebar() {
         </button>
       </div>
 
-      <nav aria-label="Navegación principal">
+      <nav aria-label="Navegación principal" className="sidebar-nav">
         <p className="nav-heading">Navegación</p>
         <Link
           href={ROUTES.home}

@@ -10,7 +10,10 @@ import {
   YAxis,
 } from "recharts";
 
-import { formatCompact, formatSeriesLabel } from "@/lib/metricsFormat";
+import {
+  formatCompact,
+  formatSeriesLabel,
+} from "@/components/metrics/utils/metricsFormat";
 import type { PlatformMetrics } from "@/types/metrics.types";
 
 import { ChartTooltip } from "./ChartTooltip";
@@ -36,7 +39,7 @@ export function MetricBarChart({
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         <CartesianGrid
-          stroke="var(--border-strong)"
+          stroke="var(--border)"
           strokeDasharray="3 3"
           vertical={false}
         />

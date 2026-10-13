@@ -8,11 +8,9 @@ import {
   validateCustomRange,
   addDays,
   type CustomRangeError,
-} from "@/lib/metricsPeriod";
-import {
-  getPlatformMetrics,
-  MetricsForbiddenError,
-} from "@/services/metrics/client";
+} from "@/utils/metricsPeriod";
+import { ROUTES } from "@/lib/constants";
+import { getPlatformMetrics } from "@/services/metrics/client";
 import type {
   MetricsPeriod,
   MetricsPeriodKey,
@@ -54,18 +52,17 @@ export function usePlatformMetrics() {
     let cancelled = false;
     setStatus("loading");
 
-    getPlatformMetrics({ from, to })
-      .then((result) => {
-        if (cancelled) return;
-        setMetrics(result);
+    getPlatformMetrics({ from, to }).then((result) => {
+      if (cancelled) return;
+      if (result.ok) {
+        setMetrics(result.metrics);
         setStatus("success");
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return;
-        setStatus(
-          error instanceof MetricsForbiddenError ? "forbidden" : "error",
-        );
-      });
+      } else if (result.status === 401) {
+        window.location.href = `${ROUTES.login}?next=${ROUTES.home}`;
+      } else {
+        setStatus(result.status === 403 ? "forbidden" : "error");
+      }
+    });
 
     return () => {
       cancelled = true;

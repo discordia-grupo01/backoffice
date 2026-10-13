@@ -1,4 +1,4 @@
-import { PERIOD_OPTIONS } from "@/lib/metricsPeriod";
+import { PERIOD_OPTIONS } from "@/utils/metricsPeriod";
 import type { MetricsPeriodKey } from "@/types/metrics.types";
 
 interface PeriodSelectorProps {

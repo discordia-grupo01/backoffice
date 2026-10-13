@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import { hasActivity } from "@/lib/metricsActivity";
-
 import { buildMockPlatformMetrics } from "./mockPlatformMetrics";
 
 const NOW = new Date(2026, 9, 12, 14, 5);
@@ -55,6 +53,10 @@ describe("buildMockPlatformMetrics", () => {
       NOW,
     );
 
-    expect(hasActivity(metrics)).toBe(false);
+    expect(metrics.totals).toEqual({
+      active_users: 0,
+      servers_created: 0,
+      messages_sent: 0,
+    });
   });
 });

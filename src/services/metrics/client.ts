@@ -1,24 +1,40 @@
-import type { MetricsPeriod, PlatformMetrics } from "@/types/metrics.types";
+import { REQUEST_FAILED_MESSAGE } from "@discordia/client-shared";
 
-import { buildMockPlatformMetrics } from "./mockPlatformMetrics";
-
-const MOCK_LATENCY_MS = 600;
-
-/** El back respondió 403: la persona no tiene rol de staff. */
-export class MetricsForbiddenError extends Error {
-  constructor() {
-    super("STAFF_REQUIRED");
-    this.name = "MetricsForbiddenError";
-  }
-}
+import { api } from "@/lib/browserApiClient";
+import type {
+  MetricsPeriod,
+  MetricsResult,
+  PlatformMetrics,
+} from "@/types/metrics.types";
 
 /**
- * Métricas globales del período. Hoy devuelve datos simulados; cuando exista
- * `GET /v1/admin/metrics` solo cambia el cuerpo de esta función.
+ * Llamadas del navegador hacia el BFF (`/api/metrics`, mismo origen).
+ * Nunca pega directo al Gateway.
  */
+
+interface MetricsBody {
+  ok?: boolean;
+  message?: string;
+  metrics?: PlatformMetrics;
+}
+
 export async function getPlatformMetrics(
   period: MetricsPeriod,
-): Promise<PlatformMetrics> {
-  await new Promise((resolve) => setTimeout(resolve, MOCK_LATENCY_MS));
-  return buildMockPlatformMetrics(period);
+): Promise<MetricsResult> {
+  try {
+    const { data, status } = await api.get<MetricsBody>("/metrics", {
+      params: { from: period.from, to: period.to },
+    });
+
+    if (status === 200 && data.ok && data.metrics) {
+      return { ok: true, metrics: data.metrics };
+    }
+    return {
+      ok: false,
+      status,
+      message: data?.message ?? REQUEST_FAILED_MESSAGE,
+    };
+  } catch {
+    return { ok: false, status: 0, message: REQUEST_FAILED_MESSAGE };
+  }
 }

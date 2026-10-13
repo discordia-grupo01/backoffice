@@ -1,8 +1,8 @@
 "use client";
 
 import { PanelHeader } from "@/components/layout/PanelHeader";
-import { hasActivity } from "@/lib/metricsActivity";
-import { usePlatformMetrics } from "@/hooks/usePlatformMetrics";
+import { hasActivity } from "@/components/metrics/utils/metricsActivity";
+import { usePlatformMetrics } from "@/components/metrics/hooks/usePlatformMetrics";
 
 import { CustomRangeInputs } from "./CustomRangeInputs";
 import { ExportCsvButton } from "./ExportCsvButton";
@@ -42,30 +42,32 @@ export function MetricsDashboard() {
         <ExportCsvButton metrics={exportable} />
       </PanelHeader>
 
-      <div className="period-bar">
-        <span className="period-label">Período</span>
-        <PeriodSelector value={periodKey} onChange={setPeriodKey} />
-        {periodKey === "custom" ? (
-          <CustomRangeInputs
-            value={customRange}
-            error={customError}
-            onChange={setCustomRange}
-          />
+      <div className="panel-body">
+        <div className="period-bar">
+          <span className="period-label">Período:</span>
+          <PeriodSelector value={periodKey} onChange={setPeriodKey} />
+          {periodKey === "custom" ? (
+            <CustomRangeInputs
+              value={customRange}
+              error={customError}
+              onChange={setCustomRange}
+            />
+          ) : null}
+        </div>
+
+        {customError ? null : status === "loading" ? (
+          <MetricsSkeleton />
+        ) : status === "error" ? (
+          <MetricsErrorState onRetry={retry} />
+        ) : showData && !hasActivity(metrics) ? (
+          <MetricsEmptyState />
+        ) : showData ? (
+          <>
+            <MetricCardsGrid totals={metrics.totals} />
+            <MetricsCharts metrics={metrics} />
+          </>
         ) : null}
       </div>
-
-      {customError ? null : status === "loading" ? (
-        <MetricsSkeleton />
-      ) : status === "error" ? (
-        <MetricsErrorState onRetry={retry} />
-      ) : showData && !hasActivity(metrics) ? (
-        <MetricsEmptyState />
-      ) : showData ? (
-        <>
-          <MetricCardsGrid totals={metrics.totals} />
-          <MetricsCharts metrics={metrics} />
-        </>
-      ) : null}
     </>
   );
 }

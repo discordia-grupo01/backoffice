@@ -1,4 +1,4 @@
-import { parseIsoDate } from "@/lib/metricsPeriod";
+import { parseIsoDate } from "@/utils/metricsPeriod";
 import type { MetricsGranularity } from "@/types/metrics.types";
 
 const integerFormat = new Intl.NumberFormat("es-AR");

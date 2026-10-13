@@ -11,7 +11,7 @@ interface ChartCardProps {
 export function ChartCard({ title, subtitle, children, wide }: ChartCardProps) {
   return (
     <section className={wide ? "chart-card chart-card-wide" : "chart-card"}>
-      <h2 className="chart-title font-display">{title}</h2>
+      <h2 className="chart-title">{title}</h2>
       <p className="chart-subtitle">{subtitle}</p>
       <div className="chart-body">{children}</div>
     </section>

@@ -1,5 +1,5 @@
 {
-  "name": "discordia-web",
+  "name": "discordia-backoffice",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,15 +9,19 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@discordia/client-shared": "github:discordia-grupo01/client-shared#v0.13.42",
+    "axios": "^1.20.0",
     "lucide-react": "^0.454.0",
     "next": "^14.2.0",
     "papaparse": "^5.7.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
-    "recharts": "^2.15.4"
+    "recharts": "^2.15.4",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",

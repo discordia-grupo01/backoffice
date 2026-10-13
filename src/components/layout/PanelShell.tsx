@@ -3,8 +3,8 @@
 import type { ReactNode } from "react";
 
 import { NoStaffAccess } from "@/components/metrics/MetricsStates";
-import { useSidebar } from "@/hooks/useSidebar";
-import { useStaffAccess } from "@/hooks/useStaffAccess";
+import { useSidebar } from "./hooks/useSidebar";
+import { useStaffAccess } from "./hooks/useStaffAccess";
 
 import { Sidebar } from "./Sidebar";
 import { SidebarContext } from "./SidebarContext";

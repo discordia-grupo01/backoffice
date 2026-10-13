@@ -14,7 +14,7 @@ export function MetricCard({ label, value, hint, accentVar }: MetricCardProps) {
         style={{ background: `var(${accentVar})` }}
         aria-hidden="true"
       />
-      <p className="metric-value font-display">{value}</p>
+      <p className="metric-value">{value}</p>
       <h3 className="metric-label" style={{ color: `var(${accentVar})` }}>
         {label}
       </h3>

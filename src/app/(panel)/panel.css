@@ -2,15 +2,41 @@
 
 /* Acento del panel: turquesa en dark y dorado en light (el dorado fijo es solo del login). */
 [data-theme="dark"] .panel-shell {
-  --bo-accent: #3a8fa3;
-  --bo-accent-end: #245c6b;
+  --bo-accent: #3a8ca0;
   --on-bo-accent: #ffffff;
   --bo-glow: rgba(58, 143, 163, 0.25);
+}
+.panel-shell {
+  --bo-accent-end: var(--bo-accent);
+}
+/* Superficies del panel: fondo < sidebar/header < tarjetas, con bordes visibles. Solo dentro del panel; el login usa los tokens globales. */
+[data-theme="dark"] .panel-shell {
+  --bg-chat: #0d1620;
+  --bg-channels: #111e2b;
+  --bg-card: #1c293b;
+  --bg-input: #243347;
+  --bg-hover: #2d3f52;
+  --border: #2a3d52;
+  --border-strong: #3a5268;
+  --text-2: #a8c6df;
+  --text-3: #93aabf;
+}
+[data-theme="light"] .panel-shell {
+  --bg-chat: #f5f2eb;
+  --bg-channels: #eae6dc;
+  --bg-card: #ffffff;
+  --bg-input: #f0ede5;
+  --bg-hover: #e5e0d5;
+  --border: #d5cec3;
+  --border-strong: #b8b0a2;
+  --text-2: #4a5568;
+  --text-3: #566173;
 }
 .panel-shell {
   display: flex;
   min-height: 100dvh;
   background: var(--bg-chat);
+  color: var(--text);
 }
 .panel-loading {
   min-height: 100dvh;
@@ -18,7 +44,11 @@
 .panel-main {
   min-width: 0;
   flex: 1;
-  padding: 0 16px 32px;
+}
+.panel-body {
+  max-width: 1400px;
+  margin-inline: auto;
+  padding: 20px 16px 32px;
 }
 /* ── Sidebar ───────────────────────────────────────────── */
 .sidebar {
@@ -31,8 +61,7 @@
   display: flex;
   width: min(280px, 85vw);
   flex-direction: column;
-  gap: 20px;
-  padding: 16px 12px;
+  padding: 0;
   overflow-x: hidden;
   overflow-y: auto;
   border-right: 1px solid var(--border);
@@ -72,8 +101,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 40px;
-  padding: 0 8px;
+  flex-shrink: 0;
+  height: 64px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-nav {
+  padding: 16px 12px;
 }
 .sidebar-logo-box {
   width: 140px;
@@ -88,7 +122,7 @@
   margin: 0 12px 8px;
   overflow: hidden;
   color: var(--text-3);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
   white-space: nowrap;
@@ -103,7 +137,7 @@
   margin-bottom: 4px;
   padding: 0 12px;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--text-2);
   font-size: 14px;
   font-weight: 500;
@@ -118,7 +152,7 @@ a.nav-item:hover {
   background: var(--bg-input);
 }
 .nav-item[aria-current="page"] {
-  border-radius: 0 10px 10px 0;
+  border-radius: 0 8px 8px 0;
   background: color-mix(in srgb, var(--bo-accent) 14%, transparent);
   color: var(--text);
   box-shadow: inset 3px 0 0 var(--bo-accent);
@@ -133,11 +167,13 @@ a.nav-item:hover {
 }
 .nav-soon {
   margin-left: auto;
-  padding: 1px 7px;
+  padding: 2px 6px;
   border-radius: 999px;
   border: 1px solid var(--border-strong);
-  font-size: 10px;
-  letter-spacing: 0.04em;
+  font-size: 12px;
+  letter-spacing: 0;
+  font-weight: 600;
+  font-family: var(--font-mono), ui-monospace, monospace;
 }
 
 /* Hamburguesa de la barra lateral: solo desktop (en mobile el drawer se cierra con la X). */
@@ -179,19 +215,21 @@ a.nav-item:hover {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 20px 0;
-  margin-bottom: 20px;
+  min-height: 64px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--border);
+  background: var(--bg-channels);
 }
 .panel-title {
   margin: 0;
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
 }
 .panel-subtitle {
   margin: 2px 0 0;
   color: var(--text-3);
-  font-size: 13px;
+  font-size: 12px;
+  font-family: var(--font-mono), ui-monospace, monospace;
 }
 .panel-heading {
   display: flex;
@@ -204,18 +242,30 @@ a.nav-item:hover {
   align-items: center;
   gap: 12px;
 }
+.panel-actions .icon-btn.square {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-2);
+}
+.panel-actions .icon-btn.square:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
 
 .btn-accent {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 16px;
+  gap: 6px;
+  padding: 6px 12px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   background: linear-gradient(135deg, var(--bo-accent), var(--bo-accent-end));
   color: var(--on-bo-accent);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: filter 0.15s;
 }
@@ -255,11 +305,11 @@ a.nav-item:hover {
   background: var(--bg-card);
 }
 .period-label {
-  color: var(--text-3);
+  color: var(--text-2);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .period-selector {
   display: flex;
@@ -267,16 +317,17 @@ a.nav-item:hover {
   gap: 8px;
 }
 .period-btn {
-  padding: 7px 14px;
-  border-radius: 10px;
+  padding: 6px 12px;
+  border-radius: 8px;
   border: 1px solid var(--border-strong);
   background: transparent;
   color: var(--text-2);
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
   transition:
     background 0.15s,
     border-color 0.15s;
+  font-weight: 500;
 }
 .period-btn:hover {
   background: var(--bg-input);
@@ -298,15 +349,15 @@ a.nav-item:hover {
   align-items: center;
   gap: 8px;
   color: var(--text-3);
-  font-size: 13px;
+  font-size: 12px;
 }
 .range-field input {
-  padding: 6px 10px;
+  padding: 6px 8px;
   border-radius: 8px;
   border: 1px solid var(--border-strong);
   background: var(--bg-input);
   color: var(--text);
-  font-size: 13px;
+  font-size: 12px;
 }
 .range-field input:focus-visible {
   outline: 2px solid var(--bo-accent);
@@ -331,31 +382,34 @@ a.nav-item:hover {
   border-radius: 14px;
   border: 1px solid var(--border);
   background: var(--bg-card);
+  padding: 20px;
 }
 .metric-card {
-  padding: 20px 24px;
+  padding: 20px;
+  border-radius: 12px;
 }
 .metric-accent {
   display: block;
-  width: 40px;
-  height: 6px;
-  margin-bottom: 20px;
+  width: 36px;
+  height: 8px;
+  margin-bottom: 16px;
   border-radius: 999px;
 }
 .metric-value {
   margin: 0;
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono), ui-monospace, monospace;
 }
 .metric-label {
-  margin: 4px 0 12px;
+  margin: 4px 0 8px;
   font-size: 14px;
   font-weight: 600;
 }
 .metric-hint {
   margin: 0;
-  padding: 8px 10px;
+  padding: 8px;
   border-radius: 8px;
   background: var(--bg-input);
   color: var(--text-2);
@@ -373,11 +427,11 @@ a.nav-item:hover {
 }
 .chart-title {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
 }
 .chart-subtitle {
-  margin: 2px 0 16px;
+  margin: 2px 0 20px;
   color: var(--text-3);
   font-size: 12px;
 }
@@ -420,12 +474,13 @@ a.nav-item:hover {
 .state-box h2 {
   margin: 8px 0 0;
   color: var(--text);
-  font-size: 18px;
+  font-size: 14px;
+  font-weight: 600;
 }
 .state-box p {
   max-width: 420px;
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
 }
 .state-box .btn-secondary {
   margin-top: 12px;
@@ -453,13 +508,17 @@ a.nav-item:hover {
   }
 }
 
+@media (max-width: 639px) {
+  .panel-subtitle {
+    display: none;
+  }
+}
 @media (max-width: 480px) {
   .panel-header {
-    padding: 16px 0;
-    margin-bottom: 16px;
+    padding: 12px;
   }
-  .panel-title {
-    font-size: 18px;
+  .panel-body {
+    padding: 16px 12px 24px;
   }
   .period-bar {
     padding: 12px;
@@ -516,6 +575,7 @@ a.nav-item:hover {
   }
   [data-rail="true"] .sidebar-brand {
     justify-content: center;
+    padding: 0;
   }
   [data-rail="true"] .sidebar-logo-box {
     display: none;
@@ -538,8 +598,11 @@ a.nav-item:hover {
   .sidebar-close {
     display: none;
   }
-  .panel-main {
-    padding: 0 28px 40px;
+  .panel-header {
+    padding: 10px 24px;
+  }
+  .panel-body {
+    padding: 24px 24px 40px;
   }
 }
 @media (min-width: 1100px) {

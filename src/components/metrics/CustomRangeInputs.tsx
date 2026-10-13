@@ -2,7 +2,7 @@ import {
   CUSTOM_RANGE_MESSAGES,
   toIsoDate,
   type CustomRangeError,
-} from "@/lib/metricsPeriod";
+} from "@/utils/metricsPeriod";
 import type { MetricsPeriod } from "@/types/metrics.types";
 
 interface CustomRangeInputsProps {

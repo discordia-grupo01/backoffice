@@ -10,7 +10,10 @@ import {
   YAxis,
 } from "recharts";
 
-import { formatCompact, formatSeriesLabel } from "@/lib/metricsFormat";
+import {
+  formatCompact,
+  formatSeriesLabel,
+} from "@/components/metrics/utils/metricsFormat";
 import type { PlatformMetrics } from "@/types/metrics.types";
 
 import { ChartTooltip } from "./ChartTooltip";
@@ -35,7 +38,7 @@ export function ActiveUsersAreaChart({
           </linearGradient>
         </defs>
         <CartesianGrid
-          stroke="var(--border-strong)"
+          stroke="var(--border)"
           strokeDasharray="3 3"
           vertical={false}
         />
