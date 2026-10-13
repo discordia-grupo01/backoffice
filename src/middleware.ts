@@ -33,7 +33,6 @@ export function middleware(request: NextRequest): NextResponse {
   if (isProtected && !hasSession) {
     const url = request.nextUrl.clone();
     url.pathname = ROUTES.login;
-    url.searchParams.set("next", pathname);
     response = NextResponse.redirect(url);
   } else if (isGuestOnly && hasSession) {
     const url = request.nextUrl.clone();

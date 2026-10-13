@@ -7,7 +7,6 @@ import {
 } from "@discordia/client-shared";
 
 import { ArrowRight, Lock, Mail } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 import { PasswordField } from "@/components/ui/PasswordField";
@@ -16,8 +15,6 @@ import { ROUTES } from "@/lib/constants";
 import { loginRequest } from "@/services/auth/client";
 
 export function LoginForm() {
-  const searchParams = useSearchParams();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<LoginErrors>({});
@@ -40,8 +37,7 @@ export function LoginForm() {
       setFormError(result.message);
       return;
     }
-    const next = searchParams.get("next");
-    window.location.href = next && next.startsWith("/") ? next : ROUTES.home;
+    window.location.href = ROUTES.home;
   }
 
   return (

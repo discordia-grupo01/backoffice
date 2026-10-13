@@ -116,7 +116,7 @@ navegador ──► /api/... (Next) ──► Gateway (Kong) ──► identify-
                   └─ sesión en cookie httpOnly (discordia_backoffice_session)
 ```
 
-- `middleware.ts` es el guardia: sin sesión, `/dashboard` redirige a `/login?next=...`; con sesión, `/login` redirige al dashboard.
+- `middleware.ts` es el guardia: sin sesión, `/dashboard` redirige a `/login`; con sesión, `/login` redirige al dashboard.
 - Cada feature con llamadas autenticadas sigue el mismo camino: `route.ts` en `app/api/` + lógica en `services/<dominio>/`.
 - La cookie tiene un nombre propio (`discordia_backoffice_session`): las cookies se comparten entre puertos de un mismo host, y con el mismo nombre que otra app se pisarían la sesión en `localhost`.
 

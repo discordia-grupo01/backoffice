@@ -58,7 +58,7 @@ export function usePlatformMetrics() {
         setMetrics(result.metrics);
         setStatus("success");
       } else if (result.status === 401) {
-        window.location.href = `${ROUTES.login}?next=${ROUTES.home}`;
+        window.location.href = ROUTES.login;
       } else {
         setStatus(result.status === 403 ? "forbidden" : "error");
       }
