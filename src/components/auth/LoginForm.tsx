@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Info, Lock, Mail } from "lucide-react";
+import { ArrowRight, Lock, Mail } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { PasswordField } from "@/components/ui/PasswordField";
@@ -36,13 +36,9 @@ export function LoginForm() {
 
   return (
     <>
-      <span className="auth-badge">
-        <Lock size={12} aria-hidden="true" />
-        Acceso restringido
-      </span>
       <h1 className="auth-title font-display">Panel de administración</h1>
       <p className="auth-subtitle">
-        Ingresá con tu cuenta de equipo para gestionar Discordia.
+        Ingresá con tu cuenta de equipo para continuar.
       </p>
 
       <form onSubmit={handleSubmit} noValidate className="form">
@@ -91,14 +87,6 @@ export function LoginForm() {
           )}
         </button>
       </form>
-
-      <p className="auth-notice">
-        <Info size={16} aria-hidden="true" />
-        <span>
-          Solo personal autorizado. Los accesos y acciones quedan registrados.
-          ¿Sin acceso o olvidaste tu contraseña? Contactá a un administrador.
-        </span>
-      </p>
     </>
   );
 }
