@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 
+import { cn } from "@/lib/cn";
+
+import { Card } from "@/components/ui/Card";
+
 interface ChartCardProps {
   title: string;
   subtitle: string;
@@ -10,10 +14,16 @@ interface ChartCardProps {
 
 export function ChartCard({ title, subtitle, children, wide }: ChartCardProps) {
   return (
-    <section className={wide ? "chart-card chart-card-wide" : "chart-card"}>
-      <h2 className="chart-title">{title}</h2>
-      <p className="chart-subtitle">{subtitle}</p>
-      <div className="chart-body">{children}</div>
-    </section>
+    <Card
+      as="section"
+      className={cn(
+        "min-w-0 rounded-[14px] p-4 min-[481px]:px-6 min-[481px]:py-5",
+        wide && "min-[1100px]:col-span-full",
+      )}
+    >
+      <h2 className="text-sm font-semibold">{title}</h2>
+      <p className="text-content-subtle mt-0.5 mb-5 text-xs">{subtitle}</p>
+      <div className="h-60 min-[481px]:h-[300px]">{children}</div>
+    </Card>
   );
 }

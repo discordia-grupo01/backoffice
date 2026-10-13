@@ -1,22 +1,23 @@
+import { Skeleton } from "@/components/ui/Skeleton";
+import { cn } from "@/lib/cn";
+
 /** Carga del dashboard: mismas proporciones que el contenido real, para que no salte. */
 export function MetricsSkeleton() {
   return (
     <div aria-busy="true" aria-label="Cargando métricas">
-      <div className="metric-grid">
+      <div className="mb-5 grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
         {[0, 1, 2].map((item) => (
-          <div
-            key={item}
-            className="metric-card skeleton"
-            style={{ height: 150 }}
-          />
+          <Skeleton key={item} className="h-[150px] rounded-xl" />
         ))}
       </div>
-      <div className="charts-grid">
+      <div className="grid grid-cols-1 gap-4 min-[1100px]:grid-cols-2">
         {[0, 1, 2].map((item) => (
-          <div
+          <Skeleton
             key={item}
-            className={`chart-card skeleton${item === 0 ? " chart-card-wide" : ""}`}
-            style={{ height: 360 }}
+            className={cn(
+              "h-[360px] rounded-[14px]",
+              item === 0 && "min-[1100px]:col-span-full",
+            )}
           />
         ))}
       </div>

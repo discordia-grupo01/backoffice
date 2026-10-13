@@ -5,7 +5,10 @@ import { MetricCard } from "./MetricCard";
 
 export function MetricCardsGrid({ totals }: { totals: MetricsTotals }) {
   return (
-    <section className="metric-grid" aria-label="Métricas globales">
+    <section
+      className="mb-5 grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4"
+      aria-label="Métricas globales"
+    >
       <MetricCard
         label="Usuarios activos"
         value={formatInteger(totals.active_users)}

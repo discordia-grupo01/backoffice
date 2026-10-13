@@ -16,9 +16,12 @@ export function AuthDecoration() {
   ).flat();
 
   return (
-    <div className="auth-deco" aria-hidden="true">
+    <div
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+      aria-hidden="true"
+    >
       <svg
-        className="auth-hex"
+        className="text-sky absolute inset-0 h-full w-full [mask-image:radial-gradient(ellipse_at_center,#000_0%,transparent_75%)] opacity-[0.07]"
         viewBox="0 0 980 500"
         preserveAspectRatio="xMidYMid slice"
       >

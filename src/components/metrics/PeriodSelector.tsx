@@ -1,3 +1,4 @@
+import { ToggleGroup } from "@/components/ui/ToggleGroup";
 import { PERIOD_OPTIONS } from "@/utils/metricsPeriod";
 import type { MetricsPeriodKey } from "@/types/metrics.types";
 
@@ -6,20 +7,18 @@ interface PeriodSelectorProps {
   onChange: (key: MetricsPeriodKey) => void;
 }
 
+const OPTIONS = PERIOD_OPTIONS.map(({ key, label }) => ({
+  value: key,
+  label,
+}));
+
 export function PeriodSelector({ value, onChange }: PeriodSelectorProps) {
   return (
-    <div className="period-selector" role="group" aria-label="Período">
-      {PERIOD_OPTIONS.map((option) => (
-        <button
-          key={option.key}
-          type="button"
-          className="period-btn"
-          aria-pressed={option.key === value}
-          onClick={() => onChange(option.key)}
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
+    <ToggleGroup
+      label="Período"
+      options={OPTIONS}
+      value={value}
+      onChange={onChange}
+    />
   );
 }

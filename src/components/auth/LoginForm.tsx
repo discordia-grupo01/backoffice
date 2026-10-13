@@ -9,6 +9,8 @@ import {
 import { ArrowRight, Lock, Mail } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
+import { Button } from "@/components/ui/Button";
+import { FormAlert } from "@/components/ui/FormAlert";
 import { PasswordField } from "@/components/ui/PasswordField";
 import { TextField } from "@/components/ui/TextField";
 import { ROUTES } from "@/lib/constants";
@@ -42,12 +44,14 @@ export function LoginForm() {
 
   return (
     <>
-      <h1 className="auth-title font-display">Panel de administración</h1>
-      <p className="auth-subtitle">
+      <h1 className="font-display mb-1 text-center text-[22px] font-bold">
+        Panel de administración
+      </h1>
+      <p className="text-content-muted mb-6 text-center text-[13px]">
         Ingresá con tu cuenta de equipo para continuar.
       </p>
 
-      <form onSubmit={handleSubmit} noValidate className="form">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
         <TextField
           label="Correo del equipo"
           name="email"
@@ -71,27 +75,12 @@ export function LoginForm() {
           error={errors.password}
         />
 
-        {formError ? (
-          <p role="alert" className="form-alert">
-            {formError}
-          </p>
-        ) : null}
+        <FormAlert message={formError ?? undefined} />
 
-        <button
-          type="submit"
-          className="btn-primary font-display"
-          disabled={isSubmitting}
-          aria-busy={isSubmitting}
-        >
-          {isSubmitting ? (
-            <span className="spinner" aria-hidden="true" />
-          ) : (
-            <>
-              <span>Ingresar al panel</span>
-              <ArrowRight size={16} />
-            </>
-          )}
-        </button>
+        <Button type="submit" isLoading={isSubmitting} className="mt-2">
+          <span>Ingresar al panel</span>
+          <ArrowRight size={16} />
+        </Button>
       </form>
     </>
   );

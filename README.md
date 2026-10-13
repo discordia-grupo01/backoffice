@@ -5,10 +5,11 @@ Panel de administración de Discordia, de uso exclusivo del staff de la platafor
 ## Stack
 
 - Next.js 14 (App Router) + React 18 + TypeScript estricto
-- CSS plano con los design tokens de Discordia (sin Tailwind)
+- Tailwind CSS v4 (`@tailwindcss/postcss`, sin archivo de config) con los design tokens de Discordia (`@discordia/client-shared/theme.css`)
+- Formularios con `useState` + validación en funciones propias (sin librería)
 - `@discordia/client-shared` para contratos, validaciones y textos compartidos con el resto de los fronts
 - axios para HTTP, lucide-react para iconos, recharts para los gráficos, papaparse para el CSV
-- Vitest para tests
+- Vitest + Testing Library (jsdom) para tests
 
 ## Setup local
 
@@ -49,18 +50,17 @@ discordia-backoffice/
 ├── src/
 │   ├── app/                     App Router: cada carpeta con page.tsx es una ruta
 │   │   ├── layout.tsx           layout raíz (fuentes, tema, metadata)
-│   │   ├── globals.css          design tokens, estilos base y del login
+│   │   ├── globals.css          Tailwind, tokens y estilos base
 │   │   ├── login/               pantalla de acceso
 │   │   ├── (panel)/             route group: las secciones del panel comparten sidebar
 │   │   │   ├── layout.tsx
-│   │   │   ├── panel.css        estilos del panel autenticado
 │   │   │   └── dashboard/       home del staff: métricas globales
 │   │   └── api/                 route handlers del BFF (ver "Autenticación")
 │   │       ├── auth/login/
 │   │       └── metrics/
 │   ├── middleware.ts            guardia de rutas (corre antes de cada request)
 │   ├── components/
-│   │   ├── ui/                  piezas genéricas reutilizables (TextField, ThemeToggle, BrandLogo, ...)
+│   │   ├── ui/                  piezas genéricas reutilizables (Button, IconButton, TextField, Card, StateBox, ...)
 │   │   ├── auth/                componentes del login
 │   │   ├── layout/              marco del panel: Sidebar, PanelHeader, PanelShell
 │   │   │   └── hooks/           useSidebar, useStaffAccess
@@ -76,6 +76,7 @@ discordia-backoffice/
 │   └── lib/
 │       ├── apiClient.ts          cliente HTTP hacia el Gateway (server-only)
 │       ├── browserApiClient.ts   cliente HTTP del navegador hacia el BFF (`/api/*`)
+│       ├── cn.ts                 une clases de Tailwind (clsx + tailwind-merge)
 │       ├── apiRoute.ts           respuestas estándar de los route handlers
 │       ├── setCookie.ts          lee cookies del header `Set-Cookie` del backend
 │       ├── constants.ts          constantes de la app (rutas, cookie de sesión, ...)
@@ -88,7 +89,9 @@ discordia-backoffice/
 │   └── pre-commit               hook de prettier local
 ├── next.config.mjs
 ├── tsconfig.json
+├── postcss.config.mjs           plugin de Tailwind v4
 ├── vitest.config.ts             config de tests
+├── vitest.setup.ts              setup de Testing Library
 ├── Dockerfile                   build multi-stage para la imagen de producción
 └── .env.example                 estructura de variables de entorno (sin valores sensibles)
 ```
@@ -140,3 +143,7 @@ git config core.hooksPath .githooks
 Si usan VS Code con la extensión oficial de Prettier, también formatea al guardar (ya configurado en .vscode/settings.json).
 
 El CI corre `npm run format:check` como red de seguridad (falla si encuentra archivos sin formatear), por si alguien clonó sin activar el hook.
+
+## Notas
+
+La arquitectura es la misma que la de web-client: mismo stack, cambia el contenido de `src/app` y a qué endpoints del backend le pega.

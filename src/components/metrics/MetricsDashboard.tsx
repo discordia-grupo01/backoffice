@@ -42,9 +42,11 @@ export function MetricsDashboard() {
         <ExportCsvButton metrics={exportable} />
       </PanelHeader>
 
-      <div className="panel-body">
-        <div className="period-bar">
-          <span className="period-label">Período:</span>
+      <div className="mx-auto max-w-[1400px] px-3 pt-4 pb-6 min-[481px]:px-4 min-[481px]:pt-5 min-[481px]:pb-8 md:px-6 md:pt-6 md:pb-10">
+        <div className="border-line bg-surface-raised mb-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-[14px] border p-3 min-[481px]:px-4 min-[481px]:py-3.5">
+          <span className="text-content-muted text-xs font-semibold">
+            Período:
+          </span>
           <PeriodSelector value={periodKey} onChange={setPeriodKey} />
           {periodKey === "custom" ? (
             <CustomRangeInputs
