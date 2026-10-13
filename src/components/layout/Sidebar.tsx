@@ -27,7 +27,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="border-line bg-surface-sunken invisible fixed inset-y-0 left-0 z-50 flex w-[min(280px,85vw)] -translate-x-full flex-col overflow-x-hidden overflow-y-auto border-r transition-[translate,visibility] delay-[0s,0.25s] duration-250 ease-in-out group-data-[mobile-open=true]/shell:visible group-data-[mobile-open=true]/shell:translate-x-0 group-data-[mobile-open=true]/shell:shadow-[8px_0_32px_rgba(0,0,0,0.35)] group-data-[mobile-open=true]/shell:delay-0 motion-reduce:transition-none md:visible md:sticky md:z-auto md:h-dvh md:w-[260px] md:shrink-0 md:translate-x-0 md:shadow-none md:transition-[width] md:delay-0 md:duration-200 md:group-data-[rail=true]/shell:w-[72px]"
+      className="border-line bg-surface-sunken invisible fixed inset-y-0 left-0 z-50 flex w-[min(280px,85vw)] -translate-x-full flex-col border-r transition-[translate,visibility] delay-[0s,0.25s] duration-250 ease-in-out group-data-[mobile-open=true]/shell:visible group-data-[mobile-open=true]/shell:translate-x-0 group-data-[mobile-open=true]/shell:shadow-[8px_0_32px_rgba(0,0,0,0.35)] group-data-[mobile-open=true]/shell:delay-0 motion-reduce:transition-none md:visible md:sticky md:z-30 md:h-dvh md:w-[260px] md:shrink-0 md:translate-x-0 md:shadow-none md:transition-[width] md:delay-0 md:duration-200 md:group-data-[rail=true]/shell:w-[72px]"
       aria-label="Menú lateral"
     >
       <div className="border-line relative flex h-16 shrink-0 items-center justify-between border-b px-4 md:group-data-[rail=true]/shell:justify-center md:group-data-[rail=true]/shell:px-0">
@@ -42,7 +42,10 @@ export function Sidebar() {
         </div>
       </div>
 
-      <nav aria-label="Navegación principal" className="px-3 py-4">
+      <nav
+        aria-label="Navegación principal"
+        className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-4"
+      >
         <p
           className={cn(
             "text-content-subtle mx-3 mb-2 overflow-hidden text-xs font-semibold tracking-widest whitespace-nowrap uppercase",
