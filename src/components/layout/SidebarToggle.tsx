@@ -2,27 +2,21 @@
 
 import { Menu } from "lucide-react";
 
+import { IconButton } from "@/components/ui/IconButton";
+
 import { useSidebarControls } from "./SidebarContext";
 
-interface SidebarToggleProps {
-  className: string;
-}
-
 /** Botón de hamburguesa: abre y cierra el menú lateral. */
-export function SidebarToggle({ className }: SidebarToggleProps) {
+export function SidebarToggle() {
   const { isOpen, toggle } = useSidebarControls();
-  const label = isOpen ? "Cerrar menú" : "Abrir menú";
 
   return (
-    <button
-      type="button"
+    <IconButton
+      icon={Menu}
+      iconSize={20}
+      label={isOpen ? "Cerrar menú" : "Abrir menú"}
       onClick={toggle}
-      aria-label={label}
-      title={label}
-      aria-expanded={isOpen}
-      className={className}
-    >
-      <Menu size={20} aria-hidden="true" />
-    </button>
+      isExpanded={isOpen}
+    />
   );
 }

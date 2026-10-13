@@ -21,8 +21,8 @@ export function ChartTooltip({
   if (!active || !item?.payload || item.value === undefined) return null;
 
   return (
-    <div className="chart-tooltip">
-      <p className="chart-tooltip-date">
+    <div className="border-line-strong bg-surface-raised shadow-raised rounded-[10px] border px-3 py-2 text-[13px]">
+      <p className="text-content-subtle mb-0.5 text-xs first-letter:uppercase">
         {formatSeriesTooltipLabel(item.payload.date, granularity)}
       </p>
       <p>

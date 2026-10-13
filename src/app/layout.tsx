@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Outfit } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { themeToCss } from "@discordia/client-shared";
+
 import { APP_NAME, BACKOFFICE_NAME, THEME_STORAGE_KEY } from "@/lib/constants";
 
 import "./globals.css";
@@ -20,7 +22,7 @@ const outfit = Outfit({
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-jetbrains",
   display: "swap",
 });
 
@@ -42,6 +44,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${inter.variable} ${outfit.variable} ${jetbrainsMono.variable}`}
     >
       <head>
+        <style dangerouslySetInnerHTML={{ __html: themeToCss() }} />
         <script
           dangerouslySetInnerHTML={{
             __html: `try{var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`,

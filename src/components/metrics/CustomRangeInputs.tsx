@@ -1,9 +1,12 @@
+import { DateField } from "@/components/ui/DateField";
 import {
   CUSTOM_RANGE_MESSAGES,
   toIsoDate,
   type CustomRangeError,
 } from "@/utils/metricsPeriod";
 import type { MetricsPeriod } from "@/types/metrics.types";
+
+const RANGE_FIELD = "max-[480px]:basis-full max-[480px]:*:justify-between";
 
 interface CustomRangeInputsProps {
   value: MetricsPeriod;
@@ -19,27 +22,25 @@ export function CustomRangeInputs({
   const today = toIsoDate(new Date());
 
   return (
-    <div className="custom-range">
-      <label className="range-field">
-        <span>Desde</span>
-        <input
-          type="date"
+    <div className="flex flex-wrap items-center gap-3">
+      <div className={RANGE_FIELD}>
+        <DateField
+          label="Desde"
           value={value.from}
           max={today}
           onChange={(event) => onChange({ ...value, from: event.target.value })}
         />
-      </label>
-      <label className="range-field">
-        <span>Hasta</span>
-        <input
-          type="date"
+      </div>
+      <div className={RANGE_FIELD}>
+        <DateField
+          label="Hasta"
           value={value.to}
           max={today}
           onChange={(event) => onChange({ ...value, to: event.target.value })}
         />
-      </label>
+      </div>
       {error ? (
-        <p role="alert" className="range-error">
+        <p role="alert" className="text-danger basis-full text-xs">
           {CUSTOM_RANGE_MESSAGES[error]}
         </p>
       ) : null}
