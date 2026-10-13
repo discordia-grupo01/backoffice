@@ -1,26 +1,30 @@
 "use client";
 
 import { LayoutDashboard, Server, Users, X } from "lucide-react";
-import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { IconButton } from "@/components/ui/IconButton";
-import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/constants";
 
 import { useSidebarControls } from "./SidebarContext";
+import { SidebarItem } from "./SidebarItem";
 import { SidebarToggle } from "./SidebarToggle";
 
-const UPCOMING_ITEMS = [
-  { label: "Usuarios", icon: Users },
-  { label: "Servidores", icon: Server },
+const NAV_ITEMS = [
+  { label: "Dashboard", icon: LayoutDashboard, href: ROUTES.home },
+  { label: "Usuarios", icon: Users, href: ROUTES.users },
 ] as const;
 
-const NAV_ITEM =
-  "relative mb-1 flex h-11 items-center gap-3 overflow-hidden rounded-lg px-3.5 text-sm font-medium whitespace-nowrap text-content-muted transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-bo";
+const UPCOMING_ITEMS = [{ label: "Servidores", icon: Server }] as const;
+
+function isCurrentPath(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function Sidebar() {
   const { isRail, closeMobile } = useSidebarControls();
+  const pathname = usePathname();
 
   return (
     <aside
@@ -46,36 +50,17 @@ export function Sidebar() {
         <p className="text-content-subtle mx-3.5 mb-2 overflow-hidden text-xs font-semibold tracking-widest whitespace-nowrap uppercase transition-opacity duration-300 motion-reduce:transition-none md:group-data-[rail=true]/shell:opacity-0">
           Navegación
         </p>
-        <Link
-          href={ROUTES.home}
-          className={cn(
-            NAV_ITEM,
-            "bg-bo/14 text-content hover:bg-surface-input rounded-l-none shadow-[inset_3px_0_0_var(--bo-accent)]",
-          )}
-          aria-current="page"
-          title={isRail ? "Dashboard" : undefined}
-          onClick={closeMobile}
-        >
-          <LayoutDashboard size={20} className="shrink-0" aria-hidden="true" />
-          <span className="transition-opacity duration-300 motion-reduce:transition-none md:group-data-[rail=true]/shell:opacity-0">
-            Dashboard
-          </span>
-        </Link>
-        {UPCOMING_ITEMS.map(({ label, icon: Icon }) => (
-          <span
-            key={label}
-            className={cn(NAV_ITEM, "text-content-subtle cursor-not-allowed")}
-            aria-disabled="true"
-            title={isRail ? `${label} (pronto)` : undefined}
-          >
-            <Icon size={20} className="shrink-0" aria-hidden="true" />
-            <span className="transition-opacity duration-300 motion-reduce:transition-none md:group-data-[rail=true]/shell:opacity-0">
-              {label}
-            </span>
-            <span className="border-line-strong ml-auto rounded-full border px-1.5 py-0.5 font-mono text-xs font-semibold transition-opacity duration-300 motion-reduce:transition-none md:group-data-[rail=true]/shell:opacity-0">
-              Pronto
-            </span>
-          </span>
+        {NAV_ITEMS.map((item) => (
+          <SidebarItem
+            key={item.label}
+            {...item}
+            isCurrent={isCurrentPath(pathname, item.href)}
+            isRail={isRail}
+            onNavigate={closeMobile}
+          />
+        ))}
+        {UPCOMING_ITEMS.map((item) => (
+          <SidebarItem key={item.label} {...item} isRail={isRail} />
         ))}
       </nav>
     </aside>

@@ -21,7 +21,8 @@ export function MetricsErrorState({ onRetry }: { onRetry: () => void }) {
       action={
         <Button
           variant="secondary"
-          className="mt-3 w-auto py-2.5"
+          size="sm"
+          className="mt-3"
           onClick={onRetry}
         >
           Reintentar

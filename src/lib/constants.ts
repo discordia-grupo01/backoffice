@@ -17,4 +17,5 @@ export const ROUTES = {
   login: "/login",
   /** Landing despues de iniciar sesion: el dashboard de metricas. */
   home: "/dashboard",
+  users: "/users",
 } as const;

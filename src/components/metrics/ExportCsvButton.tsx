@@ -36,7 +36,8 @@ export function ExportCsvButton({
         />
       </div>
       <Button
-        className="hidden w-auto gap-1.5 rounded-lg px-3 py-1.5 text-xs sm:inline-flex"
+        size="sm"
+        className="hidden sm:inline-flex"
         onClick={handleExport}
         disabled={!metrics}
       >
