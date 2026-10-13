@@ -1,12 +1,18 @@
 "use client";
 
+import {
+  hasErrors,
+  type LoginErrors,
+  validateLogin,
+} from "@discordia/client-shared";
+
 import { ArrowRight, Lock, Mail } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { PasswordField } from "@/components/ui/PasswordField";
 import { TextField } from "@/components/ui/TextField";
 import { ROUTES } from "@/lib/constants";
-import { loginRequest, validateLogin, type LoginErrors } from "@/services/auth";
+import { loginRequest } from "@/services/auth/client";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -21,7 +27,7 @@ export function LoginForm() {
 
     const nextErrors = validateLogin({ email, password });
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
+    if (hasErrors(nextErrors)) return;
 
     setIsSubmitting(true);
     const result = await loginRequest({ email: email.trim(), password });

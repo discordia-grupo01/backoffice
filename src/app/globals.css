@@ -20,6 +20,7 @@
   --text-3: rgba(168, 198, 223, 0.45);
   --border: rgba(168, 198, 223, 0.08);
   --border-strong: rgba(168, 198, 223, 0.18);
+  --chart-1: #4a9fb3;
   --bg-card: #1a2e40;
   --bg-backdrop: #0f1922;
   /* Acento propio del backoffice (dorado) para distinguirlo de la app. */
@@ -47,6 +48,7 @@
   --text-3: rgba(36, 92, 107, 0.5);
   --border: rgba(36, 92, 107, 0.08);
   --border-strong: rgba(36, 92, 107, 0.22);
+  --chart-1: #245c6b;
   --bg-card: #fffdf8;
   --bg-backdrop: #f3eee2;
   --bo-accent: #e8a800;
@@ -80,6 +82,10 @@ button,
 input {
   font: inherit;
   color: inherit;
+}
+
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
 }
 
 .font-display {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, JetBrains_Mono, Outfit } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { APP_NAME, BACKOFFICE_NAME, THEME_STORAGE_KEY } from "@/lib/constants";
@@ -18,6 +18,12 @@ const outfit = Outfit({
   display: "swap",
 });
 
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
     default: `${APP_NAME} ${BACKOFFICE_NAME}`,
@@ -33,7 +39,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       data-theme="dark"
       // El script puede cambiar `data-theme` antes de hidratar a proposito.
       suppressHydrationWarning
-      className={`${inter.variable} ${outfit.variable}`}
+      className={`${inter.variable} ${outfit.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <script
