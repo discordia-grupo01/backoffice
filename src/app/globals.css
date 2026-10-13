@@ -16,6 +16,8 @@
   --color-backdrop: var(--bg-backdrop);
   --color-chart: var(--chart-1);
   --shadow-raised: var(--shadow-card);
+
+  --animate-shimmer: shimmer 1.3s ease-in-out infinite;
 }
 
 /* Acento propio del backoffice (dorado) para distinguirlo de la app. */
@@ -96,22 +98,5 @@ body {
 @keyframes shimmer {
   to {
     background-position: 200% 0;
-  }
-}
-
-@utility skeleton {
-  background-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in srgb, var(--text) 9%, transparent) 50%,
-    transparent 100%
-  );
-  background-size: 50% 100%;
-  background-repeat: no-repeat;
-  background-position: -100% 0;
-  animation: shimmer 1.3s ease-in-out infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
   }
 }
