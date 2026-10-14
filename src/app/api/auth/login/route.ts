@@ -1,0 +1,97 @@
+import {
+  EMAIL_NOT_VERIFIED,
+  hasErrors,
+  INVALID_CREDENTIALS,
+  INVALID_DATA_MESSAGE,
+  isTwoFactorChallenge,
+  LOGIN_UNAVAILABLE,
+  type LoginResult,
+  UNEXPECTED_ERROR_MESSAGE,
+  validateLogin,
+} from "@discordia/client-shared";
+
+import { NextResponse } from "next/server";
+
+import { login } from "@/services/auth/service";
+import { createSession } from "@/services/auth/session";
+
+const TWO_FACTOR_UNSUPPORTED =
+  "Esta cuenta tiene verificación en dos pasos, que todavía no está disponible en el backoffice.";
+
+export async function POST(
+  request: Request,
+): Promise<NextResponse<LoginResult>> {
+  let payload: unknown;
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json(
+      { ok: false, message: UNEXPECTED_ERROR_MESSAGE },
+      { status: 400 },
+    );
+  }
+
+  const body = (payload ?? {}) as Record<string, unknown>;
+  const email = typeof body.email === "string" ? body.email : "";
+  const password = typeof body.password === "string" ? body.password : "";
+
+  if (hasErrors(validateLogin({ email, password }))) {
+    return NextResponse.json(
+      { ok: false, message: INVALID_DATA_MESSAGE },
+      { status: 400 },
+    );
+  }
+
+  const { result, refreshToken } = await login({
+    email: email.trim(),
+    password,
+  });
+
+  if (!result.ok) {
+    if (result.status === 403 && result.code === "EMAIL_NOT_VERIFIED") {
+      return NextResponse.json(
+        { ok: false, message: EMAIL_NOT_VERIFIED },
+        { status: 403 },
+      );
+    }
+
+    // 401/403: mensaje generico, sin distinguir campo ni si la cuenta existe.
+    if (result.status === 401 || result.status === 403) {
+      return NextResponse.json(
+        { ok: false, message: INVALID_CREDENTIALS },
+        { status: 401 },
+      );
+    }
+
+    if (result.status === 400 || result.status === 422) {
+      return NextResponse.json(
+        { ok: false, message: INVALID_DATA_MESSAGE },
+        { status: 400 },
+      );
+    }
+
+    // Red caida, timeout o error del backend (5xx, 404, ...).
+    return NextResponse.json(
+      { ok: false, message: LOGIN_UNAVAILABLE },
+      { status: 502 },
+    );
+  }
+
+  if (isTwoFactorChallenge(result.data)) {
+    return NextResponse.json(
+      { ok: false, message: TWO_FACTOR_UNSUPPORTED },
+      { status: 403 },
+    );
+  }
+
+  createSession({
+    token: result.data.token,
+    refreshToken: refreshToken ?? "",
+    user: result.data.user,
+  });
+
+  return NextResponse.json(
+    { ok: true, user: result.data.user },
+    { status: 200 },
+  );
+}

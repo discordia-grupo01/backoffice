@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* Puente de los design tokens hacia Tailwind, compartido con web-client y
+   app-mobile. Los valores los inyecta layout.tsx con `themeToCss()`. */
+@import "@discordia/client-shared/theme.css";
+
+/* Solo backoffice: fuentes de next/font y tokens propios (acento dorado). */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --color-bo: var(--bo-accent);
+  --color-bo-end: var(--bo-accent-end);
+  --color-on-bo: var(--on-bo-accent);
+  --color-backdrop: var(--bg-backdrop);
+  --color-chart: var(--chart-1);
+  --shadow-raised: var(--shadow-card);
+
+  --animate-shimmer: shimmer 1.3s ease-in-out infinite;
+}
+
+/* Acento propio del backoffice (dorado) para distinguirlo de la app. */
+:root,
+[data-theme="dark"] {
+  --bg-backdrop: #0f1922;
+  --chart-1: #4a9fb3;
+  --bo-accent: #fce3a4;
+  --bo-accent-end: #f0c565;
+  --on-bo-accent: #18181b;
+  --bo-glow: rgba(252, 227, 164, 0.1);
+  --shadow-card: 0 24px 60px -12px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg-backdrop: #f3eee2;
+  --chart-1: #245c6b;
+  --bo-accent: #e8a800;
+  --bo-accent-end: #c98f00;
+  --on-bo-accent: #18181b;
+  --bo-glow: rgba(232, 168, 0, 0.16);
+  --shadow-card: 0 24px 60px -16px rgba(36, 60, 70, 0.28);
+  color-scheme: light;
+}
+
+/* Panel autenticado: turquesa en dark y dorado en light (el dorado fijo es
+   solo del login), con superficies propias: fondo < sidebar/header < tarjetas. */
+[data-theme="dark"] .panel-shell {
+  --bo-accent: #3a8ca0;
+  --on-bo-accent: #ffffff;
+  --bo-glow: rgba(58, 143, 163, 0.25);
+  --bg-chat: #0d1620;
+  --bg-channels: #111e2b;
+  --bg-card: #1c293b;
+  --bg-input: #243347;
+  --bg-hover: #2d3f52;
+  --border: #2a3d52;
+  --border-strong: #3a5268;
+  --text-2: #a8c6df;
+  --text-3: #93aabf;
+}
+[data-theme="light"] .panel-shell {
+  --bg-chat: #f5f2eb;
+  --bg-channels: #eae6dc;
+  --bg-card: #ffffff;
+  --bg-input: #f0ede5;
+  --bg-hover: #e5e0d5;
+  --border: #d5cec3;
+  --border-strong: #b8b0a2;
+  --text-2: #4a5568;
+  --text-3: #566173;
+}
+.panel-shell {
+  --bo-accent-end: var(--bo-accent);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg-chat);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@utility bg-bo-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--bo-accent),
+    var(--bo-accent-end)
+  );
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 200% 0;
+  }
+}

@@ -1,9 +1,7 @@
-import { APP_NAME } from "@/lib/constants";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <main>
-      <h1>{APP_NAME} - Cliente Web</h1>
-    </main>
-  );
+import { ROUTES } from "@/lib/constants";
+
+export default function Root() {
+  redirect(ROUTES.home);
 }
