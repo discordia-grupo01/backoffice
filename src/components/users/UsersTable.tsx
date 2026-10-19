@@ -1,21 +1,12 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { cn } from "@/lib/cn";
 import { formatDate } from "@/utils/formatDate";
 import type { PlatformUser } from "@/types/users.types";
 
 import { UserIdentity } from "./UserIdentity";
 import { UserStatusBadge } from "./UserStatusBadge";
 
-const COLUMNS = [
-  "Usuario",
-  "Email",
-  "Registro",
-  "Servidores",
-  "Reportes",
-  "Estado",
-  "Acciones",
-];
+const COLUMNS = ["Usuario", "Email", "Registro", "Estado", "Acciones"];
 
 interface UsersTableProps {
   users: readonly PlatformUser[];
@@ -50,18 +41,7 @@ export function UsersTable({ users, onViewDossier }: UsersTableProps) {
                   {user.email}
                 </td>
                 <td className="px-4 py-3 font-mono text-xs">
-                  {formatDate(user.registeredAt)}
-                </td>
-                <td className="px-4 py-3 font-mono">{user.serversCount}</td>
-                <td
-                  className={cn(
-                    "px-4 py-3 font-mono",
-                    user.reportsCount > 0
-                      ? "text-warning"
-                      : "text-content-subtle",
-                  )}
-                >
-                  {user.reportsCount}
+                  {formatDate(user.created_at)}
                 </td>
                 <td className="px-4 py-3">
                   <UserStatusBadge status={user.status} />
@@ -70,7 +50,7 @@ export function UsersTable({ users, onViewDossier }: UsersTableProps) {
                   <Button
                     variant="secondary"
                     size="sm"
-                    aria-label={`Ver expediente de ${user.displayName}`}
+                    aria-label={`Ver expediente de ${user.name}`}
                     onClick={() => onViewDossier(user)}
                   >
                     Ver expediente

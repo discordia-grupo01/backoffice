@@ -1,20 +1,11 @@
 import { Avatar } from "@/components/ui/Avatar";
 import type { PlatformUser } from "@/types/users.types";
 
-export function UserIdentity({
-  user,
-}: {
-  user: Pick<PlatformUser, "displayName" | "username">;
-}) {
+export function UserIdentity({ user }: { user: Pick<PlatformUser, "name"> }) {
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <Avatar name={user.displayName} />
-      <div className="min-w-0">
-        <p className="truncate font-medium">{user.displayName}</p>
-        <p className="text-content-subtle truncate font-mono text-xs">
-          {user.username}
-        </p>
-      </div>
+      <Avatar name={user.name} />
+      <p className="truncate font-medium">{user.name}</p>
     </div>
   );
 }

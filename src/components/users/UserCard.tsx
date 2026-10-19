@@ -30,10 +30,8 @@ export function UserCard({ user, onViewDossier }: UserCardProps) {
       <p className="text-content-muted mt-3 truncate font-mono text-xs">
         {user.email}
       </p>
-      <dl className="my-4 grid grid-cols-3 gap-2">
-        <Stat label="Registro" value={formatDate(user.registeredAt)} />
-        <Stat label="Servidores" value={String(user.serversCount)} />
-        <Stat label="Reportes" value={String(user.reportsCount)} />
+      <dl className="my-4">
+        <Stat label="Registro" value={formatDate(user.created_at)} />
       </dl>
       <Button
         variant="secondary"

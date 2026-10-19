@@ -13,7 +13,8 @@ const STATUS_OPTIONS: ToggleOption<UserStatusFilter>[] = [
 interface UserFiltersProps {
   query: string;
   status: UserStatusFilter;
-  resultCount: number;
+  /** "26 resultados" o "1-10 de 26"; vacío mientras carga o falla. */
+  countLabel: string;
   hasActiveFilters: boolean;
   onQueryChange: (query: string) => void;
   onStatusChange: (status: UserStatusFilter) => void;
@@ -23,7 +24,7 @@ interface UserFiltersProps {
 export function UserFilters({
   query,
   status,
-  resultCount,
+  countLabel,
   hasActiveFilters,
   onQueryChange,
   onStatusChange,
@@ -34,8 +35,8 @@ export function UserFilters({
       <Card className="flex flex-col gap-3 rounded-xl p-3 @3xl:flex-row @3xl:items-center @3xl:p-4">
         <div className="@3xl:flex-1">
           <SearchInput
-            label="Buscar por nombre, usuario o email"
-            placeholder="Nombre, usuario o email"
+            label="Buscar por nombre o email"
+            placeholder="Nombre o email"
             value={query}
             onChange={onQueryChange}
           />
@@ -51,7 +52,7 @@ export function UserFilters({
 
       <div className="flex min-h-8 items-center justify-between gap-3 px-1">
         <p aria-live="polite" className="text-content-subtle font-mono text-xs">
-          {resultCount} {resultCount === 1 ? "resultado" : "resultados"}
+          {countLabel}
         </p>
         {hasActiveFilters ? (
           <Button variant="secondary" size="sm" onClick={onClear}>

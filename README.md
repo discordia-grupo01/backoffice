@@ -58,7 +58,8 @@ discordia-backoffice/
 │   │   │   └── users/           listado de usuarios con búsqueda y filtro por estado
 │   │   └── api/                 route handlers del BFF (ver "Autenticación")
 │   │       ├── auth/login/
-│   │       └── metrics/
+│   │       ├── metrics/
+│   │       └── users/
 │   ├── middleware.ts            guardia de rutas (corre antes de cada request)
 │   ├── components/
 │   │   ├── ui/                  piezas genéricas reutilizables (Button, IconButton, TextField, Card, StateBox, ...)
@@ -73,7 +74,7 @@ discordia-backoffice/
 │   ├── services/                código agrupado por dominio del backend
 │   │   ├── auth/                client (browser), service (server), session, session-shape
 │   │   ├── metrics/             client (browser), service (server), mockPlatformMetrics
-│   │   └── users/               mockUsers (hasta que exista el endpoint)
+│   │   └── users/               client (browser), service (server): listado paginado de GET /v1/admin/users
 │   ├── types/                   tipos por dominio: <dominio>.types.ts
 │   ├── hooks/                   hooks de React que usan varias features (useTheme, useMediaQuery)
 │   ├── utils/                   funciones auxiliares sin UI (metricsPeriod, userFilters, downloadFile)
