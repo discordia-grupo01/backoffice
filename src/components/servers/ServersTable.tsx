@@ -15,7 +15,17 @@ export function ServersTable({ servers, ...handlers }: ServersTableProps) {
   const columns: Column<PlatformServer>[] = [
     {
       header: "Servidor",
-      cell: (server) => <ServerIdentity server={server} />,
+      cell: (server) => <ServerIdentity server={server} showOwner={false} />,
+    },
+    {
+      header: "Dueño",
+      width: "14rem",
+      cellClassName: "text-content-muted truncate",
+      cell: (server) => (
+        <span title={server.owner_name ?? undefined}>
+          {server.owner_name ?? "Sin datos"}
+        </span>
+      ),
     },
     {
       header: "Miembros",

@@ -3,9 +3,14 @@ import type { PlatformServer } from "@/types/servers.types";
 
 interface ServerIdentityProps {
   server: Pick<PlatformServer, "name" | "owner_name">;
+  /** En la tabla el dueño tiene su propia columna. */
+  showOwner?: boolean;
 }
 
-export function ServerIdentity({ server }: ServerIdentityProps) {
+export function ServerIdentity({
+  server,
+  showOwner = true,
+}: ServerIdentityProps) {
   return (
     <div className="flex min-w-0 items-center gap-3">
       <ServerAvatar name={server.name} />
@@ -13,9 +18,11 @@ export function ServerIdentity({ server }: ServerIdentityProps) {
         <p className="truncate font-medium" title={server.name}>
           {server.name}
         </p>
-        <p className="text-content-muted truncate text-xs">
-          Dueño: {server.owner_name ?? "sin datos"}
-        </p>
+        {showOwner ? (
+          <p className="text-content-muted truncate text-xs">
+            Dueño: {server.owner_name ?? "sin datos"}
+          </p>
+        ) : null}
       </div>
     </div>
   );
