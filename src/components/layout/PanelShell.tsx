@@ -2,10 +2,10 @@
 
 import type { ReactNode } from "react";
 
-import { NoStaffAccess } from "@/components/metrics/MetricsStates";
 import { useSidebar } from "./hooks/useSidebar";
 import { useStaffAccess } from "./hooks/useStaffAccess";
 
+import { NoStaffAccess } from "./NoStaffAccess";
 import { Sidebar } from "./Sidebar";
 import { SidebarContext } from "./SidebarContext";
 

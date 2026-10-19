@@ -21,3 +21,11 @@ export async function loginRequest(
     return { ok: false, message: REQUEST_FAILED_MESSAGE };
   }
 }
+
+export async function logoutRequest(): Promise<void> {
+  try {
+    await api.post("/auth/logout");
+  } catch {
+    // El logout es best effort desde el cliente; la cookie se limpia igual.
+  }
+}

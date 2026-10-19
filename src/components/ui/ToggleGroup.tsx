@@ -29,7 +29,7 @@ export function ToggleGroup<T extends string>({
       role="group"
       aria-label={label}
       className={cn(
-        "bg-surface-input border-line inline-flex gap-1 rounded-xl border p-1",
+        "bg-surface-sunken border-line inline-flex h-10 gap-0.5 rounded-lg border p-0.5",
         className,
       )}
     >
@@ -40,7 +40,7 @@ export function ToggleGroup<T extends string>({
           aria-pressed={option.value === value}
           onClick={() => onChange(option.value)}
           className={cn(
-            "text-content-muted flex-1 cursor-pointer rounded-lg px-3.5 py-1.5 text-center text-[13px] font-medium whitespace-nowrap transition-colors",
+            "text-content-muted flex-1 cursor-pointer rounded-md px-3.5 text-center text-[13px] font-medium whitespace-nowrap transition-colors",
             "hover:text-content focus-visible:ring-bo focus-visible:ring-2 focus-visible:outline-none",
             "aria-pressed:bg-bo/14 aria-pressed:text-content aria-pressed:font-semibold aria-pressed:shadow-[inset_0_0_0_1px_var(--bo-accent)]",
           )}

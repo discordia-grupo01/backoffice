@@ -1,20 +1,18 @@
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { cn } from "@/lib/cn";
 import { formatDate } from "@/utils/formatDate";
 import type { PlatformUser } from "@/types/users.types";
 
 import { UserIdentity } from "./UserIdentity";
 import { UserStatusBadge } from "./UserStatusBadge";
 
+/** Ancho fijo por columna, así no cambia con el contenido; Email se queda con lo que sobra. */
 const COLUMNS = [
-  "Usuario",
-  "Email",
-  "Registro",
-  "Servidores",
-  "Reportes",
-  "Estado",
-  "Acciones",
+  { label: "Usuario", width: "30%" },
+  { label: "Email" },
+  { label: "Registro", width: "7.5rem" },
+  { label: "Estado", width: "7.5rem" },
+  { label: "Acciones", width: "10rem" },
 ];
 
 interface UsersTableProps {
@@ -26,16 +24,21 @@ export function UsersTable({ users, onViewDossier }: UsersTableProps) {
   return (
     <Card className="hidden overflow-hidden rounded-xl @3xl:block">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[700px] text-sm">
+        <table className="w-full min-w-[760px] table-fixed text-sm">
+          <colgroup>
+            {COLUMNS.map(({ label, width }) => (
+              <col key={label} style={width ? { width } : undefined} />
+            ))}
+          </colgroup>
           <thead>
             <tr className="bg-surface-sunken">
-              {COLUMNS.map((column) => (
+              {COLUMNS.map(({ label }) => (
                 <th
-                  key={column}
+                  key={label}
                   scope="col"
                   className="text-content-subtle px-4 py-3 text-left text-xs font-semibold tracking-wider uppercase"
                 >
-                  {column}
+                  {label}
                 </th>
               ))}
             </tr>
@@ -43,25 +46,17 @@ export function UsersTable({ users, onViewDossier }: UsersTableProps) {
           <tbody>
             {users.map((user) => (
               <tr key={user.id} className="border-line border-t">
-                <td className="max-w-60 px-4 py-3">
+                <td className="px-4 py-3">
                   <UserIdentity user={user} />
                 </td>
-                <td className="text-content-muted px-4 py-3 font-mono text-xs">
+                <td
+                  className="text-content-muted truncate px-4 py-3 font-mono text-xs"
+                  title={user.email}
+                >
                   {user.email}
                 </td>
                 <td className="px-4 py-3 font-mono text-xs">
-                  {formatDate(user.registeredAt)}
-                </td>
-                <td className="px-4 py-3 font-mono">{user.serversCount}</td>
-                <td
-                  className={cn(
-                    "px-4 py-3 font-mono",
-                    user.reportsCount > 0
-                      ? "text-warning"
-                      : "text-content-subtle",
-                  )}
-                >
-                  {user.reportsCount}
+                  {formatDate(user.created_at)}
                 </td>
                 <td className="px-4 py-3">
                   <UserStatusBadge status={user.status} />
@@ -70,7 +65,7 @@ export function UsersTable({ users, onViewDossier }: UsersTableProps) {
                   <Button
                     variant="secondary"
                     size="sm"
-                    aria-label={`Ver expediente de ${user.displayName}`}
+                    aria-label={`Ver expediente de ${user.name}`}
                     onClick={() => onViewDossier(user)}
                   >
                     Ver expediente
