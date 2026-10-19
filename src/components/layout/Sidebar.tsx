@@ -16,9 +16,8 @@ import { SidebarItem } from "./SidebarItem";
 const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutDashboard, href: ROUTES.home },
   { label: "Usuarios", icon: Users, href: ROUTES.users },
+  { label: "Servidores", icon: Server, href: ROUTES.servers },
 ] as const;
-
-const UPCOMING_ITEMS = [{ label: "Servidores", icon: Server }] as const;
 
 function isCurrentPath(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -67,9 +66,6 @@ export function Sidebar() {
             isRail={isRail}
             onNavigate={closeMobile}
           />
-        ))}
-        {UPCOMING_ITEMS.map((item) => (
-          <SidebarItem key={item.label} {...item} isRail={isRail} />
         ))}
       </nav>
 

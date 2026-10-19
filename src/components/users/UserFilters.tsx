@@ -1,6 +1,8 @@
 import { X } from "lucide-react";
 
 import { SearchInput } from "@/components/ui/SearchInput";
+import { ViewModeToggle } from "@/components/ui/ViewModeToggle";
+import type { ViewMode } from "@/hooks/useViewMode";
 import { ToggleGroup, type ToggleOption } from "@/components/ui/ToggleGroup";
 import type { UserStatusFilter } from "@/types/users.types";
 
@@ -16,6 +18,8 @@ interface UserFiltersProps {
   /** "26 resultados" o "1-10 de 26"; vacío mientras carga o falla. */
   countLabel: string;
   hasActiveFilters: boolean;
+  view: ViewMode;
+  onViewChange: (view: ViewMode) => void;
   onQueryChange: (query: string) => void;
   onStatusChange: (status: UserStatusFilter) => void;
   onClear: () => void;
@@ -26,6 +30,8 @@ export function UserFilters({
   status,
   countLabel,
   hasActiveFilters,
+  view,
+  onViewChange,
   onQueryChange,
   onStatusChange,
   onClear,
@@ -48,6 +54,7 @@ export function UserFilters({
           onChange={onStatusChange}
           className="w-full @3xl:w-auto"
         />
+        <ViewModeToggle value={view} onChange={onViewChange} />
       </div>
 
       <div className="flex min-h-6 items-center justify-between gap-3">

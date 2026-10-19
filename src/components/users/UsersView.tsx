@@ -4,6 +4,7 @@ import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { PaginationBar } from "@/components/ui/PaginationBar";
+import { useViewMode } from "@/hooks/useViewMode";
 import { cn } from "@/lib/cn";
 import { resultsLabel } from "@/utils/pagination";
 
@@ -35,13 +36,15 @@ export function UsersView() {
     retry,
   } = useUsers();
 
+  const { viewMode, setViewMode } = useViewMode();
   const hasData = users.length > 0;
 
   if (status === "forbidden") return <NoStaffAccess />;
 
   function renderResults() {
     if (status === "error") return <UsersErrorState onRetry={retry} />;
-    if (status === "loading" && !hasData) return <UsersSkeleton />;
+    if (status === "loading" && !hasData)
+      return <UsersSkeleton view={viewMode} />;
     if (!hasData) {
       return (
         <UsersEmptyState hasActiveFilters={hasActiveFilters} onClear={clear} />
@@ -55,7 +58,11 @@ export function UsersView() {
           status === "loading" && "opacity-60",
         )}
       >
-        <UsersList users={users} onViewDossier={handleViewDossier} />
+        <UsersList
+          users={users}
+          view={viewMode}
+          onViewDossier={handleViewDossier}
+        />
         <PaginationBar
           page={page}
           pageSize={pageSize}
@@ -82,6 +89,8 @@ export function UsersView() {
               status === "success" ? resultsLabel(page, pageSize, total) : ""
             }
             hasActiveFilters={hasActiveFilters}
+            view={viewMode}
+            onViewChange={setViewMode}
             onQueryChange={setQuery}
             onStatusChange={setStatusFilter}
             onClear={clear}

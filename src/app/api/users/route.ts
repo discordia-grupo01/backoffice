@@ -5,22 +5,20 @@ import {
 
 import { NextResponse } from "next/server";
 
-import { unauthorizedResponse } from "@/lib/apiRoute";
+import { parseInteger, unauthorizedResponse } from "@/lib/apiRoute";
 import { destroySession, getSession } from "@/services/auth/session";
 import { listUsers } from "@/services/users/service";
-import { MAX_PAGE_SIZE, PAGE_SIZE } from "@/utils/pagination";
-import { USERS_SEARCH_MAX_LENGTH } from "@/utils/userFilters";
+import {
+  MAX_PAGE_SIZE,
+  PAGE_SIZE,
+  SEARCH_MAX_LENGTH,
+} from "@/utils/pagination";
 import type { UsersPage, UserStatusFilter } from "@/types/users.types";
 
 type UsersResponse =
   { ok: true; page: UsersPage } | { ok: false; message: string };
 
 const STATUSES: readonly UserStatusFilter[] = ["all", "active", "suspended"];
-
-function parseInteger(raw: string | null, fallback: number): number | null {
-  if (raw === null || raw === "") return fallback;
-  return /^\d+$/.test(raw) ? Number(raw) : null;
-}
 
 export async function GET(
   request: Request,
@@ -40,7 +38,7 @@ export async function GET(
     limit < 1 ||
     limit > MAX_PAGE_SIZE ||
     !STATUSES.includes(status) ||
-    search.length > USERS_SEARCH_MAX_LENGTH
+    search.length > SEARCH_MAX_LENGTH
   ) {
     return NextResponse.json(
       { ok: false, message: INVALID_DATA_MESSAGE },
