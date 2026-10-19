@@ -14,3 +14,12 @@ export function unauthorizedResponse(): NextResponse<{
     { status: 401 },
   );
 }
+
+/** Entero no negativo de un query param; `fallback` si falta, `null` si es inválido. */
+export function parseInteger(
+  raw: string | null,
+  fallback: number,
+): number | null {
+  if (raw === null || raw === "") return fallback;
+  return /^\d+$/.test(raw) ? Number(raw) : null;
+}

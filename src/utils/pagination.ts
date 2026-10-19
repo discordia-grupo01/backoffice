@@ -6,6 +6,9 @@ export const PAGE_SIZE = 10;
 /** Tope de `limit` que aceptan los endpoints de listado del back. */
 export const MAX_PAGE_SIZE = 100;
 
+/** Largo máximo de la búsqueda que acepta el back. */
+export const SEARCH_MAX_LENGTH = 100;
+
 /** Página (1-based) -> `offset` del back. */
 export function offsetOfPage(page: number, pageSize: number): number {
   return (page - 1) * pageSize;
