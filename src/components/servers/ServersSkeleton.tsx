@@ -1,17 +1,18 @@
 import { Skeleton } from "@/components/ui/Skeleton";
-import { PAGE_SIZE } from "@/utils/pagination";
 
-/** Alto aproximado del encabezado y de una fila de `ServersTable`, para que la carga ocupe lo mismo que la tabla. */
-const HEADER_HEIGHT_PX = 41;
-const ROW_HEIGHT_PX = 65;
+import { SERVERS_PAGE_SIZE } from "./hooks/useServers";
 
+/** Misma grilla que `ServersList`, así la carga no cambia el alto ni el ancho de las tarjetas. */
 export function ServersSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Cargando servidores">
-      <Skeleton
-        className="w-full rounded-xl"
-        style={{ height: HEADER_HEIGHT_PX + PAGE_SIZE * ROW_HEIGHT_PX }}
-      />
+    <div
+      aria-busy="true"
+      aria-label="Cargando servidores"
+      className="grid grid-cols-1 gap-4 @2xl:grid-cols-2 @5xl:grid-cols-3"
+    >
+      {Array.from({ length: SERVERS_PAGE_SIZE }, (_, index) => (
+        <Skeleton key={index} className="h-[176px] w-full rounded-xl" />
+      ))}
     </div>
   );
 }
