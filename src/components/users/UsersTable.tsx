@@ -6,7 +6,14 @@ import type { PlatformUser } from "@/types/users.types";
 import { UserIdentity } from "./UserIdentity";
 import { UserStatusBadge } from "./UserStatusBadge";
 
-const COLUMNS = ["Usuario", "Email", "Registro", "Estado", "Acciones"];
+/** Ancho fijo por columna, así no cambia con el contenido; Email se queda con lo que sobra. */
+const COLUMNS = [
+  { label: "Usuario", width: "30%" },
+  { label: "Email" },
+  { label: "Registro", width: "7.5rem" },
+  { label: "Estado", width: "7.5rem" },
+  { label: "Acciones", width: "10rem" },
+];
 
 interface UsersTableProps {
   users: readonly PlatformUser[];
@@ -17,16 +24,21 @@ export function UsersTable({ users, onViewDossier }: UsersTableProps) {
   return (
     <Card className="hidden overflow-hidden rounded-xl @3xl:block">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[700px] text-sm">
+        <table className="w-full min-w-[760px] table-fixed text-sm">
+          <colgroup>
+            {COLUMNS.map(({ label, width }) => (
+              <col key={label} style={width ? { width } : undefined} />
+            ))}
+          </colgroup>
           <thead>
             <tr className="bg-surface-sunken">
-              {COLUMNS.map((column) => (
+              {COLUMNS.map(({ label }) => (
                 <th
-                  key={column}
+                  key={label}
                   scope="col"
                   className="text-content-subtle px-4 py-3 text-left text-xs font-semibold tracking-wider uppercase"
                 >
-                  {column}
+                  {label}
                 </th>
               ))}
             </tr>
@@ -34,10 +46,13 @@ export function UsersTable({ users, onViewDossier }: UsersTableProps) {
           <tbody>
             {users.map((user) => (
               <tr key={user.id} className="border-line border-t">
-                <td className="max-w-60 px-4 py-3">
+                <td className="px-4 py-3">
                   <UserIdentity user={user} />
                 </td>
-                <td className="text-content-muted px-4 py-3 font-mono text-xs">
+                <td
+                  className="text-content-muted truncate px-4 py-3 font-mono text-xs"
+                  title={user.email}
+                >
                   {user.email}
                 </td>
                 <td className="px-4 py-3 font-mono text-xs">

@@ -12,14 +12,16 @@ interface PanelHeaderProps {
 
 export function PanelHeader({ title, subtitle, children }: PanelHeaderProps) {
   return (
-    <header className="border-line bg-surface-sunken flex min-h-16 items-center justify-between gap-3 border-b px-3 py-2.5 min-[481px]:px-4 md:px-6">
+    <header className="border-line bg-surface-sunken flex h-16 shrink-0 items-center justify-between gap-3 border-b px-3 min-[481px]:px-4 md:px-6">
       <div className="flex min-w-0 items-center gap-3">
         <div className="shrink-0 md:hidden">
           <SidebarToggle />
         </div>
         <div className="min-w-0">
-          <h1 className="truncate text-sm font-semibold">{title}</h1>
-          <p className="text-content-subtle mt-0.5 hidden font-mono text-xs sm:block">
+          <h1 className="font-display truncate text-xl leading-tight font-semibold tracking-tight">
+            {title}
+          </h1>
+          <p className="text-content-muted hidden truncate text-[13px] leading-snug sm:block">
             {subtitle}
           </p>
         </div>

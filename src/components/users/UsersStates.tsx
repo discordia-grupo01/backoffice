@@ -1,4 +1,4 @@
-import { AlertTriangle, SearchX, ShieldOff, Users } from "lucide-react";
+import { AlertTriangle, SearchX, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { StateBox } from "@/components/ui/StateBox";
@@ -58,19 +58,6 @@ export function UsersErrorState({ onRetry }: { onRetry: () => void }) {
       }
     >
       {USERS_LOAD_ERROR}
-    </StateBox>
-  );
-}
-
-export function UsersForbiddenState() {
-  return (
-    <StateBox
-      role="alert"
-      icon={ShieldOff}
-      title="No tenés permisos para ver esta sección"
-    >
-      El listado de usuarios es solo para el staff de Discordia. Si creés que es
-      un error, contactá a un administrador.
     </StateBox>
   );
 }

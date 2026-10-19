@@ -1,11 +1,13 @@
 "use client";
 
-import { LayoutDashboard, Server, Users, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Server, Users, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { IconButton } from "@/components/ui/IconButton";
 import { ROUTES } from "@/lib/constants";
+import { logoutRequest } from "@/services/auth/client";
 
 import { useSidebarControls } from "./SidebarContext";
 import { SidebarItem } from "./SidebarItem";
@@ -25,6 +27,13 @@ function isCurrentPath(pathname: string, href: string): boolean {
 export function Sidebar() {
   const { isRail, closeMobile } = useSidebarControls();
   const pathname = usePathname();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+    await logoutRequest();
+    window.location.href = ROUTES.login;
+  }
 
   return (
     <aside
@@ -63,6 +72,16 @@ export function Sidebar() {
           <SidebarItem key={item.label} {...item} isRail={isRail} />
         ))}
       </nav>
+
+      <div className="border-line shrink-0 border-t px-3 py-3">
+        <SidebarItem
+          label="Cerrar sesión"
+          icon={LogOut}
+          isRail={isRail}
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+        />
+      </div>
     </aside>
   );
 }

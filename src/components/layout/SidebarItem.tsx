@@ -9,6 +9,9 @@ interface SidebarItemProps {
   label: string;
   icon: LucideIcon;
   href?: string;
+  /** Sin `href`: convierte el ítem en un botón que ejecuta una acción. */
+  onClick?: () => void;
+  disabled?: boolean;
   isCurrent?: boolean;
   isRail: boolean;
   onNavigate?: () => void;
@@ -24,6 +27,8 @@ export function SidebarItem({
   label,
   icon: Icon,
   href,
+  onClick,
+  disabled = false,
   isCurrent = false,
   isRail,
   onNavigate,
@@ -34,6 +39,23 @@ export function SidebarItem({
       <span className={RAIL_FADE}>{label}</span>
     </>
   );
+
+  if (!href && onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        className={cn(
+          ITEM,
+          "hover:bg-surface-input w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-60",
+        )}
+        title={isRail ? label : undefined}
+      >
+        {content}
+      </button>
+    );
+  }
 
   if (!href) {
     return (

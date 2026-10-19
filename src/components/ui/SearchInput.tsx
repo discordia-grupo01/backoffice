@@ -23,7 +23,7 @@ export function SearchInput({
       <label htmlFor={id} className="sr-only">
         {label}
       </label>
-      <div className="bg-surface-input border-line focus-within:border-bo flex items-center gap-3 rounded-xl border px-4 py-2.5 transition-colors">
+      <div className="bg-surface-raised border-line focus-within:border-bo focus-within:ring-bo/30 flex h-10 items-center gap-2.5 rounded-lg border px-3.5 transition-colors focus-within:ring-2">
         <Search
           size={15}
           className="text-content-subtle shrink-0"

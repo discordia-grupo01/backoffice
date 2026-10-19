@@ -1,5 +1,6 @@
 "use client";
 
+import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { PaginationBar } from "@/components/ui/PaginationBar";
@@ -9,11 +10,7 @@ import { resultsLabel } from "@/utils/pagination";
 import { useUsers } from "./hooks/useUsers";
 import { UserFilters } from "./UserFilters";
 import { UsersList } from "./UsersList";
-import {
-  UsersEmptyState,
-  UsersErrorState,
-  UsersForbiddenState,
-} from "./UsersStates";
+import { UsersEmptyState, UsersErrorState } from "./UsersStates";
 import { UsersSkeleton } from "./UsersSkeleton";
 import type { PlatformUser } from "@/types/users.types";
 
@@ -40,8 +37,9 @@ export function UsersView() {
 
   const hasData = users.length > 0;
 
+  if (status === "forbidden") return <NoStaffAccess />;
+
   function renderResults() {
-    if (status === "forbidden") return <UsersForbiddenState />;
     if (status === "error") return <UsersErrorState onRetry={retry} />;
     if (status === "loading" && !hasData) return <UsersSkeleton />;
     if (!hasData) {
@@ -76,7 +74,7 @@ export function UsersView() {
       />
 
       <PanelBody>
-        <div className="space-y-2">
+        <div className="space-y-3">
           <UserFilters
             query={query}
             status={statusFilter}
