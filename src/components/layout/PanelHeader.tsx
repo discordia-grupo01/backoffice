@@ -14,7 +14,7 @@ export function PanelHeader({ title, subtitle, children }: PanelHeaderProps) {
   return (
     <header className="border-line bg-surface-sunken flex h-16 shrink-0 items-center justify-between gap-3 border-b px-3 min-[481px]:px-4 md:px-6">
       <div className="flex min-w-0 items-center gap-3">
-        <div className="shrink-0 md:hidden">
+        <div className="shrink-0">
           <SidebarToggle />
         </div>
         <div className="min-w-0">

@@ -67,7 +67,7 @@ export function SidebarItem({
         {content}
         <span
           className={cn(
-            "border-line-strong ml-auto rounded-full border px-1.5 py-0.5 font-mono text-xs font-semibold",
+            "border-line-strong ml-auto rounded-full border px-2 py-0.5 text-xs font-medium",
             RAIL_FADE,
           )}
         >
