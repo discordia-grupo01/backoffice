@@ -5,6 +5,8 @@ import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { PaginationBar } from "@/components/ui/PaginationBar";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { ViewModeToggle } from "@/components/ui/ViewModeToggle";
+import { useViewMode } from "@/hooks/useViewMode";
 import { cn } from "@/lib/cn";
 import { resultsLabel } from "@/utils/pagination";
 import type { PlatformServer } from "@/types/servers.types";
@@ -41,13 +43,15 @@ export function ServersView() {
     retry,
   } = useServers();
 
+  const { viewMode, setViewMode } = useViewMode();
   const hasData = servers.length > 0;
 
   if (status === "forbidden") return <NoStaffAccess />;
 
   function renderResults() {
     if (status === "error") return <ServersErrorState onRetry={retry} />;
-    if (status === "loading" && !hasData) return <ServersSkeleton />;
+    if (status === "loading" && !hasData)
+      return <ServersSkeleton view={viewMode} />;
     if (!hasData) {
       return <ServersEmptyState hasSearch={hasActiveFilters} onClear={clear} />;
     }
@@ -61,6 +65,7 @@ export function ServersView() {
       >
         <ServersList
           servers={servers}
+          view={viewMode}
           onViewDossier={handleViewDossier}
           onSuspend={handleSuspend}
           onReactivate={handleReactivate}
@@ -84,12 +89,17 @@ export function ServersView() {
 
       <PanelBody>
         <div className="space-y-3">
-          <SearchInput
-            label="Buscar por nombre"
-            placeholder="Nombre del servidor"
-            value={query}
-            onChange={setQuery}
-          />
+          <div className="flex flex-col gap-3 @3xl:flex-row @3xl:items-center">
+            <div className="@3xl:flex-1">
+              <SearchInput
+                label="Buscar por nombre"
+                placeholder="Nombre del servidor"
+                value={query}
+                onChange={setQuery}
+              />
+            </div>
+            <ViewModeToggle value={viewMode} onChange={setViewMode} />
+          </div>
           <p
             aria-live="polite"
             className="text-content-muted min-h-6 text-[13px] tabular-nums"

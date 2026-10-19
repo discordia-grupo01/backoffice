@@ -1,32 +1,31 @@
+import { CardGrid } from "@/components/ui/CardGrid";
+import { ViewSwitch } from "@/components/ui/ViewSwitch";
+import type { ViewMode } from "@/hooks/useViewMode";
 import type { PlatformServer } from "@/types/servers.types";
 
 import { ServerCard } from "./ServerCard";
+import type { ServerActionHandlers } from "./ServerActions";
+import { ServersTable } from "./ServersTable";
 
-interface ServersListProps {
+interface ServersListProps extends ServerActionHandlers {
   servers: readonly PlatformServer[];
-  onViewDossier: (server: PlatformServer) => void;
-  onSuspend: (server: PlatformServer) => void;
-  onReactivate: (server: PlatformServer) => void;
+  view: ViewMode;
 }
 
-export function ServersList({
-  servers,
-  onViewDossier,
-  onSuspend,
-  onReactivate,
-}: ServersListProps) {
+export function ServersList({ servers, view, ...handlers }: ServersListProps) {
   return (
-    <ul className="grid grid-cols-1 gap-4 @2xl:grid-cols-2 @5xl:grid-cols-3">
-      {servers.map((server) => (
-        <li key={server.id}>
-          <ServerCard
-            server={server}
-            onViewDossier={onViewDossier}
-            onSuspend={onSuspend}
-            onReactivate={onReactivate}
-          />
-        </li>
-      ))}
-    </ul>
+    <ViewSwitch
+      view={view}
+      table={<ServersTable servers={servers} {...handlers} />}
+      cards={
+        <CardGrid>
+          {servers.map((server) => (
+            <li key={server.id}>
+              <ServerCard server={server} {...handlers} />
+            </li>
+          ))}
+        </CardGrid>
+      }
+    />
   );
 }

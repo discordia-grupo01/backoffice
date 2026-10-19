@@ -1,9 +1,8 @@
 import { Avatar } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
 import type { PlatformServer } from "@/types/servers.types";
 
 interface ServerIdentityProps {
-  server: Pick<PlatformServer, "name" | "owner_name" | "suspended_at">;
+  server: Pick<PlatformServer, "name" | "owner_name">;
 }
 
 export function ServerIdentity({ server }: ServerIdentityProps) {
@@ -11,12 +10,9 @@ export function ServerIdentity({ server }: ServerIdentityProps) {
     <div className="flex min-w-0 items-center gap-3">
       <ServerAvatar name={server.name} />
       <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="truncate font-medium" title={server.name}>
-            {server.name}
-          </p>
-          {server.suspended_at ? <Badge tone="danger">Suspendido</Badge> : null}
-        </div>
+        <p className="truncate font-medium" title={server.name}>
+          {server.name}
+        </p>
         <p className="text-content-muted truncate text-xs">
           Dueño: {server.owner_name ?? "sin datos"}
         </p>

@@ -1,7 +1,7 @@
 import { pageRange } from "@discordia/client-shared";
 
-/** Elementos por página en los listados del panel. */
-export const PAGE_SIZE = 10;
+/** Elementos por página en los listados del panel. 12 se reparte exacto en 1, 2 y 3 columnas de tarjetas: la grilla nunca termina con una fila incompleta. */
+export const PAGE_SIZE = 12;
 
 /** Tope de `limit` que aceptan los endpoints de listado del back. */
 export const MAX_PAGE_SIZE = 100;
