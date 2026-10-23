@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { X } from "lucide-react";
+
 import { SearchInput } from "@/components/ui/SearchInput";
+import { ViewModeToggle } from "@/components/ui/ViewModeToggle";
+import type { ViewMode } from "@/hooks/useViewMode";
 import { ToggleGroup, type ToggleOption } from "@/components/ui/ToggleGroup";
 import type { UserStatusFilter } from "@/types/users.types";
 
@@ -13,8 +15,11 @@ const STATUS_OPTIONS: ToggleOption<UserStatusFilter>[] = [
 interface UserFiltersProps {
   query: string;
   status: UserStatusFilter;
-  resultCount: number;
+  /** "26 resultados" o "1-10 de 26"; vacío mientras carga o falla. */
+  countLabel: string;
   hasActiveFilters: boolean;
+  view: ViewMode;
+  onViewChange: (view: ViewMode) => void;
   onQueryChange: (query: string) => void;
   onStatusChange: (status: UserStatusFilter) => void;
   onClear: () => void;
@@ -23,19 +28,21 @@ interface UserFiltersProps {
 export function UserFilters({
   query,
   status,
-  resultCount,
+  countLabel,
   hasActiveFilters,
+  view,
+  onViewChange,
   onQueryChange,
   onStatusChange,
   onClear,
 }: UserFiltersProps) {
   return (
     <div className="space-y-3">
-      <Card className="flex flex-col gap-3 rounded-xl p-3 @3xl:flex-row @3xl:items-center @3xl:p-4">
+      <div className="flex flex-col gap-3 @3xl:flex-row @3xl:items-center">
         <div className="@3xl:flex-1">
           <SearchInput
-            label="Buscar por nombre, usuario o email"
-            placeholder="Nombre, usuario o email"
+            label="Buscar por nombre o email"
+            placeholder="Nombre o email"
             value={query}
             onChange={onQueryChange}
           />
@@ -47,16 +54,25 @@ export function UserFilters({
           onChange={onStatusChange}
           className="w-full @3xl:w-auto"
         />
-      </Card>
+        <ViewModeToggle value={view} onChange={onViewChange} />
+      </div>
 
-      <div className="flex min-h-8 items-center justify-between gap-3 px-1">
-        <p aria-live="polite" className="text-content-subtle font-mono text-xs">
-          {resultCount} {resultCount === 1 ? "resultado" : "resultados"}
+      <div className="flex min-h-6 items-center justify-between gap-3">
+        <p
+          aria-live="polite"
+          className="text-content-muted text-[13px] tabular-nums"
+        >
+          {countLabel}
         </p>
         {hasActiveFilters ? (
-          <Button variant="secondary" size="sm" onClick={onClear}>
+          <button
+            type="button"
+            onClick={onClear}
+            className="text-content-muted hover:text-content focus-visible:ring-bo -mr-1 flex cursor-pointer items-center gap-1.5 rounded-md px-1 py-0.5 text-[13px] font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            <X size={14} aria-hidden="true" />
             Limpiar filtros
-          </Button>
+          </button>
         ) : null}
       </div>
     </div>

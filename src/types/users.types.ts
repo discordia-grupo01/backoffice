@@ -2,22 +2,30 @@ export type UserStatus = "active" | "suspended";
 
 export type UserStatusFilter = "all" | UserStatus;
 
-/** Fila del listado de usuarios de la plataforma. */
 export interface PlatformUser {
   id: string;
-  displayName: string;
-  /** Nombre de usuario con discriminador, p. ej. `luna_star#0091`. */
-  username: string;
+  name: string;
   email: string;
-  /** Fecha de alta, `YYYY-MM-DD`. */
-  registeredAt: string;
   status: UserStatus;
-  reportsCount: number;
-  serversCount: number;
+  created_at: string;
+  /** Cuándo se suspendió; `null` si está activo. */
+  suspended_at: string | null;
 }
 
-export interface UserFilters {
-  /** Texto libre: se compara contra nombre, usuario y email. */
-  query: string;
+export interface UsersQuery {
+  search: string;
   status: UserStatusFilter;
+  limit: number;
+  offset: number;
 }
+
+export interface UsersPage {
+  users: PlatformUser[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export type UsersResult =
+  | { ok: true; page: UsersPage }
+  | { ok: false; status: number; message: string };

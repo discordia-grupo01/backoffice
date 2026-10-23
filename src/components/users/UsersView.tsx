@@ -1,17 +1,19 @@
 "use client";
 
-import { SearchX } from "lucide-react";
-
+import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
-import { Button } from "@/components/ui/Button";
-import { StateBox } from "@/components/ui/StateBox";
-import { MOCK_USERS } from "@/services/users/mockUsers";
-import type { PlatformUser } from "@/types/users.types";
+import { PaginationBar } from "@/components/ui/PaginationBar";
+import { useViewMode } from "@/hooks/useViewMode";
+import { cn } from "@/lib/cn";
+import { resultsLabel } from "@/utils/pagination";
 
-import { useUserFilters } from "./hooks/useUserFilters";
+import { useUsers } from "./hooks/useUsers";
 import { UserFilters } from "./UserFilters";
 import { UsersList } from "./UsersList";
+import { UsersEmptyState, UsersErrorState } from "./UsersStates";
+import { UsersSkeleton } from "./UsersSkeleton";
+import type { PlatformUser } from "@/types/users.types";
 
 function handleViewDossier(user: PlatformUser) {
   console.log("Ver expediente", user.id);
@@ -19,13 +21,57 @@ function handleViewDossier(user: PlatformUser) {
 
 export function UsersView() {
   const {
-    filters,
-    filteredUsers,
+    query,
+    statusFilter,
     hasActiveFilters,
+    status,
+    users,
+    total,
+    page,
+    pageSize,
+    setPage,
     setQuery,
-    setStatus,
+    setStatusFilter,
     clear,
-  } = useUserFilters(MOCK_USERS);
+    retry,
+  } = useUsers();
+
+  const { viewMode, setViewMode } = useViewMode();
+  const hasData = users.length > 0;
+
+  if (status === "forbidden") return <NoStaffAccess />;
+
+  function renderResults() {
+    if (status === "error") return <UsersErrorState onRetry={retry} />;
+    if (status === "loading" && !hasData)
+      return <UsersSkeleton view={viewMode} />;
+    if (!hasData) {
+      return (
+        <UsersEmptyState hasActiveFilters={hasActiveFilters} onClear={clear} />
+      );
+    }
+    return (
+      <div
+        aria-busy={status === "loading"}
+        className={cn(
+          "space-y-4 transition-opacity",
+          status === "loading" && "opacity-60",
+        )}
+      >
+        <UsersList
+          users={users}
+          view={viewMode}
+          onViewDossier={handleViewDossier}
+        />
+        <PaginationBar
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          onPageChange={setPage}
+        />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -35,40 +81,21 @@ export function UsersView() {
       />
 
       <PanelBody>
-        <div className="space-y-2">
+        <div className="space-y-3">
           <UserFilters
-            query={filters.query}
-            status={filters.status}
-            resultCount={filteredUsers.length}
+            query={query}
+            status={statusFilter}
+            countLabel={
+              status === "success" ? resultsLabel(page, pageSize, total) : ""
+            }
             hasActiveFilters={hasActiveFilters}
+            view={viewMode}
+            onViewChange={setViewMode}
             onQueryChange={setQuery}
-            onStatusChange={setStatus}
+            onStatusChange={setStatusFilter}
             onClear={clear}
           />
-
-          {filteredUsers.length === 0 ? (
-            <StateBox
-              icon={SearchX}
-              title="No se encontraron resultados"
-              action={
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="mt-3"
-                  onClick={clear}
-                >
-                  Limpiar filtros
-                </Button>
-              }
-            >
-              Probá con otro nombre, usuario o correo.
-            </StateBox>
-          ) : (
-            <UsersList
-              users={filteredUsers}
-              onViewDossier={handleViewDossier}
-            />
-          )}
+          {renderResults()}
         </div>
       </PanelBody>
     </>

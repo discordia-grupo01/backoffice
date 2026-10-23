@@ -11,6 +11,9 @@ export const SESSION_COOKIE = "discordia_backoffice_session";
 /** Clave para almacenar el tema en el localStorage. */
 export const THEME_STORAGE_KEY = "discordia:theme";
 
+/** Clave para recordar si los listados se ven como tabla o como tarjetas. */
+export const VIEW_MODE_STORAGE_KEY = "discordia:backoffice-view";
+
 /** Rutas de la app. Centralizadas para no hardcodear strings sueltos. */
 export const ROUTES = {
   root: "/",
@@ -18,4 +21,5 @@ export const ROUTES = {
   /** Landing despues de iniciar sesion: el dashboard de metricas. */
   home: "/dashboard",
   users: "/users",
+  servers: "/servers",
 } as const;

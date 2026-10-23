@@ -1,5 +1,6 @@
 "use client";
 
+import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { hasActivity } from "@/components/metrics/utils/metricsActivity";
@@ -9,11 +10,7 @@ import { CustomRangeInputs } from "./CustomRangeInputs";
 import { ExportCsvButton } from "./ExportCsvButton";
 import { MetricCardsGrid } from "./MetricCardsGrid";
 import { MetricsCharts } from "./MetricsCharts";
-import {
-  MetricsEmptyState,
-  MetricsErrorState,
-  NoStaffAccess,
-} from "./MetricsStates";
+import { MetricsEmptyState, MetricsErrorState } from "./MetricsStates";
 import { MetricsSkeleton } from "./MetricsSkeleton";
 import { PeriodSelector } from "./PeriodSelector";
 
