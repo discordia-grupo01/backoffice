@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 import type { ApiResult } from "@/lib/apiClient";
 import { unauthorizedResponse } from "@/lib/apiRoute";
-import { destroySession, getSession } from "@/services/auth/session";
+import { destroySession, getValidSession } from "@/services/auth/session";
 import { reactivateUser, suspendUser } from "@/services/users/service";
 import type { PlatformUser } from "@/types/users.types";
 
@@ -21,7 +21,7 @@ async function handle(
   userId: string,
   send: (token: string, userId: string) => Promise<ApiResult<PlatformUser>>,
 ): Promise<NextResponse<SuspensionResponse>> {
-  const session = getSession();
+  const session = await getValidSession();
   if (!session) return unauthorizedResponse();
 
   const result = await send(session.token, userId);

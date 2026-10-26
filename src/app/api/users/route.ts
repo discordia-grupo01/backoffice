@@ -6,7 +6,7 @@ import {
 import { NextResponse } from "next/server";
 
 import { parseInteger, unauthorizedResponse } from "@/lib/apiRoute";
-import { destroySession, getSession } from "@/services/auth/session";
+import { destroySession, getValidSession } from "@/services/auth/session";
 import { listUsers } from "@/services/users/service";
 import {
   MAX_PAGE_SIZE,
@@ -23,7 +23,7 @@ const STATUSES: readonly UserStatusFilter[] = ["all", "active", "suspended"];
 export async function GET(
   request: Request,
 ): Promise<NextResponse<UsersResponse>> {
-  const session = getSession();
+  const session = await getValidSession();
   if (!session) return unauthorizedResponse();
 
   const { searchParams } = new URL(request.url);
