@@ -15,7 +15,7 @@ const STATUS_OPTIONS: ToggleOption<UserStatusFilter>[] = [
 interface UserFiltersProps {
   query: string;
   status: UserStatusFilter;
-  /** "26 resultados" o "1-10 de 26"; vacío mientras carga o falla. */
+  /** Total de resultados ("26 resultados"); vacío mientras carga o falla. */
   countLabel: string;
   hasActiveFilters: boolean;
   view: ViewMode;

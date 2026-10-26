@@ -36,9 +36,9 @@ export function ServerActions({
       </Button>
       {isSuspended ? (
         <Button
-          variant="secondary"
+          variant="positive"
           size="sm"
-          className="bg-success/15 text-success hover:border-success flex-1 border-transparent"
+          className="flex-1"
           aria-label={`Reactivar ${server.name}`}
           onClick={() => onReactivate(server)}
         >
@@ -46,9 +46,9 @@ export function ServerActions({
         </Button>
       ) : (
         <Button
-          variant="secondary"
+          variant="caution"
           size="sm"
-          className="bg-warning/15 text-warning hover:border-warning flex-1 border-transparent"
+          className="flex-1"
           aria-label={`Suspender ${server.name}`}
           onClick={() => onSuspend(server)}
         >

@@ -14,15 +14,17 @@ export function offsetOfPage(page: number, pageSize: number): number {
   return (page - 1) * pageSize;
 }
 
-/** "26 resultados" si entra todo en una página; "11-20 de 26" si hay más. */
-export function resultsLabel(
+/** Total de un listado: "1 resultado", "26 resultados". Va arriba de la lista. */
+export function totalLabel(total: number): string {
+  return `${total} ${total === 1 ? "resultado" : "resultados"}`;
+}
+
+/** Rango de la página actual: "11-20 de 26". Va al pie, junto al paginador. */
+export function rangeLabel(
   page: number,
   pageSize: number,
   total: number,
 ): string {
-  if (total <= pageSize) {
-    return `${total} ${total === 1 ? "resultado" : "resultados"}`;
-  }
   const { from, to } = pageRange(page, pageSize, total);
   return `${from}-${to} de ${total}`;
 }

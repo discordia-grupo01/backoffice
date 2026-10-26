@@ -17,6 +17,12 @@
   --color-chart: var(--chart-1);
   --shadow-raised: var(--shadow-card);
 
+  /* Colores de estado para texto chico sobre su propio fondo tenue: se mezclan
+     con el color de texto para llegar a contraste AA en los dos temas. */
+  --color-success-readable: color-mix(in srgb, var(--success) 70%, var(--text));
+  --color-warning-readable: color-mix(in srgb, var(--warning) 70%, var(--text));
+  --color-danger-readable: color-mix(in srgb, var(--danger) 75%, var(--text));
+
   --animate-shimmer: shimmer 1.3s ease-in-out infinite;
 }
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { offsetOfPage, resultsLabel } from "./pagination";
+import { offsetOfPage, rangeLabel, totalLabel } from "./pagination";
 
 describe("offsetOfPage", () => {
   it("la primera página empieza en 0", () => {
@@ -12,15 +12,17 @@ describe("offsetOfPage", () => {
   });
 });
 
-describe("resultsLabel", () => {
-  it("cuenta los resultados si entran en una página", () => {
-    expect(resultsLabel(1, 10, 0)).toBe("0 resultados");
-    expect(resultsLabel(1, 10, 1)).toBe("1 resultado");
-    expect(resultsLabel(1, 10, 10)).toBe("10 resultados");
+describe("totalLabel", () => {
+  it("cuenta los resultados en singular o plural", () => {
+    expect(totalLabel(0)).toBe("0 resultados");
+    expect(totalLabel(1)).toBe("1 resultado");
+    expect(totalLabel(26)).toBe("26 resultados");
   });
+});
 
-  it("muestra el rango de la página si hay más de una", () => {
-    expect(resultsLabel(1, 10, 26)).toBe("1-10 de 26");
-    expect(resultsLabel(3, 10, 26)).toBe("21-26 de 26");
+describe("rangeLabel", () => {
+  it("muestra el rango de la página actual", () => {
+    expect(rangeLabel(1, 10, 26)).toBe("1-10 de 26");
+    expect(rangeLabel(3, 10, 26)).toBe("21-26 de 26");
   });
 });

@@ -8,7 +8,7 @@ import { SearchInput } from "@/components/ui/SearchInput";
 import { ViewModeToggle } from "@/components/ui/ViewModeToggle";
 import { useViewMode } from "@/hooks/useViewMode";
 import { cn } from "@/lib/cn";
-import { resultsLabel } from "@/utils/pagination";
+import { totalLabel } from "@/utils/pagination";
 import type { PlatformServer } from "@/types/servers.types";
 
 import { useServers } from "./hooks/useServers";
@@ -104,7 +104,7 @@ export function ServersView() {
             aria-live="polite"
             className="text-content-muted min-h-6 text-[13px] tabular-nums"
           >
-            {status === "success" ? resultsLabel(page, pageSize, total) : ""}
+            {status === "success" ? totalLabel(total) : ""}
           </p>
           {renderResults()}
         </div>

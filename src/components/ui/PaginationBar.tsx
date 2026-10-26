@@ -1,5 +1,7 @@
 import { pageCountOf } from "@discordia/client-shared";
 
+import { rangeLabel } from "@/utils/pagination";
+
 import { Pagination } from "./Pagination";
 
 interface PaginationBarProps {
@@ -10,7 +12,6 @@ interface PaginationBarProps {
   onPageChange: (page: number) => void;
 }
 
-/** Paginador centrado al pie de un listado. No se muestra si entra todo en una página. */
 export function PaginationBar({
   page,
   pageSize,
@@ -21,7 +22,13 @@ export function PaginationBar({
   if (pageCount <= 1) return null;
 
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+      <p
+        aria-live="polite"
+        className="text-content-muted text-[13px] tabular-nums"
+      >
+        {rangeLabel(page, pageSize, total)}
+      </p>
       <Pagination
         page={page}
         pageCount={pageCount}
