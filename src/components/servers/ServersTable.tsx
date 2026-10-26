@@ -57,7 +57,7 @@ export function ServersTable({ servers, ...handlers }: ServersTableProps) {
       columns={columns}
       rows={servers}
       getRowKey={(server) => server.id}
-      minWidthClass="min-w-[760px]"
+      minWidthClass="min-w-[1140px]"
     />
   );
 }
