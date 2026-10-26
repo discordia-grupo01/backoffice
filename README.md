@@ -105,6 +105,8 @@ Los tipos de cada dominio (`Session`, `PlatformMetrics`, ...) viven en `types/<d
 
 Los hooks de una sola feature viven con ella, en su carpeta `hooks/`; los que usan varias features van en `src/hooks/`. Los formatters y demás funciones auxiliares de una feature van en su carpeta `utils/`, para distinguirlos de los componentes.
 
+Si una feature crece y alguna parte tiene entidad propia, esa parte puede vivir en una subcarpeta dentro de la feature, con sus componentes y, si hacen falta, sus propios `hooks/` y `utils/`. Lo que comparten las dos partes se queda en la carpeta de la feature.
+
 ## Convenciones de Next (App Router)
 
 - **Rutas por carpeta.** Un `page.tsx` dentro de `src/app/x/` crea la ruta `/x`.

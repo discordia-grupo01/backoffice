@@ -5,8 +5,8 @@ import { cn } from "@/lib/cn";
 export type BadgeTone = "success" | "danger";
 
 const TONES: Record<BadgeTone, string> = {
-  success: "bg-success/15 text-success",
-  danger: "bg-danger/15 text-danger",
+  success: "bg-success/15 text-success-readable",
+  danger: "bg-danger/15 text-danger-readable",
 };
 
 interface BadgeProps {
