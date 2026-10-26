@@ -74,3 +74,7 @@ export interface UserDossierSummary {
   counts: Record<DossierSection, number>;
   latest: { [S in DossierSection]: DossierSectionItems[S][] };
 }
+
+export type SuspendUserResult =
+  | { ok: true; user: PlatformUser }
+  | { ok: false; status: number; code: string; message: string };
