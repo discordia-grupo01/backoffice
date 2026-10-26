@@ -1,4 +1,5 @@
 import { addDays, parseIsoDate, toIsoDate } from "@/utils/metricsPeriod";
+import { seeded } from "@/utils/seeded";
 import type {
   MetricsPeriod,
   MetricsSeriesPoint,
@@ -8,16 +9,6 @@ import type {
 
 /** Antes de esta fecha la plataforma no tenía actividad: sirve para probar el estado vacío. */
 export const MOCK_LAUNCH_DATE = "2026-01-01";
-
-/** Número pseudoaleatorio estable en [0, 1) para una semilla de texto. */
-function seeded(seed: string): number {
-  let hash = 2166136261;
-  for (let i = 0; i < seed.length; i++) {
-    hash ^= seed.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return ((hash >>> 0) % 10000) / 10000;
-}
 
 function dailyPoint(date: string): MetricsSeriesPoint {
   if (date < MOCK_LAUNCH_DATE) {

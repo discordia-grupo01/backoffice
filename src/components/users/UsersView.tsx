@@ -1,22 +1,29 @@
 "use client";
 
+import { useState } from "react";
+
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { PaginationBar } from "@/components/ui/PaginationBar";
 import { useViewMode } from "@/hooks/useViewMode";
 import { cn } from "@/lib/cn";
-import { resultsLabel } from "@/utils/pagination";
+import { totalLabel } from "@/utils/pagination";
 
 import { useUsers } from "./hooks/useUsers";
 import { UserFilters } from "./UserFilters";
 import { UsersList } from "./UsersList";
 import { UsersEmptyState, UsersErrorState } from "./UsersStates";
 import { UsersSkeleton } from "./UsersSkeleton";
+import { UserDossierDialog } from "./dossier/UserDossierDialog";
 import type { PlatformUser } from "@/types/users.types";
 
-function handleViewDossier(user: PlatformUser) {
-  console.log("Ver expediente", user.id);
+function handleSuspend(user: PlatformUser) {
+  console.log("Suspender", user.id);
+}
+
+function handleReactivate(user: PlatformUser) {
+  console.log("Reactivar", user.id);
 }
 
 export function UsersView() {
@@ -37,6 +44,7 @@ export function UsersView() {
   } = useUsers();
 
   const { viewMode, setViewMode } = useViewMode();
+  const [dossierUser, setDossierUser] = useState<PlatformUser | null>(null);
   const hasData = users.length > 0;
 
   if (status === "forbidden") return <NoStaffAccess />;
@@ -61,7 +69,7 @@ export function UsersView() {
         <UsersList
           users={users}
           view={viewMode}
-          onViewDossier={handleViewDossier}
+          onViewDossier={setDossierUser}
         />
         <PaginationBar
           page={page}
@@ -85,9 +93,7 @@ export function UsersView() {
           <UserFilters
             query={query}
             status={statusFilter}
-            countLabel={
-              status === "success" ? resultsLabel(page, pageSize, total) : ""
-            }
+            countLabel={status === "success" ? totalLabel(total) : ""}
             hasActiveFilters={hasActiveFilters}
             view={viewMode}
             onViewChange={setViewMode}
@@ -98,6 +104,13 @@ export function UsersView() {
           {renderResults()}
         </div>
       </PanelBody>
+
+      <UserDossierDialog
+        user={dossierUser}
+        onClose={() => setDossierUser(null)}
+        onSuspend={handleSuspend}
+        onReactivate={handleReactivate}
+      />
     </>
   );
 }
