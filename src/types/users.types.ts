@@ -1,3 +1,5 @@
+import type { DossierModerationAction, DossierReport } from "./dossier.types";
+
 export type UserStatus = "active" | "suspended";
 
 export type UserStatusFilter = "all" | UserStatus;
@@ -43,20 +45,6 @@ export interface DossierActivity {
   /** Texto ya armado por el back, ej. "Envió un mensaje en #general". */
   description: string;
   occurred_at: string;
-}
-
-export interface DossierReport {
-  id: string;
-  reason: string;
-  created_at: string;
-}
-
-export type DossierModerationKind = "suspension" | "reactivation";
-
-export interface DossierModerationAction {
-  id: string;
-  kind: DossierModerationKind;
-  applied_at: string;
 }
 
 export interface DossierSectionItems {
