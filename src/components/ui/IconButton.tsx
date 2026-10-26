@@ -20,6 +20,8 @@ interface IconButtonProps {
   isExpanded?: boolean;
   /** Tamano del icono. */
   iconSize?: number;
+  /** `"end"` alinea el tooltip a la derecha del boton, para que no se salga de la pantalla. */
+  tooltipAlign?: "center" | "end";
 }
 
 export function IconButton({
@@ -31,9 +33,10 @@ export function IconButton({
   isPressed,
   isExpanded,
   iconSize = 18,
+  tooltipAlign,
 }: IconButtonProps) {
   return (
-    <Tooltip label={label}>
+    <Tooltip label={label} align={tooltipAlign}>
       <button
         type="button"
         onClick={onClick}

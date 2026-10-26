@@ -1,14 +1,14 @@
-import type { ReactNode } from "react";
-
 import { Avatar } from "@/components/ui/Avatar";
-import { formatDateTime } from "@/utils/formatDate";
-import type {
-  DossierModerationKind,
-  DossierSection,
-  DossierSectionItems,
-} from "@/types/users.types";
+import {
+  DossierCard,
+  DossierCardList,
+  DossierDatedText,
+  ModerationCards,
+  ReportCards,
+} from "@/components/dossier/DossierCards";
+import type { DossierSection, DossierSectionItems } from "@/types/users.types";
 
-export const DOSSIER_SECTIONS: Record<
+export const USER_DOSSIER_SECTIONS: Record<
   DossierSection,
   { title: string; empty: string }
 > = {
@@ -30,80 +30,50 @@ export const DOSSIER_SECTIONS: Record<
   },
 };
 
-export const DOSSIER_SECTION_ORDER = Object.keys(
-  DOSSIER_SECTIONS,
+export const USER_DOSSIER_SECTION_ORDER = Object.keys(
+  USER_DOSSIER_SECTIONS,
 ) as DossierSection[];
 
-const MODERATION_LABEL: Record<DossierModerationKind, string> = {
-  suspension: "Suspensión",
-  reactivation: "Reactivación",
-};
-
-export type DossierItemsProps = {
+export type UserDossierItemsProps = {
   [S in DossierSection]: { section: S; items: DossierSectionItems[S][] };
 }[DossierSection];
 
-export function DossierItems(props: DossierItemsProps) {
-  return <ul className="space-y-2">{renderRows(props)}</ul>;
-}
-
-function renderRows({ section, items }: DossierItemsProps) {
+/** Tarjetas de una sección del expediente de usuario, iguales en el resumen y en el listado completo. */
+export function UserDossierItems({ section, items }: UserDossierItemsProps) {
   switch (section) {
     case "servers":
-      return items.map((membership) => (
-        <Row key={membership.server_id}>
-          <Avatar
-            name={membership.server_name}
-            size={28}
-            className="rounded-lg"
-          />
-          <p className="min-w-0 flex-1 truncate text-sm">
-            {membership.server_name}
-          </p>
-        </Row>
-      ));
+      return (
+        <DossierCardList>
+          {items.map((membership) => (
+            <DossierCard key={membership.server_id}>
+              <Avatar
+                name={membership.server_name}
+                size={28}
+                className="rounded-lg"
+              />
+              <p className="min-w-0 flex-1 truncate text-sm">
+                {membership.server_name}
+              </p>
+            </DossierCard>
+          ))}
+        </DossierCardList>
+      );
     case "activity":
-      return items.map((item) => (
-        <Row key={item.id}>
-          <Dated text={item.description} date={item.occurred_at} />
-        </Row>
-      ));
+      return (
+        <DossierCardList>
+          {items.map((item) => (
+            <DossierCard key={item.id}>
+              <DossierDatedText
+                text={item.description}
+                date={item.occurred_at}
+              />
+            </DossierCard>
+          ))}
+        </DossierCardList>
+      );
     case "reports":
-      return items.map((report) => (
-        <Row key={report.id}>
-          <Dated text={report.reason} date={report.created_at} />
-        </Row>
-      ));
+      return <ReportCards items={items} />;
     case "moderation":
-      return items.map((action) => (
-        <Row key={action.id}>
-          <Dated
-            text={MODERATION_LABEL[action.kind]}
-            date={action.applied_at}
-          />
-        </Row>
-      ));
+      return <ModerationCards items={items} />;
   }
-}
-
-function Row({ children }: { children: ReactNode }) {
-  return (
-    <li className="border-line bg-surface-input flex items-center gap-3 rounded-xl border px-4 py-3">
-      {children}
-    </li>
-  );
-}
-
-function Dated({ text, date }: { text: string; date: string }) {
-  return (
-    <div className="min-w-0 flex-1">
-      <p className="text-sm">{text}</p>
-      <time
-        dateTime={date}
-        className="text-content-muted mt-0.5 block text-xs tabular-nums"
-      >
-        {formatDateTime(date)}
-      </time>
-    </div>
-  );
 }

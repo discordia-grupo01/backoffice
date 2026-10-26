@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
@@ -11,14 +13,11 @@ import { cn } from "@/lib/cn";
 import { totalLabel } from "@/utils/pagination";
 import type { PlatformServer } from "@/types/servers.types";
 
+import { ServerDossierDialog } from "./dossier/ServerDossierDialog";
 import { useServers } from "./hooks/useServers";
 import { ServersList } from "./ServersList";
 import { ServersSkeleton } from "./ServersSkeleton";
 import { ServersEmptyState, ServersErrorState } from "./ServersStates";
-
-function handleViewDossier(server: PlatformServer) {
-  console.log("Ver expediente", server.id);
-}
 
 function handleSuspend(server: PlatformServer) {
   console.log("Suspender", server.id);
@@ -26,6 +25,10 @@ function handleSuspend(server: PlatformServer) {
 
 function handleReactivate(server: PlatformServer) {
   console.log("Reactivar", server.id);
+}
+
+function handleDelete(server: PlatformServer) {
+  console.log("Eliminar", server.id);
 }
 
 export function ServersView() {
@@ -44,6 +47,9 @@ export function ServersView() {
   } = useServers();
 
   const { viewMode, setViewMode } = useViewMode();
+  const [dossierServer, setDossierServer] = useState<PlatformServer | null>(
+    null,
+  );
   const hasData = servers.length > 0;
 
   if (status === "forbidden") return <NoStaffAccess />;
@@ -66,7 +72,7 @@ export function ServersView() {
         <ServersList
           servers={servers}
           view={viewMode}
-          onViewDossier={handleViewDossier}
+          onViewDossier={setDossierServer}
           onSuspend={handleSuspend}
           onReactivate={handleReactivate}
         />
@@ -109,6 +115,14 @@ export function ServersView() {
           {renderResults()}
         </div>
       </PanelBody>
+
+      <ServerDossierDialog
+        server={dossierServer}
+        onClose={() => setDossierServer(null)}
+        onSuspend={handleSuspend}
+        onReactivate={handleReactivate}
+        onDelete={handleDelete}
+      />
     </>
   );
 }

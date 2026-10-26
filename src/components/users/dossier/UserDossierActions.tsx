@@ -15,13 +15,11 @@ export function UserDossierActions({
   const isSuspended = user.status === "suspended";
 
   return (
-    <div className="border-line border-t pt-5">
-      <Button
-        variant={isSuspended ? "success" : "danger"}
-        onClick={() => (isSuspended ? onReactivate(user) : onSuspend(user))}
-      >
-        {isSuspended ? "Reactivar usuario" : "Suspender usuario"}
-      </Button>
-    </div>
+    <Button
+      variant={isSuspended ? "success" : "danger"}
+      onClick={() => (isSuspended ? onReactivate(user) : onSuspend(user))}
+    >
+      {isSuspended ? "Reactivar usuario" : "Suspender usuario"}
+    </Button>
   );
 }

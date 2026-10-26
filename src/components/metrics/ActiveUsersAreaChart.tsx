@@ -10,13 +10,10 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  formatCompact,
-  formatSeriesLabel,
-} from "@/components/metrics/utils/metricsFormat";
+import { formatCompact, formatSeriesLabel } from "@/utils/chartFormat";
 import type { PlatformMetrics } from "@/types/metrics.types";
 
-import { ChartTooltip } from "./ChartTooltip";
+import { ChartTooltip } from "@/components/ui/ChartTooltip";
 
 export function ActiveUsersAreaChart({
   metrics,

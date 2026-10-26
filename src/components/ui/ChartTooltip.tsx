@@ -1,7 +1,4 @@
-import {
-  formatInteger,
-  formatSeriesTooltipLabel,
-} from "@/components/metrics/utils/metricsFormat";
+import { formatInteger, formatSeriesTooltipLabel } from "@/utils/chartFormat";
 import type { MetricsGranularity } from "@/types/metrics.types";
 
 interface ChartTooltipProps {
