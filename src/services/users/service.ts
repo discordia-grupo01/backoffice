@@ -18,12 +18,26 @@ export function listUsers(
   });
 }
 
+function suspensionPath(userId: string): string {
+  return `/v1/admin/users/${encodeURIComponent(userId)}/suspension`;
+}
+
 export function suspendUser(
   token: string,
   userId: string,
 ): Promise<ApiResult<PlatformUser>> {
-  return apiRequest<PlatformUser>(
-    `/v1/admin/users/${encodeURIComponent(userId)}/suspension`,
-    { method: "POST", token },
-  );
+  return apiRequest<PlatformUser>(suspensionPath(userId), {
+    method: "POST",
+    token,
+  });
+}
+
+export function reactivateUser(
+  token: string,
+  userId: string,
+): Promise<ApiResult<PlatformUser>> {
+  return apiRequest<PlatformUser>(suspensionPath(userId), {
+    method: "DELETE",
+    token,
+  });
 }

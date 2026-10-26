@@ -66,15 +66,15 @@ export interface DossierSectionItems {
   moderation: DossierModerationAction;
 }
 
-/** Expediente resumido: la cuenta y, por sección, el total y los elementos más recientes. */
 export interface UserDossierSummary {
   user: PlatformUser;
-  /** Momento de la última actividad registrada; `null` si nunca tuvo. */
   last_activity_at: string | null;
   counts: Record<DossierSection, number>;
   latest: { [S in DossierSection]: DossierSectionItems[S][] };
 }
 
-export type SuspendUserResult =
+export type SuspensionAction = "suspend" | "reactivate";
+
+export type SuspensionResult =
   | { ok: true; user: PlatformUser }
   | { ok: false; status: number; code: string; message: string };

@@ -3,7 +3,7 @@ import { REQUEST_FAILED_MESSAGE } from "@discordia/client-shared";
 import { api } from "@/lib/browserApiClient";
 import type {
   PlatformUser,
-  SuspendUserResult,
+  SuspensionResult,
   UsersPage,
   UsersQuery,
   UsersResult,
@@ -39,18 +39,22 @@ export async function getUsers(query: UsersQuery): Promise<UsersResult> {
   }
 }
 
-interface SuspendUserBody {
+interface SuspensionBody {
   ok?: boolean;
   code?: string;
   message?: string;
   user?: PlatformUser;
 }
 
-export async function suspendUser(userId: string): Promise<SuspendUserResult> {
+async function sendSuspension(
+  method: "post" | "delete",
+  userId: string,
+): Promise<SuspensionResult> {
   try {
-    const { data, status } = await api.post<SuspendUserBody>(
-      `/users/${encodeURIComponent(userId)}/suspension`,
-    );
+    const { data, status } = await api.request<SuspensionBody>({
+      method,
+      url: `/users/${encodeURIComponent(userId)}/suspension`,
+    });
 
     if (status === 200 && data.ok && data.user) {
       return { ok: true, user: data.user };
@@ -69,4 +73,12 @@ export async function suspendUser(userId: string): Promise<SuspendUserResult> {
       message: REQUEST_FAILED_MESSAGE,
     };
   }
+}
+
+export function suspendUser(userId: string): Promise<SuspensionResult> {
+  return sendSuspension("post", userId);
+}
+
+export function reactivateUser(userId: string): Promise<SuspensionResult> {
+  return sendSuspension("delete", userId);
 }
