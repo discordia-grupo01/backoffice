@@ -1,5 +1,6 @@
 "use client";
 
+import { UserX } from "lucide-react";
 import { useState } from "react";
 
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
@@ -120,6 +121,7 @@ export function UsersView() {
         open={suspension.target !== null}
         title={`¿Suspender a ${suspension.target?.name ?? ""}?`}
         confirmLabel="Sí, suspender"
+        icon={UserX}
         isLoading={suspension.isSubmitting}
         error={suspension.error}
         onConfirm={suspension.confirm}
