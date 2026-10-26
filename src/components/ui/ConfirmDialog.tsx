@@ -15,13 +15,19 @@ interface ConfirmDialogProps {
   children: ReactNode;
   confirmLabel: string;
   cancelLabel?: string;
-  variant?: "danger" | "primary";
+  variant?: "danger" | "success" | "primary";
   icon?: LucideIcon;
   isLoading?: boolean;
   error?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
+
+const ICON_TONES: Record<NonNullable<ConfirmDialogProps["variant"]>, string> = {
+  danger: "bg-danger/15 text-danger",
+  success: "bg-success/15 text-success",
+  primary: "bg-bo/15 text-bo",
+};
 
 /** Pide confirmación antes de una acción. Mientras se procesa no se puede cerrar. */
 export function ConfirmDialog({
@@ -54,9 +60,7 @@ export function ConfirmDialog({
           aria-hidden="true"
           className={cn(
             "flex size-16 shrink-0 items-center justify-center rounded-2xl",
-            variant === "danger"
-              ? "bg-danger/15 text-danger"
-              : "bg-bo/15 text-bo",
+            ICON_TONES[variant],
           )}
         >
           <Icon size={28} />

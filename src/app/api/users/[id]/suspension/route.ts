@@ -2,26 +2,29 @@ import { LOGIN_UNAVAILABLE } from "@discordia/client-shared";
 
 import { NextResponse } from "next/server";
 
+import type { ApiResult } from "@/lib/apiClient";
 import { unauthorizedResponse } from "@/lib/apiRoute";
 import { destroySession, getSession } from "@/services/auth/session";
-import { suspendUser } from "@/services/users/service";
+import { reactivateUser, suspendUser } from "@/services/users/service";
 import type { PlatformUser } from "@/types/users.types";
 
-type SuspendUserResponse =
+type SuspensionResponse =
   | { ok: true; user: PlatformUser }
   | { ok: false; code?: string; message: string };
+
+type RouteContext = { params: { id: string } };
 
 /** Estos errores dependen del usuario elegido: el navegador necesita el `code` para explicarlos. */
 const FORWARDED_STATUSES = [403, 404, 409];
 
-export async function POST(
-  _request: Request,
-  { params }: { params: { id: string } },
-): Promise<NextResponse<SuspendUserResponse>> {
+async function handle(
+  userId: string,
+  send: (token: string, userId: string) => Promise<ApiResult<PlatformUser>>,
+): Promise<NextResponse<SuspensionResponse>> {
   const session = getSession();
   if (!session) return unauthorizedResponse();
 
-  const result = await suspendUser(session.token, params.id);
+  const result = await send(session.token, userId);
 
   if (!result.ok) {
     if (result.status === 401) {
@@ -41,4 +44,12 @@ export async function POST(
   }
 
   return NextResponse.json({ ok: true, user: result.data });
+}
+
+export function POST(_request: Request, { params }: RouteContext) {
+  return handle(params.id, suspendUser);
+}
+
+export function DELETE(_request: Request, { params }: RouteContext) {
+  return handle(params.id, reactivateUser);
 }
