@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 
 import { unauthorizedResponse } from "@/lib/apiRoute";
 import { getPlatformMetrics } from "@/services/metrics/service";
-import { getSession } from "@/services/auth/session";
+import { getValidSession } from "@/services/auth/session";
 import type { PlatformMetrics } from "@/types/metrics.types";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -18,7 +18,7 @@ type MetricsResponse =
 export async function GET(
   request: Request,
 ): Promise<NextResponse<MetricsResponse>> {
-  if (!getSession()) return unauthorizedResponse();
+  if (!(await getValidSession())) return unauthorizedResponse();
 
   const { searchParams } = new URL(request.url);
   const from = searchParams.get("from") ?? "";

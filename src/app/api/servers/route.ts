@@ -6,7 +6,7 @@ import {
 import { NextResponse } from "next/server";
 
 import { parseInteger, unauthorizedResponse } from "@/lib/apiRoute";
-import { destroySession, getSession } from "@/services/auth/session";
+import { destroySession, getValidSession } from "@/services/auth/session";
 import { listServers } from "@/services/servers/service";
 import {
   MAX_PAGE_SIZE,
@@ -21,7 +21,7 @@ type ServersResponse =
 export async function GET(
   request: Request,
 ): Promise<NextResponse<ServersResponse>> {
-  const session = getSession();
+  const session = await getValidSession();
   if (!session) return unauthorizedResponse();
 
   const { searchParams } = new URL(request.url);
