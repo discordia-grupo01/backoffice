@@ -1,7 +1,13 @@
 import { REQUEST_FAILED_MESSAGE } from "@discordia/client-shared";
 
 import { api } from "@/lib/browserApiClient";
-import type { UsersPage, UsersQuery, UsersResult } from "@/types/users.types";
+import type {
+  PlatformUser,
+  SuspendUserResult,
+  UsersPage,
+  UsersQuery,
+  UsersResult,
+} from "@/types/users.types";
 
 interface UsersBody {
   ok?: boolean;
@@ -30,5 +36,37 @@ export async function getUsers(query: UsersQuery): Promise<UsersResult> {
     };
   } catch {
     return { ok: false, status: 0, message: REQUEST_FAILED_MESSAGE };
+  }
+}
+
+interface SuspendUserBody {
+  ok?: boolean;
+  code?: string;
+  message?: string;
+  user?: PlatformUser;
+}
+
+export async function suspendUser(userId: string): Promise<SuspendUserResult> {
+  try {
+    const { data, status } = await api.post<SuspendUserBody>(
+      `/users/${encodeURIComponent(userId)}/suspension`,
+    );
+
+    if (status === 200 && data.ok && data.user) {
+      return { ok: true, user: data.user };
+    }
+    return {
+      ok: false,
+      status,
+      code: data?.code ?? "UNKNOWN_ERROR",
+      message: data?.message ?? REQUEST_FAILED_MESSAGE,
+    };
+  } catch {
+    return {
+      ok: false,
+      status: 0,
+      code: "NETWORK_ERROR",
+      message: REQUEST_FAILED_MESSAGE,
+    };
   }
 }

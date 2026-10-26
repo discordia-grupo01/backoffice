@@ -5,11 +5,13 @@ import { useState } from "react";
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
 import { useViewMode } from "@/hooks/useViewMode";
 import { cn } from "@/lib/cn";
 import { totalLabel } from "@/utils/pagination";
 
+import { useSuspendUser } from "./hooks/useSuspendUser";
 import { useUsers } from "./hooks/useUsers";
 import { UserFilters } from "./UserFilters";
 import { UsersList } from "./UsersList";
@@ -17,10 +19,6 @@ import { UsersEmptyState, UsersErrorState } from "./UsersStates";
 import { UsersSkeleton } from "./UsersSkeleton";
 import { UserDossierDialog } from "./dossier/UserDossierDialog";
 import type { PlatformUser } from "@/types/users.types";
-
-function handleSuspend(user: PlatformUser) {
-  console.log("Suspender", user.id);
-}
 
 function handleReactivate(user: PlatformUser) {
   console.log("Reactivar", user.id);
@@ -45,6 +43,12 @@ export function UsersView() {
 
   const { viewMode, setViewMode } = useViewMode();
   const [dossierUser, setDossierUser] = useState<PlatformUser | null>(null);
+  const suspension = useSuspendUser({
+    onSuspended: (user) => {
+      setDossierUser((current) => (current?.id === user.id ? user : current));
+      retry();
+    },
+  });
   const hasData = users.length > 0;
 
   if (status === "forbidden") return <NoStaffAccess />;
@@ -108,9 +112,22 @@ export function UsersView() {
       <UserDossierDialog
         user={dossierUser}
         onClose={() => setDossierUser(null)}
-        onSuspend={handleSuspend}
+        onSuspend={suspension.request}
         onReactivate={handleReactivate}
       />
+
+      <ConfirmDialog
+        open={suspension.target !== null}
+        title={`¿Suspender a ${suspension.target?.name ?? ""}?`}
+        confirmLabel="Sí, suspender"
+        isLoading={suspension.isSubmitting}
+        error={suspension.error}
+        onConfirm={suspension.confirm}
+        onCancel={suspension.cancel}
+      >
+        No va a poder iniciar sesión en Discordia, se cerrarán sus sesiones
+        abiertas y su perfil dejará de estar visible para el resto.
+      </ConfirmDialog>
     </>
   );
 }

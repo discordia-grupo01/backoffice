@@ -44,6 +44,7 @@ export function Dialog({
       aria-labelledby={labelledBy}
       onCancel={(event) => {
         event.preventDefault();
+        event.stopPropagation();
         onClose();
       }}
       onClick={(event) => {
