@@ -1,4 +1,4 @@
-import { formatInteger } from "@/components/metrics/utils/metricsFormat";
+import { formatInteger } from "@/utils/chartFormat";
 import type { MetricsTotals } from "@/types/metrics.types";
 
 import { MetricCard } from "./MetricCard";

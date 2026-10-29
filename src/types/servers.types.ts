@@ -1,3 +1,5 @@
+import type { DossierModerationAction, DossierReport } from "./dossier.types";
+
 export interface PlatformServer {
   id: string;
   name: string;
@@ -26,3 +28,26 @@ export interface ServersPage {
 export type ServersResult =
   | { ok: true; page: ServersPage }
   | { ok: false; status: number; message: string };
+
+/** Secciones del expediente de un servidor que se listan y paginan. */
+export type ServerDossierSection = "reports" | "moderation";
+
+export interface ServerDossierSectionItems {
+  reports: DossierReport;
+  moderation: DossierModerationAction;
+}
+
+/** Mensajes enviados en el servidor en un día (`date` en `YYYY-MM-DD`). */
+export interface ServerMessagingDay {
+  date: string;
+  messages: number;
+}
+
+/** Expediente resumido de un servidor: datos, mensajería reciente y, por sección, el total y lo más reciente. */
+export interface ServerDossierSummary {
+  server: PlatformServer;
+  /** Últimos 7 días, del más viejo al más nuevo. */
+  messaging: ServerMessagingDay[];
+  counts: Record<ServerDossierSection, number>;
+  latest: { [S in ServerDossierSection]: ServerDossierSectionItems[S][] };
+}

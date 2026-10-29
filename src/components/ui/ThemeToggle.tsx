@@ -14,6 +14,7 @@ export function ThemeToggle() {
       icon={goingToLight ? Sun : Moon}
       label={goingToLight ? "Tema claro" : "Tema oscuro"}
       onClick={toggleTheme}
+      tooltipAlign="end"
     />
   );
 }

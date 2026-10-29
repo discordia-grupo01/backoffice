@@ -3,24 +3,23 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { ROUTES } from "@/lib/constants";
-import { getUserDossierSummary } from "@/services/users/dossierClient";
-import type { PlatformUser, UserDossierSummary } from "@/types/users.types";
+import type { DossierSummaryResult } from "@/types/dossier.types";
 
-export type UserDossierStatus = "loading" | "success" | "error" | "forbidden";
+export type DossierStatus = "loading" | "success" | "error" | "forbidden";
 
-export const USER_DOSSIER_LOAD_ERROR =
-  "No pudimos cargar el expediente. Revisá tu conexión e intentá de nuevo.";
-
-export function useUserDossier(user: PlatformUser) {
-  const [status, setStatus] = useState<UserDossierStatus>("loading");
-  const [summary, setSummary] = useState<UserDossierSummary | null>(null);
+export function useDossierSummary<S, T>(
+  subject: S,
+  fetchSummary: (subject: S) => Promise<DossierSummaryResult<T>>,
+) {
+  const [status, setStatus] = useState<DossierStatus>("loading");
+  const [summary, setSummary] = useState<T | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     setStatus("loading");
 
-    getUserDossierSummary(user).then((result) => {
+    fetchSummary(subject).then((result) => {
       if (cancelled) return;
       if (result.ok) {
         setSummary(result.summary);
@@ -35,7 +34,7 @@ export function useUserDossier(user: PlatformUser) {
     return () => {
       cancelled = true;
     };
-  }, [user, attempt]);
+  }, [subject, fetchSummary, attempt]);
 
   return {
     status,

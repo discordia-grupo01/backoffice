@@ -5,9 +5,12 @@ import { useDossierHistory } from "./useDossierHistory";
 
 function setup() {
   const onClose = vi.fn();
-  const hook = renderHook(({ isOpen }) => useDossierHistory(isOpen, onClose), {
-    initialProps: { isOpen: true },
-  });
+  const hook = renderHook(
+    ({ isOpen }) => useDossierHistory<"servers" | "reports">(isOpen, onClose),
+    {
+      initialProps: { isOpen: true },
+    },
+  );
   return { onClose, ...hook };
 }
 
@@ -46,11 +49,11 @@ describe("useDossierHistory", () => {
 
     act(() => result.current.close());
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
-    expect(window.history.state?.userDossier).toBeUndefined();
+    expect(window.history.state?.dossier).toBeUndefined();
   });
 
   it("si quedaron entradas huérfanas con el expediente cerrado, las saltea", async () => {
-    window.history.pushState({ userDossier: "overview" }, "");
+    window.history.pushState({ dossier: "overview" }, "");
     const back = vi.spyOn(window.history, "go");
 
     renderHook(() => useDossierHistory(false, vi.fn()));

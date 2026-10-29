@@ -1,4 +1,6 @@
 import type { PagedResult } from "@/hooks/usePagedList";
+import type { DossierSummaryResult } from "@/types/dossier.types";
+import { DOSSIER_PREVIEW_SIZE, mockDelay } from "@/utils/dossierMock";
 import type {
   DossierSection,
   DossierSectionItems,
@@ -11,23 +13,10 @@ import {
   buildMockDossierSummary,
 } from "./mockUserDossier";
 
-const MOCK_DELAY_MS = 450;
-
-/** Elementos más recientes que trae el resumen de cada sección. */
-export const DOSSIER_PREVIEW_SIZE = 3;
-
-function delay(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, MOCK_DELAY_MS));
-}
-
-export type DossierSummaryResult =
-  | { ok: true; summary: UserDossierSummary }
-  | { ok: false; status: number; message: string };
-
 export async function getUserDossierSummary(
   user: PlatformUser,
-): Promise<DossierSummaryResult> {
-  await delay();
+): Promise<DossierSummaryResult<UserDossierSummary>> {
+  await mockDelay();
   return {
     ok: true,
     summary: buildMockDossierSummary(user, DOSSIER_PREVIEW_SIZE),
@@ -39,7 +28,7 @@ export async function getUserDossierPage<S extends DossierSection>(
   section: S,
   { limit, offset }: { limit: number; offset: number },
 ): Promise<PagedResult<DossierSectionItems[S]>> {
-  await delay();
+  await mockDelay();
   const items = buildMockDossierSection(user, section);
   return {
     ok: true,

@@ -1,10 +1,9 @@
+import { TimeBarChart } from "@/components/ui/TimeBarChart";
 import type { PlatformMetrics } from "@/types/metrics.types";
 
 import { ActiveUsersAreaChart } from "./ActiveUsersAreaChart";
 import { ChartCard } from "./ChartCard";
-import { MetricBarChart } from "./MetricBarChart";
 
-/** Mismo orden que las tarjetas: usuarios, servidores, mensajes. */
 export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
   const unit = metrics.granularity === "hour" ? "por hora" : "por día";
 
@@ -21,8 +20,9 @@ export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
         title="Servidores creados"
         subtitle={`Nuevos servidores, ${unit}`}
       >
-        <MetricBarChart
-          metrics={metrics}
+        <TimeBarChart
+          data={metrics.series}
+          granularity={metrics.granularity}
           dataKey="servers_created"
           valueLabel="servidores"
           colorVar="--info"
@@ -32,8 +32,9 @@ export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
         title="Mensajes enviados"
         subtitle={`Todos los servidores, ${unit}`}
       >
-        <MetricBarChart
-          metrics={metrics}
+        <TimeBarChart
+          data={metrics.series}
+          granularity={metrics.granularity}
           dataKey="messages_sent"
           valueLabel="mensajes"
           colorVar="--success"
