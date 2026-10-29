@@ -1,19 +1,18 @@
 import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { CardStat } from "@/components/ui/CardStat";
+import { Fact, FactGrid } from "@/components/ui/Fact";
 import { cn } from "@/lib/cn";
 import { formatDate } from "@/utils/formatDate";
 import type { PlatformUser } from "@/types/users.types";
 
+import { UserActions, type UserActionHandlers } from "./UserActions";
 import { UserStatusBadge } from "./UserStatusBadge";
 
-interface UserCardProps {
+interface UserCardProps extends UserActionHandlers {
   user: PlatformUser;
-  onViewDossier: (user: PlatformUser) => void;
 }
 
-export function UserCard({ user, onViewDossier }: UserCardProps) {
+export function UserCard({ user, ...handlers }: UserCardProps) {
   return (
     <Card
       as="article"
@@ -40,19 +39,13 @@ export function UserCard({ user, onViewDossier }: UserCardProps) {
         <UserStatusBadge status={user.status} />
       </div>
 
-      <dl className="border-line border-t pt-4">
-        <CardStat label="Registro">{formatDate(user.created_at)}</CardStat>
-      </dl>
+      <FactGrid className="border-line border-t pt-4">
+        <Fact label="Fecha de registro" boxed={false}>
+          {formatDate(user.created_at)}
+        </Fact>
+      </FactGrid>
 
-      <Button
-        variant="secondary"
-        size="sm"
-        className="mt-auto w-full"
-        aria-label={`Ver expediente de ${user.name}`}
-        onClick={() => onViewDossier(user)}
-      >
-        Ver expediente
-      </Button>
+      <UserActions user={user} className="mt-auto" stretch {...handlers} />
     </Card>
   );
 }

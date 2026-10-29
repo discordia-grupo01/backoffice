@@ -1,5 +1,5 @@
-import { CardStat } from "@/components/ui/CardStat";
 import { Card } from "@/components/ui/Card";
+import { Fact, FactGrid } from "@/components/ui/Fact";
 import { cn } from "@/lib/cn";
 import { formatDate } from "@/utils/formatDate";
 import { formatMembers } from "@/utils/formatNumber";
@@ -27,14 +27,21 @@ export function ServerCard({ server, ...handlers }: ServerCardProps) {
         <ServerStatusBadge server={server} />
       </div>
 
-      <dl className="border-line grid grid-cols-2 gap-3 border-t pt-4">
-        <CardStat label="Miembros">
+      <FactGrid className="border-line border-t pt-4">
+        <Fact label="Miembros" boxed={false}>
           {formatMembers(server.member_count)}
-        </CardStat>
-        <CardStat label="Creación">{formatDate(server.created_at)}</CardStat>
-      </dl>
+        </Fact>
+        <Fact label="Fecha de creación" boxed={false}>
+          {formatDate(server.created_at)}
+        </Fact>
+      </FactGrid>
 
-      <ServerActions server={server} className="mt-auto" {...handlers} />
+      <ServerActions
+        server={server}
+        className="mt-auto"
+        stretch
+        {...handlers}
+      />
     </Card>
   );
 }

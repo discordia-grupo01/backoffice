@@ -47,7 +47,7 @@ export function ServersTable({ servers, ...handlers }: ServersTableProps) {
     },
     {
       header: "Acciones",
-      width: "17rem",
+      width: "12rem",
       cell: (server) => <ServerActions server={server} {...handlers} />,
     },
   ];
@@ -57,7 +57,7 @@ export function ServersTable({ servers, ...handlers }: ServersTableProps) {
       columns={columns}
       rows={servers}
       getRowKey={(server) => server.id}
-      minWidthClass="min-w-[1140px]"
+      minWidthClass="min-w-[1060px]"
     />
   );
 }

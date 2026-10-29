@@ -15,7 +15,7 @@ interface ConfirmDialogProps {
   children: ReactNode;
   confirmLabel: string;
   cancelLabel?: string;
-  variant?: "danger" | "success" | "primary";
+  variant?: "danger" | "caution" | "positive" | "primary";
   icon?: LucideIcon;
   isLoading?: boolean;
   error?: string;
@@ -25,7 +25,8 @@ interface ConfirmDialogProps {
 
 const ICON_TONES: Record<NonNullable<ConfirmDialogProps["variant"]>, string> = {
   danger: "bg-danger/15 text-danger",
-  success: "bg-success/15 text-success",
+  caution: "bg-warning/15 text-warning",
+  positive: "bg-success/15 text-success",
   primary: "bg-bo/15 text-bo",
 };
 

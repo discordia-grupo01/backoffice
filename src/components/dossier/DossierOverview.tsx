@@ -69,27 +69,6 @@ export function DossierOverviewBody({
   );
 }
 
-export function DossierFacts({ children }: { children: ReactNode }) {
-  return <dl className="grid grid-cols-2 gap-3">{children}</dl>;
-}
-
-export function DossierFact({
-  label,
-  children,
-}: {
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="border-line bg-surface-input min-w-0 rounded-xl border px-4 py-3">
-      <dt className="text-content-muted text-xs">{label}</dt>
-      <dd className="mt-1 min-w-0 text-sm font-medium tabular-nums">
-        {children}
-      </dd>
-    </div>
-  );
-}
-
 export function DossierEmpty({ children }: { children: ReactNode }) {
   return (
     <p className="border-line bg-surface-input text-content-muted rounded-xl border px-4 py-3 text-sm">
