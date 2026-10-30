@@ -1,8 +1,5 @@
-import {
-  DossierFact,
-  DossierFacts,
-  DossierSectionBlock,
-} from "@/components/dossier/DossierOverview";
+import { DossierSectionBlock } from "@/components/dossier/DossierOverview";
+import { Fact, FactGrid } from "@/components/ui/Fact";
 import { formatDate, formatDateTime } from "@/utils/formatDate";
 import type { DossierSection, UserDossierSummary } from "@/types/users.types";
 
@@ -30,24 +27,22 @@ export function UserDossierOverview({
 
   return (
     <>
-      <DossierFacts>
-        <DossierFact label="Estado de cuenta">
+      <FactGrid>
+        <Fact label="Estado de cuenta">
           <UserStatusBadge status={user.status} />
-        </DossierFact>
-        <DossierFact label="Fecha de registro">
-          {formatDate(user.created_at)}
-        </DossierFact>
-        <DossierFact label="Email">
+        </Fact>
+        <Fact label="Fecha de registro">{formatDate(user.created_at)}</Fact>
+        <Fact label="Email">
           <span className="block truncate" title={user.email}>
             {user.email}
           </span>
-        </DossierFact>
-        <DossierFact label="Última actividad">
+        </Fact>
+        <Fact label="Última actividad">
           {summary.last_activity_at
             ? formatDateTime(summary.last_activity_at)
             : "Sin actividad"}
-        </DossierFact>
-      </DossierFacts>
+        </Fact>
+      </FactGrid>
 
       {USER_DOSSIER_SECTION_ORDER.map((section) => (
         <DossierSectionBlock

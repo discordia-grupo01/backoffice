@@ -1,8 +1,5 @@
-import {
-  DossierFact,
-  DossierFacts,
-  DossierSectionBlock,
-} from "@/components/dossier/DossierOverview";
+import { DossierSectionBlock } from "@/components/dossier/DossierOverview";
+import { Fact, FactGrid } from "@/components/ui/Fact";
 import { formatInteger } from "@/utils/chartFormat";
 import { formatDate } from "@/utils/formatDate";
 import type {
@@ -34,22 +31,18 @@ export function ServerDossierOverview({
 
   return (
     <>
-      <DossierFacts>
-        <DossierFact label="Estado">
+      <FactGrid>
+        <Fact label="Estado">
           <ServerStatusBadge server={server} />
-        </DossierFact>
-        <DossierFact label="Fecha de creación">
-          {formatDate(server.created_at)}
-        </DossierFact>
-        <DossierFact label="Miembros">
-          {formatInteger(server.member_count)}
-        </DossierFact>
-        <DossierFact label="Dueño">
+        </Fact>
+        <Fact label="Fecha de creación">{formatDate(server.created_at)}</Fact>
+        <Fact label="Miembros">{formatInteger(server.member_count)}</Fact>
+        <Fact label="Dueño">
           <span className="block truncate" title={server.owner_name ?? ""}>
             {server.owner_name ?? "Sin datos"}
           </span>
-        </DossierFact>
-      </DossierFacts>
+        </Fact>
+      </FactGrid>
 
       <DossierSectionBlock
         idPrefix={idPrefix}

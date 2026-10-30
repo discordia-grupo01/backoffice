@@ -2,8 +2,7 @@ import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 import { cn } from "@/lib/cn";
 
-type Variant =
-  "primary" | "secondary" | "caution" | "positive" | "danger" | "success";
+type Variant = "primary" | "secondary" | "caution" | "positive" | "danger";
 type Size = "md" | "sm";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -23,8 +22,6 @@ const VARIANTS: Record<Variant, string> = {
     "bg-success/15 text-success-readable border border-transparent hover:border-success",
   danger:
     "bg-[color-mix(in_srgb,var(--danger)_82%,black)] text-white hover:brightness-110",
-  success:
-    "bg-[color-mix(in_srgb,var(--success)_78%,black)] text-white hover:brightness-110",
 };
 
 const SIZES: Record<Size, string> = {

@@ -18,7 +18,12 @@ import type { UsersPage, UserStatusFilter } from "@/types/users.types";
 type UsersResponse =
   { ok: true; page: UsersPage } | { ok: false; message: string };
 
-const STATUSES: readonly UserStatusFilter[] = ["all", "active", "suspended"];
+const STATUSES: readonly UserStatusFilter[] = [
+  "all",
+  "active",
+  "pending",
+  "suspended",
+];
 
 export async function GET(
   request: Request,

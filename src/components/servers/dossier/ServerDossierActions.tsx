@@ -18,15 +18,15 @@ export function ServerDossierActions({
   return (
     <div className="flex flex-col gap-2 sm:flex-row">
       <Button
-        variant={isSuspended ? "success" : "danger"}
+        variant={isSuspended ? "positive" : "caution"}
         className="sm:flex-1"
         onClick={() => (isSuspended ? onReactivate(server) : onSuspend(server))}
       >
         {isSuspended ? "Reactivar servidor" : "Suspender servidor"}
       </Button>
       <Button
-        variant="secondary"
-        className="text-danger-readable hover:border-danger sm:flex-1"
+        variant="danger"
+        className="sm:flex-1"
         onClick={() => onDelete(server)}
       >
         Eliminar servidor

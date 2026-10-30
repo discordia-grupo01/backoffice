@@ -8,7 +8,7 @@ interface ActionCopy {
   body: string;
   confirmLabel: string;
   icon: LucideIcon;
-  variant: "danger" | "success";
+  variant: "caution" | "positive";
 }
 
 const COPY: Record<SuspensionAction, ActionCopy> = {
@@ -17,14 +17,14 @@ const COPY: Record<SuspensionAction, ActionCopy> = {
     body: "No va a poder iniciar sesión en Discordia, se cerrarán sus sesiones abiertas y su perfil dejará de estar visible para el resto.",
     confirmLabel: "Sí, suspender",
     icon: UserX,
-    variant: "danger",
+    variant: "caution",
   },
   reactivate: {
     title: (name) => `¿Reactivar a ${name}?`,
     body: "Va a poder volver a iniciar sesión en Discordia y su perfil vuelve a estar visible para el resto.",
     confirmLabel: "Sí, reactivar",
     icon: UserCheck,
-    variant: "success",
+    variant: "positive",
   },
 };
 

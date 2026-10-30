@@ -1,17 +1,16 @@
-import { Button } from "@/components/ui/Button";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { formatDate } from "@/utils/formatDate";
 import type { PlatformUser } from "@/types/users.types";
 
+import { UserActions, type UserActionHandlers } from "./UserActions";
 import { UserIdentity } from "./UserIdentity";
 import { UserStatusBadge } from "./UserStatusBadge";
 
-interface UsersTableProps {
+interface UsersTableProps extends UserActionHandlers {
   users: readonly PlatformUser[];
-  onViewDossier: (user: PlatformUser) => void;
 }
 
-export function UsersTable({ users, onViewDossier }: UsersTableProps) {
+export function UsersTable({ users, ...handlers }: UsersTableProps) {
   const columns: Column<PlatformUser>[] = [
     {
       header: "Usuario",
@@ -36,17 +35,8 @@ export function UsersTable({ users, onViewDossier }: UsersTableProps) {
     },
     {
       header: "Acciones",
-      width: "10rem",
-      cell: (user) => (
-        <Button
-          variant="secondary"
-          size="sm"
-          aria-label={`Ver expediente de ${user.name}`}
-          onClick={() => onViewDossier(user)}
-        >
-          Ver expediente
-        </Button>
-      ),
+      width: "12rem",
+      cell: (user) => <UserActions user={user} {...handlers} />,
     },
   ];
 

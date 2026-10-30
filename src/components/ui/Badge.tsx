@@ -2,10 +2,11 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
 
-export type BadgeTone = "success" | "danger";
+export type BadgeTone = "success" | "warning" | "danger";
 
 const TONES: Record<BadgeTone, string> = {
   success: "bg-success/15 text-success-readable",
+  warning: "bg-warning/15 text-warning-readable",
   danger: "bg-danger/15 text-danger-readable",
 };
 

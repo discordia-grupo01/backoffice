@@ -1,3 +1,4 @@
+import { ActionMenu } from "@/components/ui/ActionMenu";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import type { PlatformServer } from "@/types/servers.types";
@@ -6,55 +7,59 @@ export interface ServerActionHandlers {
   onViewDossier: (server: PlatformServer) => void;
   onSuspend: (server: PlatformServer) => void;
   onReactivate: (server: PlatformServer) => void;
+  onDelete: (server: PlatformServer) => void;
 }
 
 interface ServerActionsProps extends ServerActionHandlers {
   server: PlatformServer;
   className?: string;
+  stretch?: boolean;
 }
 
-/** "Ver expediente" y "Suspender" (o "Reactivar" si el servidor está suspendido). */
 export function ServerActions({
   server,
   onViewDossier,
   onSuspend,
   onReactivate,
+  onDelete,
   className,
+  stretch = false,
 }: ServerActionsProps) {
   const isSuspended = Boolean(server.suspended_at);
 
   return (
-    <div className={cn("flex gap-2", className)}>
+    <div className={cn("flex items-center gap-2", className)}>
       <Button
         variant="secondary"
         size="sm"
-        className="flex-1"
+        className={cn("whitespace-nowrap", stretch && "flex-1")}
         aria-label={`Ver expediente de ${server.name}`}
         onClick={() => onViewDossier(server)}
       >
         Ver expediente
       </Button>
-      {isSuspended ? (
-        <Button
-          variant="positive"
-          size="sm"
-          className="flex-1"
-          aria-label={`Reactivar ${server.name}`}
-          onClick={() => onReactivate(server)}
-        >
-          Reactivar
-        </Button>
-      ) : (
-        <Button
-          variant="caution"
-          size="sm"
-          className="flex-1"
-          aria-label={`Suspender ${server.name}`}
-          onClick={() => onSuspend(server)}
-        >
-          Suspender
-        </Button>
-      )}
+      <ActionMenu
+        label={`Más acciones para ${server.name}`}
+        items={[
+          isSuspended
+            ? {
+                label: "Reactivar servidor",
+                tone: "positive",
+                onSelect: () => onReactivate(server),
+              }
+            : {
+                label: "Suspender servidor",
+                tone: "caution",
+                onSelect: () => onSuspend(server),
+              },
+          {
+            label: "Eliminar servidor",
+            tone: "danger",
+            separated: true,
+            onSelect: () => onDelete(server),
+          },
+        ]}
+      />
     </div>
   );
 }

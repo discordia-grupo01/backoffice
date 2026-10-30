@@ -16,7 +16,7 @@ export function UserDossierActions({
 
   return (
     <Button
-      variant={isSuspended ? "success" : "danger"}
+      variant={isSuspended ? "positive" : "caution"}
       onClick={() => (isSuspended ? onReactivate(user) : onSuspend(user))}
     >
       {isSuspended ? "Reactivar usuario" : "Suspender usuario"}
