@@ -3,7 +3,7 @@ import type { UserStatus } from "@/types/users.types";
 
 const STATUS_BADGE: Record<UserStatus, { label: string; tone: BadgeTone }> = {
   active: { label: "Activo", tone: "success" },
-  pending: { label: "Pendiente", tone: "warning" },
+  pending: { label: "Pendiente", tone: "neutral" },
   suspended: { label: "Suspendido", tone: "danger" },
 };
 
