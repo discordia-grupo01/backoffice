@@ -11,8 +11,10 @@ import {
 } from "recharts";
 
 import { formatCompact, formatSeriesLabel } from "@/utils/chartFormat";
+import { seriesHighlights } from "@/utils/seriesHighlights";
 import type { PlatformMetrics } from "@/types/metrics.types";
 
+import { renderChartHighlights } from "@/components/ui/ChartHighlights";
 import { ChartTooltip } from "@/components/ui/ChartTooltip";
 
 export function ActiveUsersAreaChart({
@@ -21,12 +23,13 @@ export function ActiveUsersAreaChart({
   metrics: PlatformMetrics;
 }) {
   const { series, granularity } = metrics;
+  const highlights = seriesHighlights(series, "active_users");
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         data={series}
-        margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+        margin={{ top: 24, right: 8, left: 0, bottom: 0 }}
       >
         <defs>
           <linearGradient id="activeUsersFill" x1="0" y1="0" x2="0" y2="1">
@@ -66,12 +69,13 @@ export function ActiveUsersAreaChart({
           }
         />
         <Area
-          type="monotone"
+          type="linear"
           dataKey="active_users"
           stroke="var(--chart-1)"
           strokeWidth={2}
           fill="url(#activeUsersFill)"
         />
+        {renderChartHighlights(highlights, "--chart-1", true)}
       </AreaChart>
     </ResponsiveContainer>
   );

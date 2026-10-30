@@ -11,8 +11,10 @@ import {
 } from "recharts";
 
 import { formatCompact, formatSeriesLabel } from "@/utils/chartFormat";
+import { seriesHighlights } from "@/utils/seriesHighlights";
 import type { MetricsGranularity } from "@/types/metrics.types";
 
+import { renderChartHighlights } from "./ChartHighlights";
 import { ChartTooltip } from "./ChartTooltip";
 
 interface TimeBarChartProps<T extends { date: string }> {
@@ -24,6 +26,8 @@ interface TimeBarChartProps<T extends { date: string }> {
   valueLabel: string;
   /** Variable CSS del color de las barras, p. ej. `--success`. */
   colorVar: string;
+  /** Marca el pico y una línea con el promedio. */
+  showHighlights?: boolean;
 }
 
 /** Barras de una cantidad a lo largo del tiempo, con el valor exacto en el tooltip. */
@@ -33,12 +37,15 @@ export function TimeBarChart<T extends { date: string }>({
   granularity,
   valueLabel,
   colorVar,
+  showHighlights = false,
 }: TimeBarChartProps<T>) {
+  const highlights = showHighlights ? seriesHighlights(data, dataKey) : null;
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={data as T[]}
-        margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+        margin={{ top: highlights ? 24 : 8, right: 8, left: 0, bottom: 0 }}
       >
         <CartesianGrid
           stroke="var(--border)"
@@ -76,6 +83,7 @@ export function TimeBarChart<T extends { date: string }>({
           radius={[4, 4, 0, 0]}
           maxBarSize={36}
         />
+        {renderChartHighlights(highlights, colorVar, false)}
       </BarChart>
     </ResponsiveContainer>
   );

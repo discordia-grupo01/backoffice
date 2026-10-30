@@ -26,6 +26,7 @@ export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
           dataKey="servers_created"
           valueLabel="servidores"
           colorVar="--info"
+          showHighlights
         />
       </ChartCard>
       <ChartCard
@@ -38,6 +39,7 @@ export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
           dataKey="messages_sent"
           valueLabel="mensajes"
           colorVar="--success"
+          showHighlights
         />
       </ChartCard>
     </div>
