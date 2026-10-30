@@ -70,8 +70,6 @@ export function UsersView() {
           users={users}
           view={viewMode}
           onViewDossier={setDossierUser}
-          onSuspend={(user) => suspension.request(user, "suspend")}
-          onReactivate={(user) => suspension.request(user, "reactivate")}
         />
         <PaginationBar
           page={page}

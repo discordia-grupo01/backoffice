@@ -36,12 +36,7 @@ export function ServerCard({ server, ...handlers }: ServerCardProps) {
         </Fact>
       </FactGrid>
 
-      <ServerActions
-        server={server}
-        className="mt-auto"
-        stretch
-        {...handlers}
-      />
+      <ServerActions server={server} className="mt-auto w-full" {...handlers} />
     </Card>
   );
 }

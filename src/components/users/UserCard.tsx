@@ -45,7 +45,7 @@ export function UserCard({ user, ...handlers }: UserCardProps) {
         </Fact>
       </FactGrid>
 
-      <UserActions user={user} className="mt-auto" stretch {...handlers} />
+      <UserActions user={user} className="mt-auto w-full" {...handlers} />
     </Card>
   );
 }
