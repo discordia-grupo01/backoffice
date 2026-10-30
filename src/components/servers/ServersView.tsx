@@ -73,9 +73,6 @@ export function ServersView() {
           servers={servers}
           view={viewMode}
           onViewDossier={setDossierServer}
-          onSuspend={handleSuspend}
-          onReactivate={handleReactivate}
-          onDelete={handleDelete}
         />
         <PaginationBar
           page={page}
