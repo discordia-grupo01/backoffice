@@ -9,6 +9,7 @@ import type { UserStatusFilter } from "@/types/users.types";
 const STATUS_OPTIONS: ToggleOption<UserStatusFilter>[] = [
   { value: "all", label: "Todos" },
   { value: "active", label: "Activos" },
+  { value: "pending", label: "Pendientes" },
   { value: "suspended", label: "Suspendidos" },
 ];
 

@@ -1,6 +1,7 @@
 import type { DossierModerationAction, DossierReport } from "./dossier.types";
 
-export type UserStatus = "active" | "suspended";
+/** `pending`: todavía no confirmó su email. */
+export type UserStatus = "active" | "pending" | "suspended";
 
 export type UserStatusFilter = "all" | UserStatus;
 
@@ -10,7 +11,7 @@ export interface PlatformUser {
   email: string;
   status: UserStatus;
   created_at: string;
-  /** Cuándo se suspendió; `null` si está activo. */
+  /** Cuándo se suspendió; `null` si no está suspendido. */
   suspended_at: string | null;
 }
 
