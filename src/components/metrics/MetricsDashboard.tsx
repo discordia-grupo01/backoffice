@@ -3,7 +3,6 @@
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
-import { hasActivity } from "@/components/metrics/utils/metricsActivity";
 import { usePlatformMetrics } from "@/components/metrics/hooks/usePlatformMetrics";
 
 import { CustomRangeInputs } from "./CustomRangeInputs";
@@ -59,7 +58,7 @@ export function MetricsDashboard() {
           <MetricsSkeleton />
         ) : status === "error" ? (
           <MetricsErrorState onRetry={retry} />
-        ) : showData && !hasActivity(metrics) ? (
+        ) : showData && !metrics.has_activity ? (
           <MetricsEmptyState />
         ) : showData ? (
           <>

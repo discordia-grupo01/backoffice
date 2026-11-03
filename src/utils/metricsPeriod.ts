@@ -1,4 +1,8 @@
-import type { MetricsPeriod, MetricsPeriodKey } from "@/types/metrics.types";
+import type {
+  MetricsPeriod,
+  MetricsPeriodKey,
+  MetricsRange,
+} from "@/types/metrics.types";
 
 export const PERIOD_OPTIONS: { key: MetricsPeriodKey; label: string }[] = [
   { key: "today", label: "Hoy" },
@@ -43,13 +47,23 @@ export function presetPeriod(
   };
 }
 
-export type CustomRangeError = "incomplete" | "inverted" | "future";
+export const MAX_PERIOD_DAYS = 366;
+
+export type CustomRangeError =
+  "incomplete" | "inverted" | "future" | "too_long";
 
 export const CUSTOM_RANGE_MESSAGES: Record<CustomRangeError, string> = {
   incomplete: "Elegí la fecha de inicio y la de fin.",
   inverted: "La fecha de inicio no puede ser posterior a la de fin.",
   future: "La fecha de fin no puede ser futura.",
+  too_long: `El período no puede superar los ${MAX_PERIOD_DAYS} días.`,
 };
+
+function daysBetween(from: string, to: string): number {
+  return Math.round(
+    (parseIsoDate(to).getTime() - parseIsoDate(from).getTime()) / 86_400_000,
+  );
+}
 
 export function validateCustomRange(
   range: { from: string; to: string },
@@ -58,5 +72,19 @@ export function validateCustomRange(
   if (!range.from || !range.to) return "incomplete";
   if (range.from > range.to) return "inverted";
   if (range.to > toIsoDate(now)) return "future";
+  if (daysBetween(range.from, range.to) + 1 > MAX_PERIOD_DAYS) {
+    return "too_long";
+  }
   return null;
+}
+
+export function periodToRange(
+  period: MetricsPeriod,
+  now: Date = new Date(),
+): MetricsRange {
+  const end = addDays(parseIsoDate(period.to), 1);
+  return {
+    from: parseIsoDate(period.from).toISOString(),
+    to: (end > now ? now : end).toISOString(),
+  };
 }

@@ -12,7 +12,7 @@ export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
       <ChartCard
         wide
         title="Usuarios activos"
-        subtitle={`Usuarios que enviaron mensajes, ${unit}`}
+        subtitle={`Usuarios con actividad, ${unit}`}
       >
         <ActiveUsersAreaChart metrics={metrics} />
       </ChartCard>
