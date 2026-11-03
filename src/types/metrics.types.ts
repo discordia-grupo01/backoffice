@@ -1,6 +1,5 @@
 export type MetricsPeriodKey = "today" | "7d" | "30d" | "90d" | "custom";
 
-/** Fechas locales en formato `YYYY-MM-DD`, ambas inclusivas. */
 export interface MetricsPeriod {
   from: string;
   to: string;
@@ -24,9 +23,26 @@ export interface PlatformMetrics {
   granularity: MetricsGranularity;
   totals: MetricsTotals;
   series: MetricsSeriesPoint[];
+  has_activity: boolean;
 }
 
-/** Lo que devuelve `services/metrics/client.ts` al navegador. */
+export interface MetricsRange {
+  from: string;
+  to: string;
+}
+
+export interface GlobalMetricsPoint extends MetricsTotals {
+  start: string;
+}
+
+export interface GlobalMetricsResponse extends MetricsTotals {
+  from: string;
+  to: string;
+  has_activity: boolean;
+  granularity: MetricsGranularity;
+  series: GlobalMetricsPoint[];
+}
+
 export type MetricsResult =
   | { ok: true; metrics: PlatformMetrics }
   | { ok: false; status: number; message: string };
