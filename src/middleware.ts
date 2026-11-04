@@ -3,18 +3,15 @@ import { NextResponse, type NextRequest } from "next/server";
 import { ROUTES, SESSION_COOKIE } from "@/lib/constants";
 import { parseSessionCookie } from "@/services/auth/session-shape";
 
-/** Rutas que exigen sesion. Al crecer el panel se agregan prefijos aca. */
-const PROTECTED_PREFIXES = [ROUTES.home, ROUTES.users, ROUTES.servers];
+const PROTECTED_PREFIXES = [
+  ROUTES.home,
+  ROUTES.users,
+  ROUTES.servers,
+  ROUTES.status,
+];
 
-/** Rutas solo para invitados: si ya hay sesion, se redirige al panel. */
 const GUEST_ONLY = [ROUTES.login];
 
-/**
- * Guardia de rutas. Solo valida la FORMA de la cookie de sesion (rapido, sin
- * red). Se usa `parseSessionCookie` y no `cookies.has()` para que una cookie
- * corrupta cuente como "sin sesion" tambien aca y no genere un loop de
- * redirects entre `/login` y el panel.
- */
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
   const cookieValue = request.cookies.get(SESSION_COOKIE)?.value;

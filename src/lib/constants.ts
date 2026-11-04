@@ -22,4 +22,5 @@ export const ROUTES = {
   home: "/dashboard",
   users: "/users",
   servers: "/servers",
+  status: "/status",
 } as const;
