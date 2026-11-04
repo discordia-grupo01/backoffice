@@ -7,6 +7,7 @@ const METRICS: PlatformMetrics = {
   period: { from: "2026-10-11", to: "2026-10-12" },
   granularity: "day",
   totals: { active_users: 150, servers_created: 30, messages_sent: 3000 },
+  has_activity: true,
   series: [
     {
       date: "2026-10-11",

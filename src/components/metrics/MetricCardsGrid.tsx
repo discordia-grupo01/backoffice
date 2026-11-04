@@ -12,7 +12,7 @@ export function MetricCardsGrid({ totals }: { totals: MetricsTotals }) {
       <MetricCard
         label="Usuarios activos"
         value={formatInteger(totals.active_users)}
-        hint="Enviaron al menos un mensaje en el período"
+        hint="Mandaron mensajes o entraron o salieron de un servidor"
         accentVar="--chart-1"
       />
       <MetricCard

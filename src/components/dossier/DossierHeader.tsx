@@ -27,7 +27,12 @@ export function DossierHeader({
         {name}
       </h2>
       <div className="-mr-1">
-        <IconButton icon={X} label="Cerrar expediente" onClick={onClose} />
+        <IconButton
+          icon={X}
+          label="Cerrar expediente"
+          showTooltip={false}
+          onClick={onClose}
+        />
       </div>
     </header>
   );

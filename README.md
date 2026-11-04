@@ -55,10 +55,13 @@ discordia-backoffice/
 │   │   ├── (panel)/             route group: las secciones del panel comparten sidebar
 │   │   │   ├── layout.tsx
 │   │   │   ├── dashboard/       home del staff: métricas globales
-│   │   │   └── users/           listado de usuarios con búsqueda y filtro por estado
+│   │   │   ├── users/           listado de usuarios con búsqueda y filtro por estado
+│   │   │   └── status/          estado de la plataforma e incidentes
 │   │   └── api/                 route handlers del BFF (ver "Autenticación")
 │   │       ├── auth/login/
+│   │       ├── incidents/       publicar y resolver incidentes
 │   │       ├── metrics/
+│   │       ├── status/          estado de la plataforma
 │   │       └── users/
 │   ├── middleware.ts            guardia de rutas (corre antes de cada request)
 │   ├── components/
@@ -69,14 +72,19 @@ discordia-backoffice/
 │   │   ├── metrics/             componentes del dashboard: tarjetas, gráficos, estados
 │   │   │   ├── hooks/           usePlatformMetrics
 │   │   │   └── utils/           formato de ejes, armado del CSV, estado vacío
+│   │   ├── status/              estado de la plataforma: resumen, incidentes, formulario
+│   │   │   ├── hooks/           usePlatformStatus, useIncidentForm, useResolveIncident
+│   │   │   └── utils/           textos y colores por estado
 │   │   └── users/               listado de usuarios: filtros, tabla, tarjetas
 │   │       └── hooks/           useUserFilters
 │   ├── services/                código agrupado por dominio del backend
 │   │   ├── auth/                client (browser), service (server), session, session-shape
 │   │   ├── metrics/             client (browser), service (server), mockPlatformMetrics
+│   │   ├── status/              client (browser), service (server): GET /v1/status y alta/resolución de incidentes; healthClient + mockServiceHealth (health checks simulados)
 │   │   └── users/               client (browser), service (server): listado paginado de GET /v1/admin/users
 │   ├── types/                   tipos por dominio: <dominio>.types.ts
 │   ├── hooks/                   hooks de React que usan varias features (useTheme, useMediaQuery)
+│   ├── contexts/                contextos que usan varias features (PlatformStatusContext)
 │   ├── utils/                   funciones auxiliares sin UI (metricsPeriod, userFilters, downloadFile)
 │   └── lib/
 │       ├── apiClient.ts          cliente HTTP hacia el Gateway (server-only)
