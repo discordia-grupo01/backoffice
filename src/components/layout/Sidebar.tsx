@@ -1,6 +1,13 @@
 "use client";
 
-import { LayoutDashboard, LogOut, Server, Users, X } from "lucide-react";
+import {
+  Activity,
+  LayoutDashboard,
+  LogOut,
+  Server,
+  Users,
+  X,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -17,6 +24,7 @@ const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutDashboard, href: ROUTES.home },
   { label: "Usuarios", icon: Users, href: ROUTES.users },
   { label: "Servidores", icon: Server, href: ROUTES.servers },
+  { label: "Estado", icon: Activity, href: ROUTES.status },
 ] as const;
 
 function isCurrentPath(pathname: string, href: string): boolean {

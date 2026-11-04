@@ -13,12 +13,14 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: ReactNode;
   /** Contenido a la derecha (ej: boton mostrar/ocultar). */
   trailing?: ReactNode;
+  /** Texto a la derecha del label (ej: contador de caracteres). */
+  hint?: string;
   error?: string;
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   function TextField(
-    { label, icon, trailing, error, id, className, ...props },
+    { label, icon, trailing, hint, error, id, className, ...props },
     ref,
   ) {
     const generatedId = useId();
@@ -27,12 +29,19 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 
     return (
       <div>
-        <label
-          htmlFor={inputId}
-          className="text-content-subtle mb-1.5 block text-xs font-semibold tracking-wider uppercase"
-        >
-          {label}
-        </label>
+        <div className="mb-1.5 flex items-baseline justify-between gap-3">
+          <label
+            htmlFor={inputId}
+            className="text-content-subtle block text-xs font-semibold tracking-wider uppercase"
+          >
+            {label}
+          </label>
+          {hint ? (
+            <span className="text-content-subtle font-mono text-xs tabular-nums">
+              {hint}
+            </span>
+          ) : null}
+        </div>
 
         <div
           className={cn(

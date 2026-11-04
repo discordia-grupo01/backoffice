@@ -22,6 +22,8 @@ interface IconButtonProps {
   iconSize?: number;
   /** `"end"` alinea el tooltip a la derecha del boton, para que no se salga de la pantalla. */
   tooltipAlign?: "center" | "end";
+  /** `false` en acciones obvias (ej: la X de un modal); el `aria-label` se mantiene. */
+  showTooltip?: boolean;
 }
 
 export function IconButton({
@@ -34,29 +36,36 @@ export function IconButton({
   isExpanded,
   iconSize = 18,
   tooltipAlign,
+  showTooltip = true,
 }: IconButtonProps) {
+  const button = (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      aria-pressed={isPressed}
+      aria-expanded={isExpanded}
+      className={cn(
+        "flex size-8 items-center justify-center rounded-lg transition-colors",
+        "focus-visible:ring-bo focus-visible:ring-2 focus-visible:outline-none",
+        disabled
+          ? "text-content-subtle cursor-not-allowed opacity-50"
+          : "hover:bg-surface-hover cursor-pointer",
+        !disabled && isActive
+          ? "text-bo bg-bo/15"
+          : "text-content-subtle hover:text-content",
+      )}
+    >
+      <Icon size={iconSize} aria-hidden="true" />
+    </button>
+  );
+
+  if (!showTooltip) return button;
+
   return (
     <Tooltip label={label} align={tooltipAlign}>
-      <button
-        type="button"
-        onClick={onClick}
-        disabled={disabled}
-        aria-label={label}
-        aria-pressed={isPressed}
-        aria-expanded={isExpanded}
-        className={cn(
-          "flex size-8 items-center justify-center rounded-lg transition-colors",
-          "focus-visible:ring-bo focus-visible:ring-2 focus-visible:outline-none",
-          disabled
-            ? "text-content-subtle cursor-not-allowed opacity-50"
-            : "hover:bg-surface-hover cursor-pointer",
-          !disabled && isActive
-            ? "text-bo bg-bo/15"
-            : "text-content-subtle hover:text-content",
-        )}
-      >
-        <Icon size={iconSize} aria-hidden="true" />
-      </button>
+      {button}
     </Tooltip>
   );
 }

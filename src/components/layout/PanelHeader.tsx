@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { PlatformStatusPill } from "@/components/status/PlatformStatusPill";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 import { SidebarToggle } from "./SidebarToggle";
@@ -28,6 +29,7 @@ export function PanelHeader({ title, subtitle, children }: PanelHeaderProps) {
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {children}
+        <PlatformStatusPill />
         <ThemeToggle />
       </div>
     </header>
