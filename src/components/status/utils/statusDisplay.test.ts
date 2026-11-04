@@ -1,12 +1,24 @@
 import { describe, expect, it } from "vitest";
 
-import { activeIncidentsLabel, formatSince } from "./statusDisplay";
+import {
+  activeIncidentsLabel,
+  formatSince,
+  userNoticeLabel,
+} from "./statusDisplay";
 
 describe("activeIncidentsLabel", () => {
   it("usa singular, plural y el caso vacío", () => {
     expect(activeIncidentsLabel(0)).toBe("Sin incidentes activos");
     expect(activeIncidentsLabel(1)).toBe("1 incidente activo");
     expect(activeIncidentsLabel(3)).toBe("3 incidentes activos");
+  });
+});
+
+describe("userNoticeLabel", () => {
+  it("explica qué ven los usuarios", () => {
+    expect(userNoticeLabel(0)).toBe("Los usuarios no ven ningún aviso.");
+    expect(userNoticeLabel(1)).toBe("Los usuarios ven el aviso en la app.");
+    expect(userNoticeLabel(2)).toBe("Los usuarios ven los avisos en la app.");
   });
 });
 

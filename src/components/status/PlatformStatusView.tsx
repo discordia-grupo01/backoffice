@@ -1,32 +1,40 @@
 "use client";
 
 import { CircleCheck } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { Toast } from "@/components/ui/Toast";
+import { SuccessDialog } from "@/components/ui/SuccessDialog";
+import { usePlatformStatusContext } from "@/contexts/PlatformStatusContext";
 
 import { useIncidentForm } from "./hooks/useIncidentForm";
 import { usePlatformStatus } from "./hooks/usePlatformStatus";
 import { useResolveIncident } from "./hooks/useResolveIncident";
 import { IncidentFormDialog } from "./IncidentFormDialog";
 import { IncidentList } from "./IncidentList";
-import { PlatformStatusPill } from "./PlatformStatusPill";
+import { ServiceHealthPanel } from "./ServiceHealthPanel";
 import { StatusErrorState, StatusSkeleton } from "./StatusStates";
 import { StatusSummaryCard } from "./StatusSummaryCard";
+import { findUnreportedFailures } from "./utils/serviceHealth";
 
 export function PlatformStatusView() {
   const { load, data, retry, refresh, markForbidden } = usePlatformStatus();
-  const [toast, setToast] = useState<string | null>(null);
-  const closeToast = useCallback(() => setToast(null), []);
+  const [success, setSuccess] = useState<{
+    title: string;
+    message: string;
+  } | null>(null);
+  const { health } = usePlatformStatusContext();
 
   const form = useIncidentForm({
     onPublished: () => {
       void refresh();
-      setToast("Incidente publicado. Los usuarios ya ven el aviso.");
+      setSuccess({
+        title: "Incidente publicado",
+        message: "Los usuarios ya ven el aviso en la app.",
+      });
     },
     onForbidden: markForbidden,
   });
@@ -34,30 +42,30 @@ export function PlatformStatusView() {
   const resolution = useResolveIncident({
     onResolved: () => {
       void refresh();
-      setToast("Incidente resuelto. El aviso dejó de mostrarse.");
+      setSuccess({
+        title: "Incidente resuelto",
+        message: "El aviso dejó de mostrarse a los usuarios.",
+      });
     },
     onForbidden: markForbidden,
   });
 
   if (load === "forbidden") return <NoStaffAccess />;
 
+  const unreported =
+    health.phase === "ready" && data
+      ? findUnreportedFailures(health.checks, data.incidents)
+      : [];
+
   return (
     <>
       <PanelHeader
         title="Estado de la plataforma"
-        subtitle="Disponibilidad e incidentes"
-      >
-        {load === "success" && data ? (
-          <PlatformStatusPill status={data.status} />
-        ) : null}
-      </PanelHeader>
+        subtitle="Publicá incidentes y supervisá los servicios de la plataforma"
+      />
 
       <PanelBody>
-        <p className="text-content-muted mb-5 text-sm">
-          Comunicá incidencias y supervisá la disponibilidad de Discordia.
-        </p>
-
-        {load === "loading" ? (
+        {load === "loading" || health.phase === "loading" ? (
           <StatusSkeleton />
         ) : load === "error" || !data ? (
           <StatusErrorState onRetry={retry} />
@@ -66,12 +74,15 @@ export function PlatformStatusView() {
             <StatusSummaryCard
               status={data.status}
               activeCount={data.incidents.length}
-              onPublish={form.open}
+              unreported={unreported}
+              onPublishUnreported={() => form.open({ services: unreported })}
             />
             <IncidentList
+              onPublish={() => form.open()}
               incidents={data.incidents}
               onResolve={resolution.request}
             />
+            <ServiceHealthPanel state={health} unreported={unreported} />
           </div>
         )}
       </PanelBody>
@@ -101,7 +112,13 @@ export function PlatformStatusView() {
         El aviso dejará de mostrarse a todos los usuarios.
       </ConfirmDialog>
 
-      <Toast message={toast} onClose={closeToast} />
+      <SuccessDialog
+        open={success !== null}
+        title={success?.title ?? ""}
+        onClose={() => setSuccess(null)}
+      >
+        {success?.message}
+      </SuccessDialog>
     </>
   );
 }

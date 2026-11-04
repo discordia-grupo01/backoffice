@@ -1,77 +1,103 @@
-import { CircleCheck, Plus, TriangleAlert, Wrench } from "lucide-react";
-
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
-import type { PlatformStatus } from "@/types/status.types";
+import { serviceLabel } from "@/utils/incidents";
+import type { PlatformServiceId, PlatformStatus } from "@/types/status.types";
 
+import {
+  unreportedFailuresHeadline,
+  unreportedFailuresHint,
+} from "./utils/serviceHealth";
 import {
   activeIncidentsLabel,
   PLATFORM_STATUS_DISPLAY,
+  SERVICE_DOWN_DISPLAY,
+  userNoticeLabel,
 } from "./utils/statusDisplay";
-
-const ICONS = {
-  operational: CircleCheck,
-  degraded: TriangleAlert,
-  maintenance: Wrench,
-} as const;
 
 interface StatusSummaryCardProps {
   status: PlatformStatus;
   activeCount: number;
-  onPublish: () => void;
+  unreported: readonly PlatformServiceId[];
+  onPublishUnreported: () => void;
 }
 
 export function StatusSummaryCard({
   status,
   activeCount,
-  onPublish,
+  unreported,
+  onPublishUnreported,
 }: StatusSummaryCardProps) {
-  const display = PLATFORM_STATUS_DISPLAY[status];
-  const Icon = ICONS[status];
+  const labels = unreported.map(serviceLabel);
+  /** Hay servicios caídos sin avisar: es lo único que pide acción, manda sobre el estado publicado. */
+  const needsAction = labels.length > 0;
+  const display = needsAction
+    ? SERVICE_DOWN_DISPLAY
+    : PLATFORM_STATUS_DISPLAY[status];
+  const isAlert = needsAction || status !== "operational";
 
   return (
-    <Card
-      as="section"
+    <section
       aria-labelledby="platform-status-title"
-      className="flex flex-col gap-4 rounded-[14px] p-4 min-[481px]:p-5 @2xl:flex-row @2xl:items-center"
+      className={cn("overflow-hidden rounded-[14px] border", display.surface)}
     >
-      <div className="flex min-w-0 flex-1 items-center gap-4">
-        <span
-          aria-hidden="true"
-          className={cn(
-            "flex size-12 shrink-0 items-center justify-center rounded-xl",
-            display.soft,
-          )}
-        >
-          <Icon size={22} />
-        </span>
-        <div className="min-w-0">
-          <h2
-            id="platform-status-title"
-            className="text-content-subtle text-xs font-semibold tracking-wider uppercase"
+      <div className="flex flex-col gap-4 px-4 py-4 min-[481px]:px-5 @2xl:flex-row @2xl:items-center">
+        <div className="flex min-w-0 flex-1 items-start gap-3.5">
+          <span
+            aria-hidden="true"
+            className="relative mt-1.5 flex size-3 shrink-0"
           >
-            Estado actual de la plataforma
-          </h2>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+            {isAlert ? (
+              <span
+                className={cn(
+                  "absolute inset-0 animate-ping rounded-full opacity-40 [animation-duration:2.4s] motion-reduce:hidden",
+                  display.solid,
+                )}
+              />
+            ) : null}
             <span
               className={cn(
-                "font-display rounded-full px-3 py-1 text-base font-bold",
-                display.soft,
+                "relative size-3 rounded-full ring-4",
+                display.solid,
+                display.ring,
+              )}
+            />
+          </span>
+          <div className="min-w-0">
+            <h2
+              id="platform-status-title"
+              className={cn(
+                "font-display text-base leading-snug font-semibold",
+                display.text,
               )}
             >
-              {display.label}
-            </span>
-            <span className="text-content-muted text-sm">
-              {activeIncidentsLabel(activeCount)}
-            </span>
+              {needsAction
+                ? unreportedFailuresHeadline(labels)
+                : PLATFORM_STATUS_DISPLAY[status].headline}
+            </h2>
+            <p className="text-content-muted mt-0.5 text-[13px] leading-snug">
+              {needsAction
+                ? unreportedFailuresHint(activeCount)
+                : `${activeIncidentsLabel(activeCount)}. ${userNoticeLabel(activeCount)}`}
+            </p>
           </div>
         </div>
+        {needsAction ? (
+          <PublishUnreportedButton onClick={onPublishUnreported} />
+        ) : null}
       </div>
-      <Button className="@2xl:w-auto @2xl:px-5" onClick={onPublish}>
-        <Plus size={16} aria-hidden="true" />
-        Publicar incidente
-      </Button>
-    </Card>
+    </section>
+  );
+}
+
+function PublishUnreportedButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Button
+      variant="secondary"
+      size="sm"
+      className="self-start @2xl:self-center"
+      onClick={onClick}
+    >
+      Publicar incidente
+    </Button>
   );
 }

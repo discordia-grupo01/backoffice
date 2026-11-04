@@ -35,8 +35,8 @@ export function useIncidentForm({
 
   const errors = submitted ? validateIncidentDraft(draft) : {};
 
-  function open() {
-    setDraft(EMPTY_DRAFT);
+  function open(prefill?: Partial<IncidentDraft>) {
+    setDraft({ ...EMPTY_DRAFT, ...prefill });
     setSubmitted(false);
     setError(undefined);
     setIsOpen(true);

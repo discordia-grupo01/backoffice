@@ -1,18 +1,30 @@
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, Plus } from "lucide-react";
 
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { cn } from "@/lib/cn";
+import { StateBox } from "@/components/ui/StateBox";
 import type { Incident } from "@/types/status.types";
 
 import { IncidentCard } from "./IncidentCard";
 
 interface IncidentListProps {
   incidents: Incident[];
+  onPublish: () => void;
   onResolve: (incident: Incident) => void;
 }
 
-export function IncidentList({ incidents, onResolve }: IncidentListProps) {
+export function IncidentList({
+  incidents,
+  onPublish,
+  onResolve,
+}: IncidentListProps) {
   const count = incidents.length;
+  const publishButton = (
+    <Button variant="secondary" size="sm" onClick={onPublish}>
+      <Plus size={14} aria-hidden="true" />
+      Publicar incidente
+    </Button>
+  );
 
   return (
     <Card
@@ -21,38 +33,35 @@ export function IncidentList({ incidents, onResolve }: IncidentListProps) {
       className="rounded-[14px]"
     >
       <header className="border-line flex items-center justify-between gap-3 border-b px-4 py-4 min-[481px]:px-5">
-        <div>
-          <h2 id="active-incidents-title" className="font-semibold">
+        <div className="min-w-0">
+          <h2
+            id="active-incidents-title"
+            className="flex items-center gap-2 font-semibold"
+          >
             Incidentes activos
+            {count > 0 ? (
+              <span className="bg-warning/15 text-warning-readable rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums">
+                {count}
+              </span>
+            ) : null}
           </h2>
           <p className="text-content-subtle mt-0.5 text-xs">
             Avisos visibles para todos los usuarios.
           </p>
         </div>
-        <span
-          className={cn(
-            "rounded-full px-2.5 py-1 text-xs font-semibold tabular-nums",
-            count > 0
-              ? "bg-warning/15 text-warning-readable"
-              : "bg-success/15 text-success-readable",
-          )}
-        >
-          {count}
-        </span>
+        {count > 0 ? <div className="shrink-0">{publishButton}</div> : null}
       </header>
 
       {count === 0 ? (
-        <div className="flex flex-col items-center px-5 py-12 text-center">
-          <span
-            aria-hidden="true"
-            className="bg-success/15 text-success-readable mb-4 flex size-12 items-center justify-center rounded-full"
+        <div className="p-4 min-[481px]:p-5">
+          <StateBox
+            icon={CircleCheck}
+            title="No hay incidentes activos"
+            action={<div className="mt-3">{publishButton}</div>}
           >
-            <CircleCheck size={22} />
-          </span>
-          <p className="text-sm font-semibold">No hay incidentes activos</p>
-          <p className="text-content-muted mt-1 text-sm">
-            La plataforma está operativa.
-          </p>
+            Cuando publiques uno, los usuarios lo ven como aviso en la app hasta
+            que lo resuelvas.
+          </StateBox>
         </div>
       ) : (
         <ul className="divide-line divide-y">

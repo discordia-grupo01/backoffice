@@ -128,7 +128,7 @@ export function IncidentFormDialog({
           <FormAlert message={error} />
         </div>
 
-        <footer className="border-line bg-surface-sunken flex gap-3 border-t px-5 py-4 sm:justify-end">
+        <footer className="border-line flex gap-3 border-t px-5 py-4 sm:justify-end">
           <Button
             variant="secondary"
             className="sm:w-auto sm:px-5"

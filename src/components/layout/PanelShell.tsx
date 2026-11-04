@@ -2,6 +2,8 @@
 
 import type { ReactNode } from "react";
 
+import { PlatformStatusProvider } from "@/contexts/PlatformStatusContext";
+
 import { useSidebar } from "./hooks/useSidebar";
 import { useStaffAccess } from "./hooks/useStaffAccess";
 
@@ -20,19 +22,21 @@ export function PanelShell({ children }: { children: ReactNode }) {
 
   return (
     <SidebarContext.Provider value={{ isOpen, isRail, toggle, closeMobile }}>
-      <div
-        className="panel-shell group/shell bg-surface text-content flex min-h-dvh"
-        data-rail={isRail}
-        data-mobile-open={mobileOpen}
-      >
-        <Sidebar />
+      <PlatformStatusProvider>
         <div
-          className="pointer-events-none fixed inset-0 z-40 bg-[rgba(8,14,22,0.55)] opacity-0 backdrop-blur-[2px] transition-opacity duration-250 ease-in-out group-data-[mobile-open=true]/shell:pointer-events-auto group-data-[mobile-open=true]/shell:opacity-100 motion-reduce:transition-none md:hidden"
-          onClick={closeMobile}
-          aria-hidden="true"
-        />
-        <main className="min-w-0 flex-1">{children}</main>
-      </div>
+          className="panel-shell group/shell bg-surface text-content flex min-h-dvh"
+          data-rail={isRail}
+          data-mobile-open={mobileOpen}
+        >
+          <Sidebar />
+          <div
+            className="pointer-events-none fixed inset-0 z-40 bg-[rgba(8,14,22,0.55)] opacity-0 backdrop-blur-[2px] transition-opacity duration-250 ease-in-out group-data-[mobile-open=true]/shell:pointer-events-auto group-data-[mobile-open=true]/shell:opacity-100 motion-reduce:transition-none md:hidden"
+            onClick={closeMobile}
+            aria-hidden="true"
+          />
+          <main className="min-w-0 flex-1">{children}</main>
+        </div>
+      </PlatformStatusProvider>
     </SidebarContext.Provider>
   );
 }

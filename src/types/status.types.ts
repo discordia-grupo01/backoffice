@@ -2,7 +2,6 @@ export type PlatformStatus = "operational" | "degraded" | "maintenance";
 
 export type IncidentType = Exclude<PlatformStatus, "operational">;
 
-/** Identificadores de los servicios que exponen health checks. */
 export type PlatformServiceId =
   | "identify"
   | "servers"
@@ -41,3 +40,19 @@ export type StatusResult =
 
 export type IncidentActionResult =
   { ok: true } | { ok: false; status: number; message: string };
+
+export type ServiceHealth = "healthy" | "unavailable" | "no_data";
+
+export interface ServiceHealthCheck {
+  service: PlatformServiceId;
+  health: ServiceHealth;
+  checked_at: string;
+}
+
+export type ServiceHealthResult =
+  { ok: true; checks: ServiceHealthCheck[] } | { ok: false; message: string };
+
+export type ServiceHealthState =
+  | { phase: "loading" }
+  | { phase: "error"; message: string }
+  | { phase: "ready"; checks: ServiceHealthCheck[] };
