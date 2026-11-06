@@ -33,3 +33,18 @@ export function resolveIncident(
     { token, method: "POST" },
   );
 }
+
+export interface ServiceHealthResponse {
+  services: Array<{
+    name: string;
+    status: "unknown" | "operational" | "degraded";
+    last_checked_at?: string;
+    consecutive_failures?: number;
+  }>;
+}
+
+export function getServiceHealth(
+  token: string,
+): Promise<ApiResult<ServiceHealthResponse>> {
+  return apiRequest<ServiceHealthResponse>("/v1/health/services", { token });
+}
