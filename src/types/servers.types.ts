@@ -29,6 +29,9 @@ export type ServersResult =
   | { ok: true; page: ServersPage }
   | { ok: false; status: number; message: string };
 
+export type DeleteServerResult =
+  { ok: true } | { ok: false; status: number; code: string; message: string };
+
 /** Secciones del expediente de un servidor que se listan y paginan. */
 export type ServerDossierSection = "reports" | "moderation";
 
@@ -37,16 +40,13 @@ export interface ServerDossierSectionItems {
   moderation: DossierModerationAction;
 }
 
-/** Mensajes enviados en el servidor en un día (`date` en `YYYY-MM-DD`). */
 export interface ServerMessagingDay {
   date: string;
   messages: number;
 }
 
-/** Expediente resumido de un servidor: datos, mensajería reciente y, por sección, el total y lo más reciente. */
 export interface ServerDossierSummary {
   server: PlatformServer;
-  /** Últimos 7 días, del más viejo al más nuevo. */
   messaging: ServerMessagingDay[];
   counts: Record<ServerDossierSection, number>;
   latest: { [S in ServerDossierSection]: ServerDossierSectionItems[S][] };
