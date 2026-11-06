@@ -18,6 +18,7 @@ interface ConfirmDialogProps {
   variant?: "danger" | "caution" | "positive" | "primary";
   icon?: LucideIcon;
   isLoading?: boolean;
+  isConfirmDisabled?: boolean;
   error?: string;
   onConfirm: () => void;
   onCancel: () => void;
@@ -40,6 +41,7 @@ export function ConfirmDialog({
   variant = "danger",
   icon: Icon = TriangleAlert,
   isLoading = false,
+  isConfirmDisabled = false,
   error,
   onConfirm,
   onCancel,
@@ -86,7 +88,12 @@ export function ConfirmDialog({
           <Button variant="secondary" disabled={isLoading} onClick={close}>
             {cancelLabel}
           </Button>
-          <Button variant={variant} isLoading={isLoading} onClick={onConfirm}>
+          <Button
+            variant={variant}
+            isLoading={isLoading}
+            disabled={isConfirmDisabled || isLoading}
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </Button>
         </div>

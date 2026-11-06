@@ -13,23 +13,18 @@ import { cn } from "@/lib/cn";
 import { totalLabel } from "@/utils/pagination";
 import type { PlatformServer } from "@/types/servers.types";
 
+import {
+  DeleteServerDialog,
+  DeleteServerResultDialog,
+} from "./DeleteServerDialog";
 import { ServerDossierDialog } from "./dossier/ServerDossierDialog";
+import { useServerDeletion } from "./hooks/useServerDeletion";
 import { useServers } from "./hooks/useServers";
+import { useServerSuspension } from "./hooks/useServerSuspension";
 import { ServersList } from "./ServersList";
 import { ServersSkeleton } from "./ServersSkeleton";
 import { ServersEmptyState, ServersErrorState } from "./ServersStates";
-
-function handleSuspend(server: PlatformServer) {
-  console.log("Suspender", server.id);
-}
-
-function handleReactivate(server: PlatformServer) {
-  console.log("Reactivar", server.id);
-}
-
-function handleDelete(server: PlatformServer) {
-  console.log("Eliminar", server.id);
-}
+import { ServerSuspensionDialog } from "./ServerSuspensionDialog";
 
 export function ServersView() {
   const {
@@ -50,6 +45,21 @@ export function ServersView() {
   const [dossierServer, setDossierServer] = useState<PlatformServer | null>(
     null,
   );
+  const deletion = useServerDeletion({
+    onDeleted: (server) =>
+      setDossierServer((current) =>
+        current?.id === server.id ? null : current,
+      ),
+    onDismissed: retry,
+  });
+  const suspension = useServerSuspension({
+    onChanged: (server) => {
+      setDossierServer((current) =>
+        current?.id === server.id ? server : current,
+      );
+      retry();
+    },
+  });
   const hasData = servers.length > 0;
 
   if (status === "forbidden") return <NoStaffAccess />;
@@ -117,9 +127,33 @@ export function ServersView() {
       <ServerDossierDialog
         server={dossierServer}
         onClose={() => setDossierServer(null)}
-        onSuspend={handleSuspend}
-        onReactivate={handleReactivate}
-        onDelete={handleDelete}
+        onSuspend={(server) => suspension.request(server, "suspend")}
+        onReactivate={(server) => suspension.request(server, "reactivate")}
+        onDelete={deletion.request}
+      />
+
+      <ServerSuspensionDialog
+        pending={suspension.pending}
+        isSubmitting={suspension.isSubmitting}
+        error={suspension.error}
+        onConfirm={suspension.confirm}
+        onCancel={suspension.cancel}
+      />
+
+      <DeleteServerDialog
+        pending={deletion.pending}
+        confirmName={deletion.confirmName}
+        canConfirm={deletion.canConfirm}
+        isSubmitting={deletion.isSubmitting}
+        error={deletion.error}
+        onConfirmNameChange={deletion.setConfirmName}
+        onConfirm={deletion.confirm}
+        onCancel={deletion.cancel}
+      />
+
+      <DeleteServerResultDialog
+        result={deletion.result}
+        onClose={deletion.dismissResult}
       />
     </>
   );
