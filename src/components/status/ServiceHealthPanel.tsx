@@ -37,7 +37,7 @@ export function ServiceHealthPanel({
             Resultado de los health checks internos.
           </p>
         </div>
-        <Badge tone="neutral">Datos de prueba</Badge>
+        <Badge tone="neutral">Actualizado en vivo</Badge>
       </header>
 
       <div className="p-4 min-[481px]:p-5">
