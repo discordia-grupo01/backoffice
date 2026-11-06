@@ -9,8 +9,10 @@ import {
   type ReactNode,
 } from "react";
 
-import { getServiceHealth } from "@/services/status/healthClient";
+import { api } from "@/lib/browserApiClient";
 import { getPlatformStatus } from "@/services/status/client";
+import { getServiceHealth } from "@/services/status/healthClient";
+import { connectHealthNotifications } from "@/services/notifications/socket";
 import type {
   PlatformStatusResponse,
   ServiceHealthState,
@@ -34,19 +36,39 @@ export function PlatformStatusProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    getPlatformStatus().then((result) => {
-      if (!cancelled && result.ok) setPlatform(result.data);
-    });
-    getServiceHealth().then((result) => {
-      if (cancelled) return;
-      setHealth(
-        result.ok
-          ? { phase: "ready", checks: result.checks }
-          : { phase: "error", message: result.message },
-      );
-    });
+    const refresh = () => {
+      void getPlatformStatus().then((result) => {
+        if (!cancelled && result.ok) setPlatform(result.data);
+      });
+      void getServiceHealth().then((result) => {
+        if (cancelled) return;
+        setHealth(
+          result.ok
+            ? { phase: "ready", checks: result.checks }
+            : { phase: "error", message: result.message },
+        );
+      });
+    };
+
+    refresh();
+    let disconnect: (() => void) | undefined;
+    void api
+      .get<{ ok: boolean; userId?: string }>("/auth/session")
+      .then(async ({ data }) => {
+        if (cancelled || !data.ok || !data.userId) return;
+        const close = await connectHealthNotifications(
+          data.userId,
+          refresh,
+          refresh,
+        );
+        if (cancelled) close();
+        else disconnect = close;
+      })
+      .catch(() => undefined);
+
     return () => {
       cancelled = true;
+      disconnect?.();
     };
   }, []);
 
