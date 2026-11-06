@@ -13,7 +13,12 @@ import { cn } from "@/lib/cn";
 import { totalLabel } from "@/utils/pagination";
 import type { PlatformServer } from "@/types/servers.types";
 
+import {
+  DeleteServerDialog,
+  DeleteServerResultDialog,
+} from "./DeleteServerDialog";
 import { ServerDossierDialog } from "./dossier/ServerDossierDialog";
+import { useServerDeletion } from "./hooks/useServerDeletion";
 import { useServers } from "./hooks/useServers";
 import { ServersList } from "./ServersList";
 import { ServersSkeleton } from "./ServersSkeleton";
@@ -25,10 +30,6 @@ function handleSuspend(server: PlatformServer) {
 
 function handleReactivate(server: PlatformServer) {
   console.log("Reactivar", server.id);
-}
-
-function handleDelete(server: PlatformServer) {
-  console.log("Eliminar", server.id);
 }
 
 export function ServersView() {
@@ -50,6 +51,13 @@ export function ServersView() {
   const [dossierServer, setDossierServer] = useState<PlatformServer | null>(
     null,
   );
+  const deletion = useServerDeletion({
+    onDeleted: (server) =>
+      setDossierServer((current) =>
+        current?.id === server.id ? null : current,
+      ),
+    onDismissed: retry,
+  });
   const hasData = servers.length > 0;
 
   if (status === "forbidden") return <NoStaffAccess />;
@@ -119,7 +127,23 @@ export function ServersView() {
         onClose={() => setDossierServer(null)}
         onSuspend={handleSuspend}
         onReactivate={handleReactivate}
-        onDelete={handleDelete}
+        onDelete={deletion.request}
+      />
+
+      <DeleteServerDialog
+        pending={deletion.pending}
+        confirmName={deletion.confirmName}
+        canConfirm={deletion.canConfirm}
+        isSubmitting={deletion.isSubmitting}
+        error={deletion.error}
+        onConfirmNameChange={deletion.setConfirmName}
+        onConfirm={deletion.confirm}
+        onCancel={deletion.cancel}
+      />
+
+      <DeleteServerResultDialog
+        result={deletion.result}
+        onClose={deletion.dismissResult}
       />
     </>
   );

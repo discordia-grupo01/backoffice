@@ -1,7 +1,9 @@
 "use client";
 
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, Info } from "lucide-react";
 import { useId, type ReactNode } from "react";
+
+import { cn } from "@/lib/cn";
 
 import { Button } from "./Button";
 import { Dialog } from "./Dialog";
@@ -11,17 +13,25 @@ interface SuccessDialogProps {
   title: string;
   children: ReactNode;
   closeLabel?: string;
+  variant?: "success" | "info";
   onClose: () => void;
 }
+
+const TONES = {
+  success: { icon: CircleCheck, className: "bg-success/15 text-success" },
+  info: { icon: Info, className: "bg-bo/15 text-bo" },
+} as const;
 
 export function SuccessDialog({
   open,
   title,
   children,
   closeLabel = "Entendido",
+  variant = "success",
   onClose,
 }: SuccessDialogProps) {
   const titleId = useId();
+  const { icon: Icon, className: toneClassName } = TONES[variant];
 
   return (
     <Dialog
@@ -33,9 +43,12 @@ export function SuccessDialog({
       <div className="flex flex-col items-center gap-5 px-7 py-8 text-center">
         <span
           aria-hidden="true"
-          className="bg-success/15 text-success flex size-16 shrink-0 items-center justify-center rounded-2xl"
+          className={cn(
+            "flex size-16 shrink-0 items-center justify-center rounded-2xl",
+            toneClassName,
+          )}
         >
-          <CircleCheck size={28} />
+          <Icon size={28} />
         </span>
         <div>
           <h2
