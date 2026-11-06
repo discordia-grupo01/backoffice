@@ -20,17 +20,11 @@ import {
 import { ServerDossierDialog } from "./dossier/ServerDossierDialog";
 import { useServerDeletion } from "./hooks/useServerDeletion";
 import { useServers } from "./hooks/useServers";
+import { useServerSuspension } from "./hooks/useServerSuspension";
 import { ServersList } from "./ServersList";
 import { ServersSkeleton } from "./ServersSkeleton";
 import { ServersEmptyState, ServersErrorState } from "./ServersStates";
-
-function handleSuspend(server: PlatformServer) {
-  console.log("Suspender", server.id);
-}
-
-function handleReactivate(server: PlatformServer) {
-  console.log("Reactivar", server.id);
-}
+import { ServerSuspensionDialog } from "./ServerSuspensionDialog";
 
 export function ServersView() {
   const {
@@ -57,6 +51,14 @@ export function ServersView() {
         current?.id === server.id ? null : current,
       ),
     onDismissed: retry,
+  });
+  const suspension = useServerSuspension({
+    onChanged: (server) => {
+      setDossierServer((current) =>
+        current?.id === server.id ? server : current,
+      );
+      retry();
+    },
   });
   const hasData = servers.length > 0;
 
@@ -125,9 +127,17 @@ export function ServersView() {
       <ServerDossierDialog
         server={dossierServer}
         onClose={() => setDossierServer(null)}
-        onSuspend={handleSuspend}
-        onReactivate={handleReactivate}
+        onSuspend={(server) => suspension.request(server, "suspend")}
+        onReactivate={(server) => suspension.request(server, "reactivate")}
         onDelete={deletion.request}
+      />
+
+      <ServerSuspensionDialog
+        pending={suspension.pending}
+        isSubmitting={suspension.isSubmitting}
+        error={suspension.error}
+        onConfirm={suspension.confirm}
+        onCancel={suspension.cancel}
       />
 
       <DeleteServerDialog
