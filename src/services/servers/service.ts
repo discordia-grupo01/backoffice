@@ -1,7 +1,11 @@
 import "server-only";
 
 import { apiRequest, type ApiResult } from "@/lib/apiClient";
-import type { ServersPage, ServersQuery } from "@/types/servers.types";
+import type {
+  PlatformServer,
+  ServersPage,
+  ServersQuery,
+} from "@/types/servers.types";
 
 export function listServers(
   token: string,
@@ -22,4 +26,28 @@ export function deleteServer(
     `/v1/admin/servers/${encodeURIComponent(serverId)}`,
     { method: "DELETE", token, data: { confirm_name: confirmName } },
   );
+}
+
+function suspensionPath(serverId: string) {
+  return `/v1/admin/servers/${encodeURIComponent(serverId)}/suspension`;
+}
+
+export function suspendServer(
+  token: string,
+  serverId: string,
+): Promise<ApiResult<PlatformServer>> {
+  return apiRequest<PlatformServer>(suspensionPath(serverId), {
+    method: "POST",
+    token,
+  });
+}
+
+export function reactivateServer(
+  token: string,
+  serverId: string,
+): Promise<ApiResult<PlatformServer>> {
+  return apiRequest<PlatformServer>(suspensionPath(serverId), {
+    method: "DELETE",
+    token,
+  });
 }

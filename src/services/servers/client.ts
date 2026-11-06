@@ -3,6 +3,8 @@ import { REQUEST_FAILED_MESSAGE } from "@discordia/client-shared";
 import { api } from "@/lib/browserApiClient";
 import type {
   DeleteServerResult,
+  PlatformServer,
+  ServerSuspensionResult,
   ServersPage,
   ServersQuery,
   ServersResult,
@@ -68,4 +70,52 @@ export async function deleteServer(
       message: REQUEST_FAILED_MESSAGE,
     };
   }
+}
+
+interface SuspensionBody {
+  ok?: boolean;
+  code?: string;
+  message?: string;
+  server?: PlatformServer;
+}
+
+async function sendSuspension(
+  method: "post" | "delete",
+  serverId: string,
+): Promise<ServerSuspensionResult> {
+  try {
+    const { data, status } = await api.request<SuspensionBody>({
+      method,
+      url: `/servers/${encodeURIComponent(serverId)}/suspension`,
+    });
+
+    if (status === 200 && data?.ok && data.server) {
+      return { ok: true, server: data.server };
+    }
+    return {
+      ok: false,
+      status,
+      code: data?.code ?? "UNKNOWN_ERROR",
+      message: data?.message ?? REQUEST_FAILED_MESSAGE,
+    };
+  } catch {
+    return {
+      ok: false,
+      status: 0,
+      code: "NETWORK_ERROR",
+      message: REQUEST_FAILED_MESSAGE,
+    };
+  }
+}
+
+export function suspendServer(
+  serverId: string,
+): Promise<ServerSuspensionResult> {
+  return sendSuspension("post", serverId);
+}
+
+export function reactivateServer(
+  serverId: string,
+): Promise<ServerSuspensionResult> {
+  return sendSuspension("delete", serverId);
 }
