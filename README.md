@@ -80,7 +80,7 @@ discordia-backoffice/
 │   ├── services/                código agrupado por dominio del backend
 │   │   ├── auth/                client (browser), service (server), session, session-shape
 │   │   ├── metrics/             client (browser), service (server), mockPlatformMetrics
-│   │   ├── status/              client (browser), service (server): GET /v1/status y alta/resolución de incidentes; healthClient + mockServiceHealth (health checks simulados)
+│   │   ├── status/              client (browser), service (server): estado, health checks reales e incidentes; recibe cambios por notifications
 │   │   └── users/               client (browser), service (server): listado paginado de GET /v1/admin/users
 │   ├── types/                   tipos por dominio: <dominio>.types.ts
 │   ├── hooks/                   hooks de React que usan varias features (useTheme, useMediaQuery)
