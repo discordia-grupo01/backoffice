@@ -8,9 +8,13 @@ declare module "phoenix" {
   export class Socket {
     constructor(
       endPoint: string,
-      options?: { params?: Record<string, string> },
+      options?: {
+        params?: Record<string, string>;
+        reconnectAfterMs?: (tries: number) => number;
+      },
     );
     connect(): void;
+    onClose(callback: (event: unknown) => void): number;
     channel(topic: string, params: Record<string, unknown>): Channel;
     disconnect(callback?: () => void): void;
   }
