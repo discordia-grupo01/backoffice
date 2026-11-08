@@ -2,12 +2,13 @@
 
 import {
   hasErrors,
+  formatLoginRateLimit,
   type LoginErrors,
   validateLogin,
 } from "@discordia/client-shared";
 
 import { ArrowRight, Lock, Mail } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { FormAlert } from "@/components/ui/FormAlert";
@@ -22,9 +23,29 @@ export function LoginForm() {
   const [errors, setErrors] = useState<LoginErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginBlockedUntil, setLoginBlockedUntil] = useState<number | null>(
+    null,
+  );
+  const [loginBlockedSeconds, setLoginBlockedSeconds] = useState(0);
+
+  useEffect(() => {
+    if (loginBlockedUntil === null) return;
+    const update = () => {
+      const seconds = Math.max(
+        0,
+        Math.ceil((loginBlockedUntil - Date.now()) / 1000),
+      );
+      setLoginBlockedSeconds(seconds);
+      if (seconds === 0) setLoginBlockedUntil(null);
+    };
+    update();
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
+  }, [loginBlockedUntil]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (loginBlockedSeconds > 0) return;
     setFormError(null);
 
     const nextErrors = validateLogin({ email, password });
@@ -36,6 +57,11 @@ export function LoginForm() {
     setIsSubmitting(false);
 
     if (!result.ok) {
+      if (result.retryAfterSeconds && result.retryAfterSeconds > 0) {
+        setLoginBlockedUntil(Date.now() + result.retryAfterSeconds * 1000);
+        setFormError(null);
+        return;
+      }
       setFormError(result.message);
       return;
     }
@@ -77,10 +103,20 @@ export function LoginForm() {
 
         <FormAlert message={formError ?? undefined} />
 
-        <Button type="submit" isLoading={isSubmitting} className="mt-2">
+        <Button
+          type="submit"
+          isLoading={isSubmitting}
+          disabled={loginBlockedSeconds > 0}
+          className="mt-2"
+        >
           <span>Ingresar al panel</span>
           <ArrowRight size={16} />
         </Button>
+        {loginBlockedSeconds > 0 ? (
+          <p className="text-content-muted text-center text-[12px]">
+            {formatLoginRateLimit(loginBlockedSeconds)}
+          </p>
+        ) : null}
       </form>
     </>
   );
