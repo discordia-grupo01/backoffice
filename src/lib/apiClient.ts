@@ -61,7 +61,11 @@ export async function apiRequest<T>(
       url: path,
       ...buildRequestConfig(options),
     });
-    return toApiResult<T>(response.status, response.data);
+    return toApiResult<T>(
+      response.status,
+      response.data,
+      response.headers["retry-after"],
+    );
   } catch (error) {
     return toNetworkError(error);
   }
@@ -82,7 +86,11 @@ export async function apiRequestWithSetCookie<T>(
       ...buildRequestConfig(options),
     });
     return {
-      result: toApiResult<T>(response.status, response.data),
+      result: toApiResult<T>(
+        response.status,
+        response.data,
+        response.headers["retry-after"],
+      ),
       setCookieHeader: response.headers["set-cookie"],
     };
   } catch (error) {
