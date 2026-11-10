@@ -126,6 +126,7 @@ interface DossierSectionBlockProps {
   shown?: number;
   empty?: string;
   onSeeAll?: () => void;
+  action?: ReactNode;
   children: ReactNode;
 }
 
@@ -137,6 +138,7 @@ export function DossierSectionBlock({
   shown = 0,
   empty,
   onSeeAll,
+  action,
   children,
 }: DossierSectionBlockProps) {
   const headingId = `${idPrefix}-heading-${section}`;
@@ -156,6 +158,7 @@ export function DossierSectionBlock({
             </>
           ) : null}
         </h3>
+        {action}
         {hasCount && onSeeAll && count > shown ? (
           <DossierLinkButton
             id={seeAllButtonId(idPrefix, section)}

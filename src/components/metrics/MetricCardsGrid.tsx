@@ -1,4 +1,3 @@
-import { formatInteger } from "@/utils/chartFormat";
 import type { MetricsTotals } from "@/types/metrics.types";
 
 import { MetricCard } from "./MetricCard";
@@ -11,19 +10,19 @@ export function MetricCardsGrid({ totals }: { totals: MetricsTotals }) {
     >
       <MetricCard
         label="Usuarios activos"
-        value={formatInteger(totals.active_users)}
+        value={totals.active_users}
         hint="Mandaron mensajes o entraron o salieron de un servidor"
         accentVar="--chart-1"
       />
       <MetricCard
         label="Servidores creados"
-        value={formatInteger(totals.servers_created)}
+        value={totals.servers_created}
         hint="Nuevos servidores en el período"
         accentVar="--info"
       />
       <MetricCard
         label="Mensajes enviados"
-        value={formatInteger(totals.messages_sent)}
+        value={totals.messages_sent}
         hint="Suma de todos los servidores de la plataforma"
         accentVar="--success"
       />

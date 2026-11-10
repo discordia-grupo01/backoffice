@@ -66,18 +66,13 @@ function ServerDossierContent({
       avatar={<Avatar name={name} size={44} className="rounded-xl" />}
       titleId={view.titleId}
       onClose={view.onClose}
+      onBack={view.section ? view.onBack : undefined}
+      backRef={view.backRef}
     />
   );
 
   if (view.section === "metrics") {
-    return (
-      <ServerMetricsSection
-        serverId={view.subjectId}
-        header={header}
-        onBack={view.onBack}
-        backRef={view.backRef}
-      />
-    );
+    return <ServerMetricsSection serverId={view.subjectId} header={header} />;
   }
 
   if (view.section) {
@@ -86,8 +81,6 @@ function ServerDossierContent({
         serverId={view.subjectId}
         section={view.section}
         header={header}
-        onBack={view.onBack}
-        backRef={view.backRef}
       />
     );
   }

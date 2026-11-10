@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode, Ref } from "react";
+import type { ReactNode } from "react";
 
 import { DossierFullList } from "@/components/dossier/DossierFullList";
 import type { DossierSection } from "@/types/users.types";
@@ -16,16 +16,12 @@ interface UserDossierSectionProps {
   userId: string;
   section: DossierSection;
   header: ReactNode;
-  onBack: () => void;
-  backRef: Ref<HTMLButtonElement>;
 }
 
 export function UserDossierSection({
   userId,
   section,
   header,
-  onBack,
-  backRef,
 }: UserDossierSectionProps) {
   const list = useDossierSection(userId, section);
   const { title, empty } = USER_DOSSIER_SECTIONS[section];
@@ -39,8 +35,6 @@ export function UserDossierSection({
       renderItems={(items) => (
         <UserDossierItems {...({ section, items } as UserDossierItemsProps)} />
       )}
-      onBack={onBack}
-      backRef={backRef}
     />
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { useId, type ReactNode, type Ref } from "react";
+import { useId, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { PaginationBar } from "@/components/ui/PaginationBar";
@@ -10,7 +10,6 @@ import { StateBox } from "@/components/ui/StateBox";
 import type { PagedListStatus } from "@/hooks/usePagedList";
 import { cn } from "@/lib/cn";
 
-import { DossierBackButton } from "./DossierBackButton";
 import { DossierEmpty } from "./DossierOverview";
 
 const SECTION_LOAD_ERROR =
@@ -32,8 +31,6 @@ interface DossierFullListProps<T> {
   empty: string;
   list: PagedSection<T>;
   renderItems: (items: T[]) => ReactNode;
-  onBack: () => void;
-  backRef: Ref<HTMLButtonElement>;
 }
 
 export function DossierFullList<T>({
@@ -42,8 +39,6 @@ export function DossierFullList<T>({
   empty,
   list,
   renderItems,
-  onBack,
-  backRef,
 }: DossierFullListProps<T>) {
   const { items, total, status, page, pageSize, setPage, retry } = list;
   const hasData = items.length > 0;
@@ -99,9 +94,7 @@ export function DossierFullList<T>({
       {header}
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5">
-        <DossierBackButton ref={backRef} onClick={onBack} />
-
-        <section aria-labelledby={headingId} className="mt-5">
+        <section aria-labelledby={headingId}>
           <h3
             id={headingId}
             className="font-display mb-2 text-sm font-semibold"

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode, Ref } from "react";
+import type { ReactNode } from "react";
 
 import { DossierFullList } from "@/components/dossier/DossierFullList";
 import type { ServerDossierSection as Section } from "@/types/servers.types";
@@ -16,16 +16,12 @@ interface ServerDossierSectionProps {
   serverId: string;
   section: Section;
   header: ReactNode;
-  onBack: () => void;
-  backRef: Ref<HTMLButtonElement>;
 }
 
 export function ServerDossierSection({
   serverId,
   section,
   header,
-  onBack,
-  backRef,
 }: ServerDossierSectionProps) {
   const list = useServerDossierSection(serverId, section);
   const { title, empty } = SERVER_DOSSIER_SECTIONS[section];
@@ -41,8 +37,6 @@ export function ServerDossierSection({
           {...({ section, items } as ServerDossierItemsProps)}
         />
       )}
-      onBack={onBack}
-      backRef={backRef}
     />
   );
 }

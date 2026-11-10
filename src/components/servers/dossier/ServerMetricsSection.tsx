@@ -1,9 +1,8 @@
 "use client";
 
 import { ShieldOff } from "lucide-react";
-import { useId, type ReactNode, type Ref } from "react";
+import { useId, type ReactNode } from "react";
 
-import { DossierBackButton } from "@/components/dossier/DossierBackButton";
 import { MetricCard } from "@/components/metrics/MetricCard";
 import { MetricsPeriodBar } from "@/components/metrics/MetricsPeriodBar";
 import {
@@ -12,7 +11,6 @@ import {
 } from "@/components/metrics/MetricsStates";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateBox } from "@/components/ui/StateBox";
-import { formatInteger } from "@/utils/chartFormat";
 import { formatDate } from "@/utils/formatDate";
 import { parseIsoDate } from "@/utils/metricsPeriod";
 import type { MetricsPeriod, ServerMetrics } from "@/types/metrics.types";
@@ -24,15 +22,11 @@ const CARDS_GRID = "grid grid-cols-1 gap-3 sm:grid-cols-3";
 interface ServerMetricsSectionProps {
   serverId: string;
   header: ReactNode;
-  onBack: () => void;
-  backRef: Ref<HTMLButtonElement>;
 }
 
 export function ServerMetricsSection({
   serverId,
   header,
-  onBack,
-  backRef,
 }: ServerMetricsSectionProps) {
   const {
     periodKey,
@@ -83,9 +77,7 @@ export function ServerMetricsSection({
       {header}
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5">
-        <DossierBackButton ref={backRef} onClick={onBack} />
-
-        <section aria-labelledby={headingId} className="mt-5 space-y-4">
+        <section aria-labelledby={headingId} className="space-y-4">
           <div>
             <h3 id={headingId} className="font-display text-sm font-semibold">
               Métricas de actividad
@@ -130,21 +122,21 @@ function ServerMetricCards({ metrics }: { metrics: ServerMetrics }) {
         <MetricCard
           inset
           label="Miembros activos"
-          value={formatInteger(metrics.active_members)}
+          value={metrics.active_members}
           hint="Mandaron mensajes, entraron o salieron del servidor"
           accentVar="--chart-1"
         />
         <MetricCard
           inset
           label="Mensajes enviados"
-          value={formatInteger(metrics.messages_sent)}
+          value={metrics.messages_sent}
           hint="En todos los canales del servidor"
           accentVar="--success"
         />
         <MetricCard
           inset
           label="Miembros nuevos"
-          value={formatInteger(metrics.new_members)}
+          value={metrics.new_members}
           hint="Se unieron al servidor"
           accentVar="--info"
         />

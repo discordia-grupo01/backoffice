@@ -1,9 +1,11 @@
 import { Card } from "@/components/ui/Card";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/cn";
+import { formatMetricValue } from "@/utils/chartFormat";
 
 interface MetricCardProps {
   label: string;
-  value: string;
+  value: number;
   hint: string;
   accentVar: string;
   inset?: boolean;
@@ -16,11 +18,13 @@ export function MetricCard({
   accentVar,
   inset = false,
 }: MetricCardProps) {
+  const { display, exact } = formatMetricValue(value);
+
   return (
     <Card
       as="article"
       className={cn(
-        "rounded-xl p-4 min-[481px]:p-5",
+        "@container min-w-0 rounded-xl p-4 min-[481px]:p-5",
         inset && "bg-surface-input min-[481px]:p-4",
       )}
     >
@@ -29,8 +33,15 @@ export function MetricCard({
         style={{ background: `var(${accentVar})` }}
         aria-hidden="true"
       />
-      <p className="font-mono text-[26px] font-bold tabular-nums min-[481px]:text-2xl">
-        {value}
+      <p className="font-mono text-[clamp(1rem,14cqi,1.625rem)] font-bold whitespace-nowrap tabular-nums min-[481px]:text-[clamp(1rem,14cqi,1.5rem)]">
+        {exact ? (
+          <Tooltip label={exact}>
+            <span aria-hidden="true">{display}</span>
+            <span className="sr-only">{exact}</span>
+          </Tooltip>
+        ) : (
+          display
+        )}
       </p>
       <h3
         className="mt-1 mb-2 text-sm font-semibold"

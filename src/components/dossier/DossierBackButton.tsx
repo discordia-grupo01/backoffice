@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { forwardRef } from "react";
 
 export const DossierBackButton = forwardRef<
@@ -10,10 +10,10 @@ export const DossierBackButton = forwardRef<
       ref={ref}
       type="button"
       onClick={onClick}
-      className="text-content-muted hover:text-content focus-visible:ring-bo -ml-1 flex cursor-pointer items-center gap-1.5 rounded-md px-1 py-0.5 text-[13px] font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
+      aria-label="Volver al expediente"
+      className="text-content-subtle hover:bg-surface-hover hover:text-content focus-visible:ring-bo -ml-1 flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none"
     >
-      <ArrowLeft size={16} aria-hidden="true" />
-      Volver al expediente
+      <ChevronLeft size={20} aria-hidden="true" />
     </button>
   );
 });

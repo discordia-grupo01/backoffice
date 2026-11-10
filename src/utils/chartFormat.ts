@@ -12,6 +12,18 @@ export function formatCompact(value: number): string {
   return compactFormat.format(value);
 }
 
+export const METRIC_COMPACT_FROM = 1_000_000_000;
+
+export function formatMetricValue(value: number): {
+  display: string;
+  exact: string | null;
+} {
+  if (value < METRIC_COMPACT_FROM) {
+    return { display: formatInteger(value), exact: null };
+  }
+  return { display: formatCompact(value), exact: formatInteger(value) };
+}
+
 /** Etiqueta corta de un punto de la serie para el eje X. */
 export function formatSeriesLabel(
   date: string,

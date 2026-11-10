@@ -58,19 +58,16 @@ export function ServerDossierOverview({
         idPrefix={idPrefix}
         section="messaging"
         title="Actividad de mensajería reciente"
-      >
-        <p className="text-content-muted -mt-1 mb-2 text-xs">
-          Mensajes por día en los últimos 7 días
-        </p>
-        <ServerMessagingChart days={summary.messaging} />
-        <div className="mt-2 flex justify-end">
+        action={
           <DossierLinkButton
             id={seeAllButtonId(idPrefix, "metrics")}
             onClick={() => onSeeAll("metrics")}
           >
             Ver métricas de actividad
           </DossierLinkButton>
-        </div>
+        }
+      >
+        <ServerMessagingChart days={summary.messaging} />
       </DossierSectionBlock>
 
       {SERVER_DOSSIER_SECTION_ORDER.map((section) => (
