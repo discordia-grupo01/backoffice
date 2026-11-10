@@ -2,7 +2,7 @@
 
 import { usePagedList, type PageRequest } from "@/hooks/usePagedList";
 import { getUserDossierPage } from "@/services/users/dossierClient";
-import { PAGE_SIZE } from "@/utils/pagination";
+import { DOSSIER_PAGE_SIZE } from "@/utils/pagination";
 import type {
   DossierSection,
   DossierSectionItems,
@@ -19,6 +19,6 @@ export function useDossierSection<S extends DossierSection>(
     fetchPage: ({ limit, offset }: PageRequest<object>) =>
       getUserDossierPage(user, section, { limit, offset }),
     emptyFilters: NO_FILTERS,
-    pageSize: PAGE_SIZE,
+    pageSize: DOSSIER_PAGE_SIZE,
   });
 }

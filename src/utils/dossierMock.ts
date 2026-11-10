@@ -13,7 +13,7 @@ export interface MockDossierSubject {
 }
 
 /** Elementos más recientes que trae el resumen de cada sección. */
-export const DOSSIER_PREVIEW_SIZE = 3;
+export const DOSSIER_PREVIEW_SIZE = 5;
 
 const MOCK_DELAY_MS = 450;
 

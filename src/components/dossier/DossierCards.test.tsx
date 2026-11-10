@@ -72,7 +72,7 @@ describe("ModerationCards", () => {
 describe("ReportCards", () => {
   it("agrega el servidor al motivo cuando se pide", () => {
     render(<ReportCards items={[report]} showServer />);
-    expect(screen.getByText("Spam · en Gamers")).toBeInTheDocument();
+    expect(screen.getByText("Spam en Gamers")).toBeInTheDocument();
   });
 
   it("sin showServer muestra solo el motivo", () => {

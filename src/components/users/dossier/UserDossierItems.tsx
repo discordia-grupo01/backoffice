@@ -1,13 +1,30 @@
+import { LogIn, LogOut, MessageCircle, type LucideIcon } from "lucide-react";
+
 import { Avatar } from "@/components/ui/Avatar";
 import {
   DossierCard,
   DossierCardList,
-  DossierDatedText,
+  DossierEntry,
   ModerationCards,
   ReportCards,
   UNKNOWN_SERVER_NAME,
+  type DossierTone,
 } from "@/components/dossier/DossierCards";
-import type { DossierSection, DossierSectionItems } from "@/types/users.types";
+import { formatDate } from "@/utils/formatDate";
+import type {
+  DossierActivityKind,
+  DossierSection,
+  DossierSectionItems,
+} from "@/types/users.types";
+
+const ACTIVITY: Record<
+  DossierActivityKind,
+  { icon: LucideIcon; tone: DossierTone }
+> = {
+  message_sent: { icon: MessageCircle, tone: "accent" },
+  joined_server: { icon: LogIn, tone: "success" },
+  left_server: { icon: LogOut, tone: "muted" },
+};
 
 export const USER_DOSSIER_SECTIONS: Record<
   DossierSection,
@@ -48,8 +65,19 @@ export function UserDossierItems({ section, items }: UserDossierItemsProps) {
             const name = membership.server_name ?? UNKNOWN_SERVER_NAME;
             return (
               <DossierCard key={membership.server_id}>
-                <Avatar name={name} size={28} className="rounded-lg" />
-                <p className="min-w-0 flex-1 truncate text-sm">{name}</p>
+                <Avatar name={name} size={32} className="rounded-lg" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm">{name}</p>
+                  <p className="text-content-muted mt-0.5 text-xs">
+                    Miembro desde{" "}
+                    <time
+                      dateTime={membership.joined_at}
+                      className="tabular-nums"
+                    >
+                      {formatDate(membership.joined_at)}
+                    </time>
+                  </p>
+                </div>
               </DossierCard>
             );
           })}
@@ -58,14 +86,18 @@ export function UserDossierItems({ section, items }: UserDossierItemsProps) {
     case "activity":
       return (
         <DossierCardList>
-          {items.map((item) => (
-            <DossierCard key={item.id}>
-              <DossierDatedText
-                text={item.description}
+          {items.map((item) => {
+            const { icon, tone } = ACTIVITY[item.kind] ?? ACTIVITY.message_sent;
+            return (
+              <DossierEntry
+                key={item.id}
+                icon={icon}
+                tone={tone}
+                title={item.description}
                 date={item.occurred_at}
               />
-            </DossierCard>
-          ))}
+            );
+          })}
         </DossierCardList>
       );
     case "reports":

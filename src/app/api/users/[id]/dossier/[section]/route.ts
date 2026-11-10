@@ -9,7 +9,7 @@ import {
 } from "@/lib/apiRoute";
 import { destroySession, getValidSession } from "@/services/auth/session";
 import { getUserDossierSection } from "@/services/users/service";
-import { MAX_PAGE_SIZE, PAGE_SIZE } from "@/utils/pagination";
+import { DOSSIER_PAGE_SIZE, MAX_PAGE_SIZE } from "@/utils/pagination";
 import type { DossierPage } from "@/types/dossier.types";
 import type { DossierSection, DossierSectionItems } from "@/types/users.types";
 
@@ -38,7 +38,7 @@ export async function GET(
   if (!session) return unauthorizedResponse();
 
   const { searchParams } = new URL(request.url);
-  const limit = parseInteger(searchParams.get("limit"), PAGE_SIZE);
+  const limit = parseInteger(searchParams.get("limit"), DOSSIER_PAGE_SIZE);
   const offset = parseInteger(searchParams.get("offset"), 0);
 
   if (
