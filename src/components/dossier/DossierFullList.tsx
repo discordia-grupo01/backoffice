@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, ArrowLeft } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { useId, type ReactNode, type Ref } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -10,6 +10,7 @@ import { StateBox } from "@/components/ui/StateBox";
 import type { PagedListStatus } from "@/hooks/usePagedList";
 import { cn } from "@/lib/cn";
 
+import { DossierBackButton } from "./DossierBackButton";
 import { DossierEmpty } from "./DossierOverview";
 
 const SECTION_LOAD_ERROR =
@@ -98,15 +99,7 @@ export function DossierFullList<T>({
       {header}
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5">
-        <button
-          ref={backRef}
-          type="button"
-          onClick={onBack}
-          className="text-content-muted hover:text-content focus-visible:ring-bo -ml-1 flex cursor-pointer items-center gap-1.5 rounded-md px-1 py-0.5 text-[13px] font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
-        >
-          <ArrowLeft size={16} aria-hidden="true" />
-          Volver al expediente
-        </button>
+        <DossierBackButton ref={backRef} onClick={onBack} />
 
         <section aria-labelledby={headingId} className="mt-5">
           <h3

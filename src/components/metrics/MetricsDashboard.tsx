@@ -5,13 +5,12 @@ import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { usePlatformMetrics } from "@/components/metrics/hooks/usePlatformMetrics";
 
-import { CustomRangeInputs } from "./CustomRangeInputs";
 import { ExportCsvButton } from "./ExportCsvButton";
 import { MetricCardsGrid } from "./MetricCardsGrid";
 import { MetricsCharts } from "./MetricsCharts";
+import { MetricsPeriodBar } from "./MetricsPeriodBar";
 import { MetricsEmptyState, MetricsErrorState } from "./MetricsStates";
 import { MetricsSkeleton } from "./MetricsSkeleton";
-import { PeriodSelector } from "./PeriodSelector";
 
 export function MetricsDashboard() {
   const {
@@ -40,19 +39,14 @@ export function MetricsDashboard() {
       </PanelHeader>
 
       <PanelBody>
-        <div className="border-line bg-surface-raised mb-5 flex flex-col gap-3 rounded-[14px] border p-3 min-[481px]:px-4 min-[481px]:py-3.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4">
-          <span className="text-content-muted hidden text-xs font-semibold sm:inline">
-            Período:
-          </span>
-          <PeriodSelector value={periodKey} onChange={setPeriodKey} />
-          {periodKey === "custom" ? (
-            <CustomRangeInputs
-              value={customRange}
-              error={customError}
-              onChange={setCustomRange}
-            />
-          ) : null}
-        </div>
+        <MetricsPeriodBar
+          className="mb-5"
+          periodKey={periodKey}
+          onPeriodChange={setPeriodKey}
+          customRange={customRange}
+          onCustomRangeChange={setCustomRange}
+          customError={customError}
+        />
 
         {customError ? null : status === "loading" ? (
           <MetricsSkeleton />

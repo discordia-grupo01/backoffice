@@ -1,16 +1,29 @@
 import { Card } from "@/components/ui/Card";
+import { cn } from "@/lib/cn";
 
 interface MetricCardProps {
   label: string;
   value: string;
   hint: string;
-  /** Variable CSS del color de la barra superior, p. ej. `--chart-1`. */
   accentVar: string;
+  inset?: boolean;
 }
 
-export function MetricCard({ label, value, hint, accentVar }: MetricCardProps) {
+export function MetricCard({
+  label,
+  value,
+  hint,
+  accentVar,
+  inset = false,
+}: MetricCardProps) {
   return (
-    <Card as="article" className="rounded-xl p-4 min-[481px]:p-5">
+    <Card
+      as="article"
+      className={cn(
+        "rounded-xl p-4 min-[481px]:p-5",
+        inset && "bg-surface-input min-[481px]:p-4",
+      )}
+    >
       <span
         className="mb-4 block h-2 w-9 rounded-full"
         style={{ background: `var(${accentVar})` }}
@@ -25,7 +38,12 @@ export function MetricCard({ label, value, hint, accentVar }: MetricCardProps) {
       >
         {label}
       </h3>
-      <p className="bg-surface-input text-content-muted rounded-lg p-2 text-xs">
+      <p
+        className={cn(
+          "text-content-muted text-xs",
+          !inset && "bg-surface-input rounded-lg p-2",
+        )}
+      >
         {hint}
       </p>
     </Card>

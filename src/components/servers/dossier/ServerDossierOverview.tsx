@@ -1,13 +1,15 @@
 import {
+  DossierLinkButton,
   DossierSectionBlock,
   DossierSuspendedNotice,
+  seeAllButtonId,
 } from "@/components/dossier/DossierOverview";
 import { Fact, FactGrid } from "@/components/ui/Fact";
 import { formatInteger } from "@/utils/chartFormat";
 import { formatDate } from "@/utils/formatDate";
 import type {
-  ServerDossierSection,
   ServerDossierSummary,
+  ServerDossierView,
 } from "@/types/servers.types";
 
 import { ServerStatusBadge } from "../ServerStatusBadge";
@@ -22,7 +24,7 @@ import { ServerMessagingChart } from "./ServerMessagingChart";
 interface ServerDossierOverviewProps {
   summary: ServerDossierSummary;
   idPrefix: string;
-  onSeeAll: (section: ServerDossierSection) => void;
+  onSeeAll: (view: ServerDossierView) => void;
 }
 
 export function ServerDossierOverview({
@@ -61,6 +63,14 @@ export function ServerDossierOverview({
           Mensajes por día en los últimos 7 días
         </p>
         <ServerMessagingChart days={summary.messaging} />
+        <div className="mt-2 flex justify-end">
+          <DossierLinkButton
+            id={seeAllButtonId(idPrefix, "metrics")}
+            onClick={() => onSeeAll("metrics")}
+          >
+            Ver métricas de actividad
+          </DossierLinkButton>
+        </div>
       </DossierSectionBlock>
 
       {SERVER_DOSSIER_SECTION_ORDER.map((section) => (
