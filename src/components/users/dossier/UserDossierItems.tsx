@@ -5,6 +5,7 @@ import {
   DossierDatedText,
   ModerationCards,
   ReportCards,
+  UNKNOWN_SERVER_NAME,
 } from "@/components/dossier/DossierCards";
 import type { DossierSection, DossierSectionItems } from "@/types/users.types";
 
@@ -38,24 +39,20 @@ export type UserDossierItemsProps = {
   [S in DossierSection]: { section: S; items: DossierSectionItems[S][] };
 }[DossierSection];
 
-/** Tarjetas de una sección del expediente de usuario, iguales en el resumen y en el listado completo. */
 export function UserDossierItems({ section, items }: UserDossierItemsProps) {
   switch (section) {
     case "servers":
       return (
         <DossierCardList>
-          {items.map((membership) => (
-            <DossierCard key={membership.server_id}>
-              <Avatar
-                name={membership.server_name}
-                size={28}
-                className="rounded-lg"
-              />
-              <p className="min-w-0 flex-1 truncate text-sm">
-                {membership.server_name}
-              </p>
-            </DossierCard>
-          ))}
+          {items.map((membership) => {
+            const name = membership.server_name ?? UNKNOWN_SERVER_NAME;
+            return (
+              <DossierCard key={membership.server_id}>
+                <Avatar name={name} size={28} className="rounded-lg" />
+                <p className="min-w-0 flex-1 truncate text-sm">{name}</p>
+              </DossierCard>
+            );
+          })}
         </DossierCardList>
       );
     case "activity":
@@ -72,8 +69,8 @@ export function UserDossierItems({ section, items }: UserDossierItemsProps) {
         </DossierCardList>
       );
     case "reports":
-      return <ReportCards items={items} />;
+      return <ReportCards items={items} showServer />;
     case "moderation":
-      return <ModerationCards items={items} />;
+      return <ModerationCards items={items} showServer />;
   }
 }
