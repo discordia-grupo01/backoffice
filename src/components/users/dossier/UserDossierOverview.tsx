@@ -1,4 +1,7 @@
-import { DossierSectionBlock } from "@/components/dossier/DossierOverview";
+import {
+  DossierSectionBlock,
+  DossierSuspendedNotice,
+} from "@/components/dossier/DossierOverview";
 import { Fact, FactGrid } from "@/components/ui/Fact";
 import { formatDate, formatDateTime } from "@/utils/formatDate";
 import type { DossierSection, UserDossierSummary } from "@/types/users.types";
@@ -17,7 +20,6 @@ interface UserDossierOverviewProps {
   onSeeAll: (section: DossierSection) => void;
 }
 
-/** Resumen del expediente de usuario: datos de la cuenta y lo más reciente de cada sección. */
 export function UserDossierOverview({
   summary,
   idPrefix,
@@ -27,6 +29,11 @@ export function UserDossierOverview({
 
   return (
     <>
+      <DossierSuspendedNotice
+        label="Cuenta suspendida"
+        suspendedAt={user.suspended_at}
+      />
+
       <FactGrid>
         <Fact label="Estado de cuenta">
           <UserStatusBadge status={user.status} />

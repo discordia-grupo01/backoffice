@@ -100,6 +100,15 @@ describe("ReportCards", () => {
     expect(linkOf("Spam en Gamers")).toBe("/servers?expediente=srv-1");
   });
 
+  it("desde el usuario: un reporte de mensaje lo aclara", () => {
+    render(
+      <ReportCards items={[report({ kind: "message" })]} perspective="user" />,
+    );
+    expect(
+      screen.getByText("Spam en un mensaje en Gamers"),
+    ).toBeInTheDocument();
+  });
+
   it("desde el servidor: contra quién, con link a la persona", () => {
     render(<ReportCards items={[report()]} perspective="server" />);
     expect(linkOf("Spam contra Beto")).toBe("/users?expediente=usr-1");
@@ -113,5 +122,23 @@ describe("ReportCards", () => {
       />,
     );
     expect(linkOf("Spam en un mensaje de un miembro")).toBeNull();
+  });
+});
+
+describe("Estado de los reportes", () => {
+  it("muestra pendiente, resuelto o descartado", () => {
+    render(
+      <ReportCards
+        items={[
+          report(),
+          report({ id: "rep-2", status: "resolved" }),
+          report({ id: "rep-3", status: "dismissed" }),
+        ]}
+        perspective="server"
+      />,
+    );
+    expect(screen.getByText("Pendiente")).toBeInTheDocument();
+    expect(screen.getByText("Resuelto")).toBeInTheDocument();
+    expect(screen.getByText("Descartado")).toBeInTheDocument();
   });
 });

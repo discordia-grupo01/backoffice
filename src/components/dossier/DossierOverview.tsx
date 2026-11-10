@@ -1,9 +1,10 @@
-import { AlertTriangle, SearchX, ShieldOff } from "lucide-react";
+import { AlertTriangle, Ban, SearchX, ShieldOff } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateBox } from "@/components/ui/StateBox";
+import { formatDate } from "@/utils/formatDate";
 
 import type { DossierStatus } from "./hooks/useDossierSummary";
 
@@ -177,5 +178,26 @@ export function DossierOverviewSkeleton({
         </div>
       ))}
     </div>
+  );
+}
+
+export function DossierSuspendedNotice({
+  label,
+  suspendedAt,
+}: {
+  label: string;
+  suspendedAt: string | null | undefined;
+}) {
+  if (!suspendedAt) return null;
+  return (
+    <p className="border-danger/30 bg-danger/10 text-danger-readable flex items-center gap-3 rounded-xl border px-4 py-3 text-sm">
+      <Ban aria-hidden className="size-4 shrink-0" />
+      <span>
+        {label} desde el{" "}
+        <time dateTime={suspendedAt} className="tabular-nums">
+          {formatDate(suspendedAt)}
+        </time>
+      </span>
+    </p>
   );
 }

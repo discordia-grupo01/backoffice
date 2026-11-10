@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { Badge, type BadgeTone } from "@/components/ui/Badge";
 import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/cn";
 import { formatDateTime } from "@/utils/formatDate";
@@ -21,6 +22,7 @@ import type {
   DossierModerationAction,
   DossierModerationKind,
   DossierReport,
+  DossierReportStatus,
 } from "@/types/dossier.types";
 
 import { dossierHref } from "./hooks/useDossierUrl";
@@ -86,6 +88,7 @@ interface DossierEntryProps {
   title: string;
   date: string;
   href?: string;
+  badge?: ReactNode;
 }
 
 export function DossierEntry({
@@ -94,6 +97,7 @@ export function DossierEntry({
   title,
   date,
   href,
+  badge,
 }: DossierEntryProps) {
   return (
     <DossierCard href={href}>
@@ -115,6 +119,7 @@ export function DossierEntry({
           {formatDateTime(date)}
         </time>
       </div>
+      {badge ? <span className="shrink-0">{badge}</span> : null}
     </DossierCard>
   );
 }
@@ -123,7 +128,6 @@ export type DossierPerspective = "user" | "server";
 
 const UNKNOWN_MEMBER = "un miembro";
 
-/** Mismo formato que arma el back en la actividad: "Se unió a Gamers". */
 function inServer(text: string, serverName: string | null): string {
   return `${text} en ${serverName ?? "un servidor"}`;
 }
@@ -144,7 +148,12 @@ interface DossierItemsProps<T> {
 function reportView(report: DossierReport, perspective: DossierPerspective) {
   if (perspective === "user") {
     return {
-      title: inServer(report.reason, report.server_name),
+      title: inServer(
+        report.kind === "message"
+          ? `${report.reason} en un mensaje`
+          : report.reason,
+        report.server_name,
+      ),
       href: serverLink(report.server_id, report.server_name),
     };
   }
@@ -156,6 +165,20 @@ function reportView(report: DossierReport, perspective: DossierPerspective) {
         : `${report.reason} contra ${who}`,
     href: userLink(report.reported_user_id, report.reported_user_name),
   };
+}
+
+const REPORT_STATUS: Record<
+  DossierReportStatus,
+  { label: string; tone: BadgeTone }
+> = {
+  pending: { label: "Pendiente", tone: "warning" },
+  resolved: { label: "Resuelto", tone: "success" },
+  dismissed: { label: "Descartado", tone: "neutral" },
+};
+
+function ReportStatusBadge({ status }: { status: DossierReportStatus }) {
+  const view = REPORT_STATUS[status];
+  return view ? <Badge tone={view.tone}>{view.label}</Badge> : null;
 }
 
 export function ReportCards({
@@ -170,6 +193,7 @@ export function ReportCards({
           icon={Flag}
           tone="warning"
           date={report.created_at}
+          badge={<ReportStatusBadge status={report.status} />}
           {...reportView(report, perspective)}
         />
       ))}
