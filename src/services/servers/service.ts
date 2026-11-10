@@ -1,8 +1,12 @@
 import "server-only";
 
 import { apiRequest, type ApiResult } from "@/lib/apiClient";
+import type { DossierPage } from "@/types/dossier.types";
 import type {
   PlatformServer,
+  ServerDossierSection,
+  ServerDossierSectionItems,
+  ServerDossierSummary,
   ServersPage,
   ServersQuery,
 } from "@/types/servers.types";
@@ -50,4 +54,27 @@ export function reactivateServer(
     method: "DELETE",
     token,
   });
+}
+
+function dossierPath(serverId: string): string {
+  return `/v1/admin/servers/${encodeURIComponent(serverId)}/dossier`;
+}
+
+export function getServerDossier(
+  token: string,
+  serverId: string,
+): Promise<ApiResult<ServerDossierSummary>> {
+  return apiRequest<ServerDossierSummary>(dossierPath(serverId), { token });
+}
+
+export function getServerDossierSection<S extends ServerDossierSection>(
+  token: string,
+  serverId: string,
+  section: S,
+  { limit, offset }: { limit: number; offset: number },
+): Promise<ApiResult<DossierPage<ServerDossierSectionItems[S]>>> {
+  return apiRequest<DossierPage<ServerDossierSectionItems[S]>>(
+    `${dossierPath(serverId)}/${section}`,
+    { token, params: { limit, offset } },
+  );
 }

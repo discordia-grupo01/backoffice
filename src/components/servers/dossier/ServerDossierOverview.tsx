@@ -1,4 +1,7 @@
-import { DossierSectionBlock } from "@/components/dossier/DossierOverview";
+import {
+  DossierSectionBlock,
+  DossierSuspendedNotice,
+} from "@/components/dossier/DossierOverview";
 import { Fact, FactGrid } from "@/components/ui/Fact";
 import { formatInteger } from "@/utils/chartFormat";
 import { formatDate } from "@/utils/formatDate";
@@ -31,6 +34,11 @@ export function ServerDossierOverview({
 
   return (
     <>
+      <DossierSuspendedNotice
+        label="Servidor suspendido"
+        suspendedAt={server.suspended_at}
+      />
+
       <FactGrid>
         <Fact label="Estado">
           <ServerStatusBadge server={server} />

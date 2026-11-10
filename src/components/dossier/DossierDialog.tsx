@@ -10,7 +10,7 @@ import {
 
 import { Dialog } from "@/components/ui/Dialog";
 
-import { useDossierHistory } from "./hooks/useDossierHistory";
+import type { DossierUrl } from "./hooks/useDossierUrl";
 import { seeAllButtonId } from "./DossierOverview";
 
 export interface DossierView<S extends string> {
@@ -24,36 +24,34 @@ export interface DossierView<S extends string> {
 }
 
 interface DossierDialogProps<S extends string> {
-  contentKey: string | null;
-  onClose: () => void;
-  children: (view: DossierView<S>) => ReactNode;
+  nav: DossierUrl<S>;
+  children: (view: DossierView<S> & { subjectId: string }) => ReactNode;
 }
 
 export function DossierDialog<S extends string>({
-  contentKey,
-  onClose,
+  nav,
   children,
 }: DossierDialogProps<S>) {
   const titleId = useId();
-  const history = useDossierHistory<S>(contentKey !== null, onClose);
+  const { subjectId } = nav;
 
   return (
     <Dialog
-      open={contentKey !== null}
-      onClose={history.close}
+      open={subjectId !== null}
+      onClose={nav.close}
       labelledBy={titleId}
       className="sm:w-[min(100vw-3rem,40rem)]"
     >
-      {contentKey !== null ? (
+      {subjectId !== null ? (
         <DossierViewContent
-          key={contentKey}
+          key={subjectId}
           titleId={titleId}
-          section={history.section}
-          onSeeAll={history.openSection}
-          onBack={history.backToOverview}
-          onClose={history.close}
+          section={nav.section}
+          onSeeAll={nav.openSection}
+          onBack={nav.backToOverview}
+          onClose={nav.close}
         >
-          {children}
+          {(view) => children({ ...view, subjectId })}
         </DossierViewContent>
       ) : null}
     </Dialog>

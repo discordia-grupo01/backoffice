@@ -3,10 +3,7 @@
 import type { ReactNode, Ref } from "react";
 
 import { DossierFullList } from "@/components/dossier/DossierFullList";
-import type {
-  PlatformServer,
-  ServerDossierSection as Section,
-} from "@/types/servers.types";
+import type { ServerDossierSection as Section } from "@/types/servers.types";
 
 import { useServerDossierSection } from "./hooks/useServerDossierSection";
 import {
@@ -16,7 +13,7 @@ import {
 } from "./ServerDossierItems";
 
 interface ServerDossierSectionProps {
-  server: PlatformServer;
+  serverId: string;
   section: Section;
   header: ReactNode;
   onBack: () => void;
@@ -24,13 +21,13 @@ interface ServerDossierSectionProps {
 }
 
 export function ServerDossierSection({
-  server,
+  serverId,
   section,
   header,
   onBack,
   backRef,
 }: ServerDossierSectionProps) {
-  const list = useServerDossierSection(server, section);
+  const list = useServerDossierSection(serverId, section);
   const { title, empty } = SERVER_DOSSIER_SECTIONS[section];
 
   return (

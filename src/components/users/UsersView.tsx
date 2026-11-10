@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useDossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
@@ -18,7 +19,7 @@ import { UsersEmptyState, UsersErrorState } from "./UsersStates";
 import { UsersSkeleton } from "./UsersSkeleton";
 import { UserSuspensionDialog } from "./UserSuspensionDialog";
 import { UserDossierDialog } from "./dossier/UserDossierDialog";
-import type { PlatformUser } from "@/types/users.types";
+import { USER_DOSSIER_SECTION_ORDER } from "./dossier/UserDossierItems";
 
 export function UsersView() {
   const {
@@ -38,10 +39,11 @@ export function UsersView() {
   } = useUsers();
 
   const { viewMode, setViewMode } = useViewMode();
-  const [dossierUser, setDossierUser] = useState<PlatformUser | null>(null);
+  const dossier = useDossierUrl(USER_DOSSIER_SECTION_ORDER);
+  const [dossierVersion, setDossierVersion] = useState(0);
   const suspension = useUserSuspension({
-    onChanged: (user) => {
-      setDossierUser((current) => (current?.id === user.id ? user : current));
+    onChanged: () => {
+      setDossierVersion((version) => version + 1);
       retry();
     },
   });
@@ -69,7 +71,7 @@ export function UsersView() {
         <UsersList
           users={users}
           view={viewMode}
-          onViewDossier={setDossierUser}
+          onViewDossier={(user) => dossier.open(user.id)}
         />
         <PaginationBar
           page={page}
@@ -106,8 +108,11 @@ export function UsersView() {
       </PanelBody>
 
       <UserDossierDialog
-        user={dossierUser}
-        onClose={() => setDossierUser(null)}
+        nav={dossier}
+        placeholder={
+          users.find((user) => user.id === dossier.subjectId) ?? null
+        }
+        refreshKey={dossierVersion}
         onSuspend={(user) => suspension.request(user, "suspend")}
         onReactivate={(user) => suspension.request(user, "reactivate")}
       />

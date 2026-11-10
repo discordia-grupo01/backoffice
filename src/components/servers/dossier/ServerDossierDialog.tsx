@@ -10,6 +10,7 @@ import {
   DossierOverviewSkeleton,
 } from "@/components/dossier/DossierOverview";
 import { useDossierSummary } from "@/components/dossier/hooks/useDossierSummary";
+import type { DossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { Avatar } from "@/components/ui/Avatar";
 import { getServerDossierSummary } from "@/services/servers/dossierClient";
 import type {
@@ -25,25 +26,18 @@ import { ServerDossierOverview } from "./ServerDossierOverview";
 import { ServerDossierSection as SectionScreen } from "./ServerDossierSection";
 
 interface ServerDossierDialogProps extends ServerDossierActionHandlers {
-  server: PlatformServer | null;
-  onClose: () => void;
+  nav: DossierUrl<ServerDossierSection>;
+  placeholder: PlatformServer | null;
+  refreshKey: number;
 }
 
 export function ServerDossierDialog({
-  server,
-  onClose,
-  ...actions
+  nav,
+  ...props
 }: ServerDossierDialogProps) {
   return (
-    <DossierDialog<ServerDossierSection>
-      contentKey={server?.id ?? null}
-      onClose={onClose}
-    >
-      {(view) =>
-        server ? (
-          <ServerDossierContent server={server} view={view} {...actions} />
-        ) : null
-      }
+    <DossierDialog<ServerDossierSection> nav={nav}>
+      {(view) => <ServerDossierContent view={view} {...props} />}
     </DossierDialog>
   );
 }
@@ -51,23 +45,27 @@ export function ServerDossierDialog({
 const SKELETON_BLOCKS = ["chart", "list", "list"] as const;
 
 function ServerDossierContent({
-  server,
   view,
+  placeholder,
+  refreshKey,
   ...actions
-}: ServerDossierActionHandlers & {
-  server: PlatformServer;
-  view: DossierView<ServerDossierSection>;
+}: Omit<ServerDossierDialogProps, "nav"> & {
+  view: DossierView<ServerDossierSection> & { subjectId: string };
 }) {
   const { status, summary, retry } = useDossierSummary(
-    server,
+    view.subjectId,
     getServerDossierSummary,
+    refreshKey,
   );
-  const current = summary?.server ?? server;
+  const server =
+    summary?.server ??
+    (placeholder?.id === view.subjectId ? placeholder : null);
+  const name = server?.name ?? "";
 
   const header = (
     <DossierHeader
-      name={current.name}
-      avatar={<Avatar name={current.name} size={44} className="rounded-xl" />}
+      name={name}
+      avatar={<Avatar name={name} size={44} className="rounded-xl" />}
       titleId={view.titleId}
       onClose={view.onClose}
     />
@@ -76,7 +74,7 @@ function ServerDossierContent({
   if (view.section) {
     return (
       <SectionScreen
-        server={current}
+        serverId={view.subjectId}
         section={view.section}
         header={header}
         onBack={view.onBack}
@@ -92,7 +90,9 @@ function ServerDossierContent({
         status={status}
         onRetry={retry}
         skeleton={<DossierOverviewSkeleton blocks={SKELETON_BLOCKS} />}
-        actions={<ServerDossierActions server={current} {...actions} />}
+        actions={
+          server ? <ServerDossierActions server={server} {...actions} /> : null
+        }
       >
         {summary ? (
           <ServerDossierOverview

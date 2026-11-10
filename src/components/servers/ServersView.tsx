@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { useDossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
@@ -11,13 +12,13 @@ import { ViewModeToggle } from "@/components/ui/ViewModeToggle";
 import { useViewMode } from "@/hooks/useViewMode";
 import { cn } from "@/lib/cn";
 import { totalLabel } from "@/utils/pagination";
-import type { PlatformServer } from "@/types/servers.types";
 
 import {
   DeleteServerDialog,
   DeleteServerResultDialog,
 } from "./DeleteServerDialog";
 import { ServerDossierDialog } from "./dossier/ServerDossierDialog";
+import { SERVER_DOSSIER_SECTION_ORDER } from "./dossier/ServerDossierItems";
 import { useServerDeletion } from "./hooks/useServerDeletion";
 import { useServers } from "./hooks/useServers";
 import { useServerSuspension } from "./hooks/useServerSuspension";
@@ -42,21 +43,17 @@ export function ServersView() {
   } = useServers();
 
   const { viewMode, setViewMode } = useViewMode();
-  const [dossierServer, setDossierServer] = useState<PlatformServer | null>(
-    null,
-  );
+  const dossier = useDossierUrl(SERVER_DOSSIER_SECTION_ORDER);
+  const [dossierVersion, setDossierVersion] = useState(0);
   const deletion = useServerDeletion({
-    onDeleted: (server) =>
-      setDossierServer((current) =>
-        current?.id === server.id ? null : current,
-      ),
+    onDeleted: (server) => {
+      if (dossier.subjectId === server.id) dossier.close();
+    },
     onDismissed: retry,
   });
   const suspension = useServerSuspension({
-    onChanged: (server) => {
-      setDossierServer((current) =>
-        current?.id === server.id ? server : current,
-      );
+    onChanged: () => {
+      setDossierVersion((version) => version + 1);
       retry();
     },
   });
@@ -82,7 +79,7 @@ export function ServersView() {
         <ServersList
           servers={servers}
           view={viewMode}
-          onViewDossier={setDossierServer}
+          onViewDossier={(server) => dossier.open(server.id)}
         />
         <PaginationBar
           page={page}
@@ -125,8 +122,11 @@ export function ServersView() {
       </PanelBody>
 
       <ServerDossierDialog
-        server={dossierServer}
-        onClose={() => setDossierServer(null)}
+        nav={dossier}
+        placeholder={
+          servers.find((server) => server.id === dossier.subjectId) ?? null
+        }
+        refreshKey={dossierVersion}
         onSuspend={(server) => suspension.request(server, "suspend")}
         onReactivate={(server) => suspension.request(server, "reactivate")}
         onDelete={deletion.request}

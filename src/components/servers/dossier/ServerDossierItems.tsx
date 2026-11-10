@@ -38,8 +38,8 @@ export function ServerDossierItems({
 }: ServerDossierItemsProps) {
   switch (section) {
     case "reports":
-      return <ReportCards items={items} />;
+      return <ReportCards items={items} perspective="server" />;
     case "moderation":
-      return <ModerationCards items={items} />;
+      return <ModerationCards items={items} perspective="server" />;
   }
 }
