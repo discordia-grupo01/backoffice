@@ -1,9 +1,10 @@
-import { AlertTriangle, ShieldOff } from "lucide-react";
+import { AlertTriangle, Ban, SearchX, ShieldOff } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateBox } from "@/components/ui/StateBox";
+import { formatDate } from "@/utils/formatDate";
 
 import type { DossierStatus } from "./hooks/useDossierSummary";
 
@@ -31,6 +32,17 @@ export function DossierOverviewBody({
         <StateBox role="alert" icon={ShieldOff} title="No tenés permisos">
           Los expedientes son solo para el staff de Discordia. Si creés que es
           un error, contactá a un administrador.
+        </StateBox>
+      );
+    }
+    if (status === "not-found") {
+      return (
+        <StateBox
+          role="alert"
+          icon={SearchX}
+          title="No encontramos este expediente"
+        >
+          Puede que se haya eliminado o que todavía no esté disponible.
         </StateBox>
       );
     }
@@ -62,7 +74,7 @@ export function DossierOverviewBody({
   return (
     <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-5">
       {renderContent()}
-      {status === "forbidden" ? null : (
+      {status === "forbidden" || status === "not-found" || !actions ? null : (
         <div className="border-line border-t pt-5">{actions}</div>
       )}
     </div>
@@ -166,5 +178,26 @@ export function DossierOverviewSkeleton({
         </div>
       ))}
     </div>
+  );
+}
+
+export function DossierSuspendedNotice({
+  label,
+  suspendedAt,
+}: {
+  label: string;
+  suspendedAt: string | null | undefined;
+}) {
+  if (!suspendedAt) return null;
+  return (
+    <p className="border-danger/30 bg-danger/10 text-danger-readable flex items-center gap-3 rounded-xl border px-4 py-3 text-sm">
+      <Ban aria-hidden className="size-4 shrink-0" />
+      <span>
+        {label} desde el{" "}
+        <time dateTime={suspendedAt} className="tabular-nums">
+          {formatDate(suspendedAt)}
+        </time>
+      </span>
+    </p>
   );
 }

@@ -6,12 +6,11 @@ import type { DossierPage, DossierSummaryResult } from "@/types/dossier.types";
 import type {
   DossierSection,
   DossierSectionItems,
-  PlatformUser,
   UserDossierSummary,
 } from "@/types/users.types";
 
-function dossierPath(user: PlatformUser): string {
-  return `/users/${encodeURIComponent(user.id)}/dossier`;
+function dossierPath(userId: string): string {
+  return `/users/${encodeURIComponent(userId)}/dossier`;
 }
 
 interface SummaryBody {
@@ -21,10 +20,10 @@ interface SummaryBody {
 }
 
 export async function getUserDossierSummary(
-  user: PlatformUser,
+  userId: string,
 ): Promise<DossierSummaryResult<UserDossierSummary>> {
   try {
-    const { data, status } = await api.get<SummaryBody>(dossierPath(user));
+    const { data, status } = await api.get<SummaryBody>(dossierPath(userId));
     if (status === 200 && data.ok && data.summary) {
       return { ok: true, summary: data.summary };
     }
@@ -45,13 +44,13 @@ interface SectionBody<T> {
 }
 
 export async function getUserDossierPage<S extends DossierSection>(
-  user: PlatformUser,
+  userId: string,
   section: S,
   { limit, offset }: { limit: number; offset: number },
 ): Promise<PagedResult<DossierSectionItems[S]>> {
   try {
     const { data, status } = await api.get<SectionBody<DossierSectionItems[S]>>(
-      `${dossierPath(user)}/${section}`,
+      `${dossierPath(userId)}/${section}`,
       { params: { limit, offset } },
     );
     if (status === 200 && data.ok && data.page) {

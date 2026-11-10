@@ -10,6 +10,7 @@ import {
   DossierOverviewSkeleton,
 } from "@/components/dossier/DossierOverview";
 import { useDossierSummary } from "@/components/dossier/hooks/useDossierSummary";
+import type { DossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { Avatar } from "@/components/ui/Avatar";
 import { getUserDossierSummary } from "@/services/users/dossierClient";
 import type { DossierSection, PlatformUser } from "@/types/users.types";
@@ -18,29 +19,21 @@ import { UserDossierActions } from "./UserDossierActions";
 import { UserDossierOverview } from "./UserDossierOverview";
 import { UserDossierSection } from "./UserDossierSection";
 
-interface UserDossierDialogProps {
-  /** Usuario cuyo expediente se muestra; `null` cierra el modal. */
-  user: PlatformUser | null;
-  onClose: () => void;
+interface UserDossierActionHandlers {
   onSuspend: (user: PlatformUser) => void;
   onReactivate: (user: PlatformUser) => void;
 }
 
-export function UserDossierDialog({
-  user,
-  onClose,
-  ...actions
-}: UserDossierDialogProps) {
+interface UserDossierDialogProps extends UserDossierActionHandlers {
+  nav: DossierUrl<DossierSection>;
+  placeholder: PlatformUser | null;
+  refreshKey: number;
+}
+
+export function UserDossierDialog({ nav, ...props }: UserDossierDialogProps) {
   return (
-    <DossierDialog<DossierSection>
-      contentKey={user?.id ?? null}
-      onClose={onClose}
-    >
-      {(view) =>
-        user ? (
-          <UserDossierContent user={user} view={view} {...actions} />
-        ) : null
-      }
+    <DossierDialog<DossierSection> nav={nav}>
+      {(view) => <UserDossierContent view={view} {...props} />}
     </DossierDialog>
   );
 }
@@ -48,24 +41,27 @@ export function UserDossierDialog({
 const SKELETON_BLOCKS = ["list", "list", "list", "list"] as const;
 
 function UserDossierContent({
-  user,
   view,
+  placeholder,
+  refreshKey,
   onSuspend,
   onReactivate,
-}: Omit<UserDossierDialogProps, "user" | "onClose"> & {
-  user: PlatformUser;
-  view: DossierView<DossierSection>;
+}: Omit<UserDossierDialogProps, "nav"> & {
+  view: DossierView<DossierSection> & { subjectId: string };
 }) {
   const { status, summary, retry } = useDossierSummary(
-    user,
+    view.subjectId,
     getUserDossierSummary,
+    refreshKey,
   );
-  const current = summary?.user ?? user;
+  const user =
+    summary?.user ?? (placeholder?.id === view.subjectId ? placeholder : null);
+  const name = user?.name ?? "";
 
   const header = (
     <DossierHeader
-      name={current.name}
-      avatar={<Avatar name={current.name} size={44} />}
+      name={name}
+      avatar={<Avatar name={name} size={44} />}
       titleId={view.titleId}
       onClose={view.onClose}
     />
@@ -74,7 +70,7 @@ function UserDossierContent({
   if (view.section) {
     return (
       <UserDossierSection
-        user={current}
+        userId={view.subjectId}
         section={view.section}
         header={header}
         onBack={view.onBack}
@@ -91,11 +87,13 @@ function UserDossierContent({
         onRetry={retry}
         skeleton={<DossierOverviewSkeleton blocks={SKELETON_BLOCKS} />}
         actions={
-          <UserDossierActions
-            user={current}
-            onSuspend={onSuspend}
-            onReactivate={onReactivate}
-          />
+          user ? (
+            <UserDossierActions
+              user={user}
+              onSuspend={onSuspend}
+              onReactivate={onReactivate}
+            />
+          ) : null
         }
       >
         {summary ? (

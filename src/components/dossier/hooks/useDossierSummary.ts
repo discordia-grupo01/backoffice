@@ -5,11 +5,13 @@ import { useCallback, useEffect, useState } from "react";
 import { ROUTES } from "@/lib/constants";
 import type { DossierSummaryResult } from "@/types/dossier.types";
 
-export type DossierStatus = "loading" | "success" | "error" | "forbidden";
+export type DossierStatus =
+  "loading" | "success" | "error" | "forbidden" | "not-found";
 
-export function useDossierSummary<S, T>(
-  subject: S,
-  fetchSummary: (subject: S) => Promise<DossierSummaryResult<T>>,
+export function useDossierSummary<T>(
+  subjectId: string,
+  fetchSummary: (subjectId: string) => Promise<DossierSummaryResult<T>>,
+  refreshKey = 0,
 ) {
   const [status, setStatus] = useState<DossierStatus>("loading");
   const [summary, setSummary] = useState<T | null>(null);
@@ -19,7 +21,7 @@ export function useDossierSummary<S, T>(
     let cancelled = false;
     setStatus("loading");
 
-    fetchSummary(subject).then((result) => {
+    fetchSummary(subjectId).then((result) => {
       if (cancelled) return;
       if (result.ok) {
         setSummary(result.summary);
@@ -27,14 +29,20 @@ export function useDossierSummary<S, T>(
       } else if (result.status === 401) {
         window.location.href = ROUTES.login;
       } else {
-        setStatus(result.status === 403 ? "forbidden" : "error");
+        setStatus(
+          result.status === 403
+            ? "forbidden"
+            : result.status === 404
+              ? "not-found"
+              : "error",
+        );
       }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [subject, fetchSummary, attempt]);
+  }, [subjectId, fetchSummary, attempt, refreshKey]);
 
   return {
     status,
