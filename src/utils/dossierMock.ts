@@ -7,12 +7,13 @@ import type {
 /** Lo mínimo que los mocks de expediente necesitan de lo investigado (usuario o servidor). */
 export interface MockDossierSubject {
   id: string;
+  name: string;
   created_at: string;
   suspended_at?: string | null;
 }
 
 /** Elementos más recientes que trae el resumen de cada sección. */
-export const DOSSIER_PREVIEW_SIZE = 3;
+export const DOSSIER_PREVIEW_SIZE = 5;
 
 const MOCK_DELAY_MS = 450;
 
@@ -70,6 +71,13 @@ export function mockReports(
     id: `rep-${subject.id}-${index}`,
     reason: pick(reasons, `${subject.id}:report:${index}`),
     created_at: backInTime(subject, now, index * 4, DAY_MS),
+    kind: "user",
+    status: "pending",
+    resolved_at: null,
+    server_id: subject.id,
+    server_name: subject.name,
+    reported_user_id: null,
+    reported_user_name: null,
   }));
 }
 
@@ -92,6 +100,11 @@ export function mockModerationHistory(
       id: `mod-${subject.id}-${index}`,
       kind: isSuspension ? "suspension" : "reactivation",
       applied_at: appliedAt,
+      scope: "platform",
+      server_id: subject.id,
+      server_name: subject.name,
+      target_user_id: null,
+      target_user_name: null,
     };
   });
 }

@@ -38,13 +38,20 @@ export type DossierSection = "servers" | "activity" | "reports" | "moderation";
 
 export interface DossierMembership {
   server_id: string;
-  server_name: string;
+  /** `null` si admin todavía no conoce el servidor. */
+  server_name: string | null;
+  joined_at: string;
 }
+
+export type DossierActivityKind =
+  "message_sent" | "joined_server" | "left_server";
 
 export interface DossierActivity {
   id: string;
-  /** Texto ya armado por el back, ej. "Envió un mensaje en #general". */
+  kind: DossierActivityKind;
+  /** Texto ya armado por el back, ej. "Envió un mensaje en #general de Gamers". */
   description: string;
+  server_id: string;
   occurred_at: string;
 }
 
