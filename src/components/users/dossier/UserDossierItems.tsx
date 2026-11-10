@@ -7,6 +7,7 @@ import {
   DossierEntry,
   ModerationCards,
   ReportCards,
+  serverDossierHref,
   UNKNOWN_SERVER_NAME,
   type DossierTone,
 } from "@/components/dossier/DossierCards";
@@ -64,7 +65,14 @@ export function UserDossierItems({ section, items }: UserDossierItemsProps) {
           {items.map((membership) => {
             const name = membership.server_name ?? UNKNOWN_SERVER_NAME;
             return (
-              <DossierCard key={membership.server_id}>
+              <DossierCard
+                key={membership.server_id}
+                href={
+                  membership.server_name
+                    ? serverDossierHref(membership.server_id)
+                    : undefined
+                }
+              >
                 <Avatar name={name} size={32} className="rounded-lg" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm">{name}</p>
@@ -95,14 +103,15 @@ export function UserDossierItems({ section, items }: UserDossierItemsProps) {
                 tone={tone}
                 title={item.description}
                 date={item.occurred_at}
+                href={serverDossierHref(item.server_id)}
               />
             );
           })}
         </DossierCardList>
       );
     case "reports":
-      return <ReportCards items={items} showServer />;
+      return <ReportCards items={items} perspective="user" />;
     case "moderation":
-      return <ModerationCards items={items} showServer />;
+      return <ModerationCards items={items} perspective="user" />;
   }
 }

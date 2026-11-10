@@ -3,7 +3,7 @@
 import type { ReactNode, Ref } from "react";
 
 import { DossierFullList } from "@/components/dossier/DossierFullList";
-import type { DossierSection, PlatformUser } from "@/types/users.types";
+import type { DossierSection } from "@/types/users.types";
 
 import { useDossierSection } from "./hooks/useDossierSection";
 import {
@@ -13,22 +13,21 @@ import {
 } from "./UserDossierItems";
 
 interface UserDossierSectionProps {
-  user: PlatformUser;
+  userId: string;
   section: DossierSection;
   header: ReactNode;
   onBack: () => void;
   backRef: Ref<HTMLButtonElement>;
 }
 
-/** "Ver todos" de una sección del expediente de usuario. */
 export function UserDossierSection({
-  user,
+  userId,
   section,
   header,
   onBack,
   backRef,
 }: UserDossierSectionProps) {
-  const list = useDossierSection(user, section);
+  const list = useDossierSection(userId, section);
   const { title, empty } = USER_DOSSIER_SECTIONS[section];
 
   return (

@@ -1,4 +1,4 @@
-import { AlertTriangle, ShieldOff } from "lucide-react";
+import { AlertTriangle, SearchX, ShieldOff } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -34,6 +34,17 @@ export function DossierOverviewBody({
         </StateBox>
       );
     }
+    if (status === "not-found") {
+      return (
+        <StateBox
+          role="alert"
+          icon={SearchX}
+          title="No encontramos este expediente"
+        >
+          Puede que se haya eliminado o que todavía no esté disponible.
+        </StateBox>
+      );
+    }
     if (status === "error") {
       return (
         <StateBox
@@ -62,7 +73,7 @@ export function DossierOverviewBody({
   return (
     <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-5">
       {renderContent()}
-      {status === "forbidden" ? null : (
+      {status === "forbidden" || status === "not-found" || !actions ? null : (
         <div className="border-line border-t pt-5">{actions}</div>
       )}
     </div>
