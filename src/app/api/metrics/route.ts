@@ -5,7 +5,7 @@ import {
 
 import { NextResponse } from "next/server";
 
-import { unauthorizedResponse } from "@/lib/apiRoute";
+import { parseMetricsRange, unauthorizedResponse } from "@/lib/apiRoute";
 import { destroySession, getValidSession } from "@/services/auth/session";
 import { getGlobalMetrics } from "@/services/metrics/service";
 import type { GlobalMetricsResponse } from "@/types/metrics.types";
@@ -13,32 +13,21 @@ import type { GlobalMetricsResponse } from "@/types/metrics.types";
 type MetricsResponse =
   { ok: true; metrics: GlobalMetricsResponse } | { ok: false; message: string };
 
-function isInstant(value: string): boolean {
-  return value !== "" && !Number.isNaN(Date.parse(value));
-}
-
 export async function GET(
   request: Request,
 ): Promise<NextResponse<MetricsResponse>> {
   const session = await getValidSession();
   if (!session) return unauthorizedResponse();
 
-  const { searchParams } = new URL(request.url);
-  const from = searchParams.get("from") ?? "";
-  const to = searchParams.get("to") ?? "";
-
-  if (
-    !isInstant(from) ||
-    !isInstant(to) ||
-    Date.parse(from) >= Date.parse(to)
-  ) {
+  const range = parseMetricsRange(new URL(request.url).searchParams);
+  if (!range) {
     return NextResponse.json(
       { ok: false, message: INVALID_DATA_MESSAGE },
       { status: 400 },
     );
   }
 
-  const result = await getGlobalMetrics(session.token, { from, to });
+  const result = await getGlobalMetrics(session.token, range);
 
   if (!result.ok) {
     if (result.status === 401) {

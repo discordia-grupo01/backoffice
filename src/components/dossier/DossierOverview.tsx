@@ -89,6 +89,31 @@ export function DossierEmpty({ children }: { children: ReactNode }) {
   );
 }
 
+/** Botón con aspecto de link que abre otra pantalla del expediente. */
+export function DossierLinkButton({
+  id,
+  onClick,
+  children,
+  "aria-label": ariaLabel,
+}: {
+  id: string;
+  onClick: () => void;
+  children: ReactNode;
+  "aria-label"?: string;
+}) {
+  return (
+    <button
+      id={id}
+      type="button"
+      onClick={onClick}
+      aria-label={ariaLabel}
+      className="focus-visible:ring-bo -mr-1 shrink-0 cursor-pointer rounded-md px-1 py-0.5 text-[13px] font-semibold text-[color-mix(in_srgb,var(--bo-accent)_65%,var(--text))] hover:underline focus-visible:ring-2 focus-visible:outline-none"
+    >
+      {children}
+    </button>
+  );
+}
+
 export function seeAllButtonId(idPrefix: string, section: string) {
   return `${idPrefix}-see-all-${section}`;
 }
@@ -101,6 +126,7 @@ interface DossierSectionBlockProps {
   shown?: number;
   empty?: string;
   onSeeAll?: () => void;
+  action?: ReactNode;
   children: ReactNode;
 }
 
@@ -112,6 +138,7 @@ export function DossierSectionBlock({
   shown = 0,
   empty,
   onSeeAll,
+  action,
   children,
 }: DossierSectionBlockProps) {
   const headingId = `${idPrefix}-heading-${section}`;
@@ -131,16 +158,15 @@ export function DossierSectionBlock({
             </>
           ) : null}
         </h3>
+        {action}
         {hasCount && onSeeAll && count > shown ? (
-          <button
+          <DossierLinkButton
             id={seeAllButtonId(idPrefix, section)}
-            type="button"
             onClick={onSeeAll}
             aria-label={`Ver todos: ${title}`}
-            className="focus-visible:ring-bo -mr-1 shrink-0 cursor-pointer rounded-md px-1 py-0.5 text-[13px] font-semibold text-[color-mix(in_srgb,var(--bo-accent)_65%,var(--text))] hover:underline focus-visible:ring-2 focus-visible:outline-none"
           >
             Ver todos
-          </button>
+          </DossierLinkButton>
         ) : null}
       </div>
 

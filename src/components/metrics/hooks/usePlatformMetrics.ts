@@ -1,47 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import {
-  presetPeriod,
-  toIsoDate,
-  validateCustomRange,
-  addDays,
-  type CustomRangeError,
-} from "@/utils/metricsPeriod";
+import { useMetricsPeriod } from "@/hooks/useMetricsPeriod";
 import { ROUTES } from "@/lib/constants";
 import { getPlatformMetrics } from "@/services/metrics/client";
-import type {
-  MetricsPeriod,
-  MetricsPeriodKey,
-  PlatformMetrics,
-} from "@/types/metrics.types";
-
-export type MetricsStatus = "loading" | "success" | "error" | "forbidden";
+import type { MetricsStatus, PlatformMetrics } from "@/types/metrics.types";
 
 export const METRICS_LOAD_ERROR =
   "No pudimos cargar las métricas. Revisá tu conexión e intentá de nuevo.";
 
-function defaultCustomRange(): MetricsPeriod {
-  const now = new Date();
-  return { from: toIsoDate(addDays(now, -6)), to: toIsoDate(now) };
-}
-
 export function usePlatformMetrics() {
-  const [periodKey, setPeriodKey] = useState<MetricsPeriodKey>("7d");
-  const [customRange, setCustomRange] =
-    useState<MetricsPeriod>(defaultCustomRange);
+  const {
+    periodKey,
+    setPeriodKey,
+    customRange,
+    setCustomRange,
+    customError,
+    period,
+  } = useMetricsPeriod();
   const [attempt, setAttempt] = useState(0);
   const [status, setStatus] = useState<MetricsStatus>("loading");
   const [metrics, setMetrics] = useState<PlatformMetrics | null>(null);
-
-  const customError: CustomRangeError | null =
-    periodKey === "custom" ? validateCustomRange(customRange) : null;
-
-  const period = useMemo<MetricsPeriod | null>(() => {
-    if (periodKey !== "custom") return presetPeriod(periodKey);
-    return validateCustomRange(customRange) ? null : customRange;
-  }, [periodKey, customRange]);
 
   const from = period?.from;
   const to = period?.to;

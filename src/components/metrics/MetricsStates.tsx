@@ -4,9 +4,13 @@ import { METRICS_LOAD_ERROR } from "@/components/metrics/hooks/usePlatformMetric
 import { Button } from "@/components/ui/Button";
 import { StateBox } from "@/components/ui/StateBox";
 
-export function MetricsEmptyState() {
+export function MetricsEmptyState({
+  title = "No hubo actividad en este período",
+}: {
+  title?: string;
+}) {
   return (
-    <StateBox icon={BarChart3} title="No hubo actividad en este período">
+    <StateBox icon={BarChart3} title={title}>
       Probá con un rango de fechas más amplio.
     </StateBox>
   );

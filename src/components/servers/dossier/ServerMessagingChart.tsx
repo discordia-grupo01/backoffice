@@ -10,6 +10,9 @@ export function ServerMessagingChart({ days }: { days: ServerMessagingDay[] }) {
 
   return (
     <div className="border-line bg-surface-input rounded-xl border px-2 pt-3 pb-1">
+      <p aria-hidden="true" className="text-content-muted px-2 pb-2 text-xs">
+        Mensajes por día en los últimos 7 días
+      </p>
       <div aria-hidden="true" className="h-48">
         <TimeBarChart
           data={days}

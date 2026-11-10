@@ -36,8 +36,9 @@ export type ServerSuspensionResult =
 export type DeleteServerResult =
   { ok: true } | { ok: false; status: number; code: string; message: string };
 
-/** Secciones del expediente de un servidor que se listan y paginan. */
 export type ServerDossierSection = "reports" | "moderation";
+
+export type ServerDossierView = ServerDossierSection | "metrics";
 
 export interface ServerDossierSectionItems {
   reports: DossierReport;

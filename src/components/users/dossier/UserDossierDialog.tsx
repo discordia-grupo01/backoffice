@@ -64,6 +64,8 @@ function UserDossierContent({
       avatar={<Avatar name={name} size={44} />}
       titleId={view.titleId}
       onClose={view.onClose}
+      onBack={view.section ? view.onBack : undefined}
+      backRef={view.backRef}
     />
   );
 
@@ -73,8 +75,6 @@ function UserDossierContent({
         userId={view.subjectId}
         section={view.section}
         header={header}
-        onBack={view.onBack}
-        backRef={view.backRef}
       />
     );
   }

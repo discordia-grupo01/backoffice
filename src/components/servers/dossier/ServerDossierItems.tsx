@@ -5,6 +5,7 @@ import {
 import type {
   ServerDossierSection,
   ServerDossierSectionItems,
+  ServerDossierView,
 } from "@/types/servers.types";
 
 export const SERVER_DOSSIER_SECTIONS: Record<
@@ -24,6 +25,11 @@ export const SERVER_DOSSIER_SECTIONS: Record<
 export const SERVER_DOSSIER_SECTION_ORDER = Object.keys(
   SERVER_DOSSIER_SECTIONS,
 ) as ServerDossierSection[];
+
+export const SERVER_DOSSIER_VIEWS: readonly ServerDossierView[] = [
+  ...SERVER_DOSSIER_SECTION_ORDER,
+  "metrics",
+];
 
 export type ServerDossierItemsProps = {
   [S in ServerDossierSection]: {

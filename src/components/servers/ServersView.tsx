@@ -18,7 +18,7 @@ import {
   DeleteServerResultDialog,
 } from "./DeleteServerDialog";
 import { ServerDossierDialog } from "./dossier/ServerDossierDialog";
-import { SERVER_DOSSIER_SECTION_ORDER } from "./dossier/ServerDossierItems";
+import { SERVER_DOSSIER_VIEWS } from "./dossier/ServerDossierItems";
 import { useServerDeletion } from "./hooks/useServerDeletion";
 import { useServers } from "./hooks/useServers";
 import { useServerSuspension } from "./hooks/useServerSuspension";
@@ -43,7 +43,7 @@ export function ServersView() {
   } = useServers();
 
   const { viewMode, setViewMode } = useViewMode();
-  const dossier = useDossierUrl(SERVER_DOSSIER_SECTION_ORDER);
+  const dossier = useDossierUrl(SERVER_DOSSIER_VIEWS);
   const [dossierVersion, setDossierVersion] = useState(0);
   const deletion = useServerDeletion({
     onDeleted: (server) => {

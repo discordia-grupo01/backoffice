@@ -1,13 +1,15 @@
 import {
+  DossierLinkButton,
   DossierSectionBlock,
   DossierSuspendedNotice,
+  seeAllButtonId,
 } from "@/components/dossier/DossierOverview";
 import { Fact, FactGrid } from "@/components/ui/Fact";
 import { formatInteger } from "@/utils/chartFormat";
 import { formatDate } from "@/utils/formatDate";
 import type {
-  ServerDossierSection,
   ServerDossierSummary,
+  ServerDossierView,
 } from "@/types/servers.types";
 
 import { ServerStatusBadge } from "../ServerStatusBadge";
@@ -22,7 +24,7 @@ import { ServerMessagingChart } from "./ServerMessagingChart";
 interface ServerDossierOverviewProps {
   summary: ServerDossierSummary;
   idPrefix: string;
-  onSeeAll: (section: ServerDossierSection) => void;
+  onSeeAll: (view: ServerDossierView) => void;
 }
 
 export function ServerDossierOverview({
@@ -56,10 +58,15 @@ export function ServerDossierOverview({
         idPrefix={idPrefix}
         section="messaging"
         title="Actividad de mensajería reciente"
+        action={
+          <DossierLinkButton
+            id={seeAllButtonId(idPrefix, "metrics")}
+            onClick={() => onSeeAll("metrics")}
+          >
+            Ver métricas de actividad
+          </DossierLinkButton>
+        }
       >
-        <p className="text-content-muted -mt-1 mb-2 text-xs">
-          Mensajes por día en los últimos 7 días
-        </p>
         <ServerMessagingChart days={summary.messaging} />
       </DossierSectionBlock>
 
