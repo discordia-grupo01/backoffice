@@ -72,7 +72,13 @@ function ServerDossierContent({
   );
 
   if (view.section === "metrics") {
-    return <ServerMetricsSection serverId={view.subjectId} header={header} />;
+    return (
+      <ServerMetricsSection
+        serverId={view.subjectId}
+        serverName={name}
+        header={header}
+      />
+    );
   }
 
   if (view.section) {

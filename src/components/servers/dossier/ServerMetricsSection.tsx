@@ -9,22 +9,24 @@ import { MetricsErrorState } from "@/components/metrics/MetricsStates";
 import { Card } from "@/components/ui/Card";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateBox } from "@/components/ui/StateBox";
-import { formatDate } from "@/utils/formatDate";
-import { parseIsoDate } from "@/utils/metricsPeriod";
-import type { MetricsPeriod, ServerMetrics } from "@/types/metrics.types";
+import type { ServerMetrics } from "@/types/metrics.types";
 
+import { ExportServerMetricsButton } from "./ExportServerMetricsButton";
 import { useServerMetrics } from "./hooks/useServerMetrics";
 import { MemberGrowthCard } from "./MemberGrowthCard";
+import { periodLabel } from "./utils/metricsPeriodLabel";
 
 const CARDS_GRID = "grid grid-cols-1 gap-3 sm:grid-cols-3";
 
 interface ServerMetricsSectionProps {
   serverId: string;
+  serverName: string;
   header: ReactNode;
 }
 
 export function ServerMetricsSection({
   serverId,
+  serverName,
   header,
 }: ServerMetricsSectionProps) {
   const {
@@ -76,13 +78,22 @@ export function ServerMetricsSection({
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5">
         <section aria-labelledby={headingId} className="space-y-4">
-          <div>
-            <h3 id={headingId} className="font-display text-sm font-semibold">
-              Métricas de actividad
-            </h3>
-            <p className="text-content-muted mt-1 text-xs">
-              Totales del servidor en el período elegido.
-            </p>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 id={headingId} className="font-display text-sm font-semibold">
+                Métricas de actividad
+              </h3>
+              <p className="text-content-muted mt-1 text-xs">
+                Totales del servidor en el período elegido.
+              </p>
+            </div>
+            {status === "forbidden" ? null : (
+              <ExportServerMetricsButton
+                serverId={serverId}
+                serverName={serverName}
+                period={period}
+              />
+            )}
           </div>
 
           <MetricsPeriodBar
@@ -119,15 +130,6 @@ function ServerNoActivity() {
       </p>
     </Card>
   );
-}
-
-function formatDay(isoDate: string): string {
-  return formatDate(parseIsoDate(isoDate).toISOString());
-}
-
-function periodLabel({ from, to }: MetricsPeriod): string {
-  if (from === to) return `El ${formatDay(from)}`;
-  return `Del ${formatDay(from)} al ${formatDay(to)}`;
 }
 
 function ServerMetricCards({ metrics }: { metrics: ServerMetrics }) {

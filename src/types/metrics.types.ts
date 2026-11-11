@@ -89,3 +89,6 @@ export interface ServerGrowth {
 export type ServerGrowthResult =
   | { ok: true; growth: ServerGrowth }
   | { ok: false; status: number; message: string };
+
+export type ServerMetricsExportResult =
+  { ok: true; csv: string } | { ok: false; status: number; message: string };

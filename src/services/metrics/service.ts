@@ -39,3 +39,14 @@ export function getServerGrowth(
     { token, params: range },
   );
 }
+
+export function exportServerMetrics(
+  token: string,
+  serverId: string,
+  range: MetricsRange,
+): Promise<ApiResult<string>> {
+  return apiRequest<string>(
+    `/v1/servers/${encodeURIComponent(serverId)}/metrics/export.csv`,
+    { token, params: range, responseType: "text" },
+  );
+}

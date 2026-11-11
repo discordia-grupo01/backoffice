@@ -5,7 +5,6 @@ import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { usePlatformMetrics } from "@/components/metrics/hooks/usePlatformMetrics";
 
-import { ExportCsvButton } from "./ExportCsvButton";
 import { MetricCardsGrid } from "./MetricCardsGrid";
 import { MetricsCharts } from "./MetricsCharts";
 import { MetricsPeriodBar } from "./MetricsPeriodBar";
@@ -27,16 +26,13 @@ export function MetricsDashboard() {
   if (status === "forbidden") return <NoStaffAccess />;
 
   const showData = status === "success" && metrics !== null && !customError;
-  const exportable = showData ? metrics : null;
 
   return (
     <>
       <PanelHeader
         title="Dashboard y métricas"
         subtitle="Estado y evolución de toda la plataforma"
-      >
-        <ExportCsvButton metrics={exportable} />
-      </PanelHeader>
+      />
 
       <PanelBody>
         <MetricsPeriodBar

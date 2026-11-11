@@ -8,6 +8,7 @@ import type {
   MetricsResult,
   ServerGrowthResponse,
   ServerGrowthResult,
+  ServerMetricsExportResult,
   ServerMetricsResponse,
   ServerMetricsResult,
 } from "@/types/metrics.types";
@@ -114,6 +115,25 @@ export async function getServerGrowth(
       status,
       message: data?.message ?? REQUEST_FAILED_MESSAGE,
     };
+  } catch {
+    return { ok: false, status: 0, message: REQUEST_FAILED_MESSAGE };
+  }
+}
+
+export async function exportServerMetrics(
+  serverId: string,
+  period: MetricsPeriod,
+): Promise<ServerMetricsExportResult> {
+  try {
+    const { data, status } = await api.get<string>(
+      `/servers/${encodeURIComponent(serverId)}/metrics/export`,
+      { params: periodToRange(period), responseType: "text" },
+    );
+
+    if (status === 200 && typeof data === "string") {
+      return { ok: true, csv: data };
+    }
+    return { ok: false, status, message: REQUEST_FAILED_MESSAGE };
   } catch {
     return { ok: false, status: 0, message: REQUEST_FAILED_MESSAGE };
   }
