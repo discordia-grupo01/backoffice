@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  CHANGE_SOCKET_EVENTS,
+  isResourceChangedPayload,
+  type ResourceChangedPayload,
+} from "@discordia/client-shared";
+
 import { Socket } from "phoenix";
 
 import { fetchNotificationSocketTicket } from "./client";
@@ -22,7 +28,10 @@ export async function connectHealthNotifications(
   userId: string,
   onHealthCheckChanged: (payload: HealthCheckChangedPayload) => void,
   onStatusChanged?: () => void,
+  onChanged?: (payload: ResourceChangedPayload) => void,
+  onRejoined?: () => void,
 ): Promise<() => void> {
+  let joins = 0;
   let stopped = false;
   let retryTimer: ReturnType<typeof setTimeout> | undefined;
   let socket: Socket | undefined;
@@ -65,7 +74,18 @@ export async function connectHealthNotifications(
     nextSocket.onClose(reconnect);
     nextChannel.on("health_check_changed", onHealthCheckChanged);
     if (onStatusChanged) nextChannel.on("status_changed", onStatusChanged);
-    nextChannel.join().receive("error", reconnect);
+    if (onChanged) {
+      nextChannel.on(CHANGE_SOCKET_EVENTS.changed, (payload: unknown) => {
+        if (isResourceChangedPayload(payload)) onChanged(payload);
+      });
+    }
+    nextChannel
+      .join()
+      .receive("ok", () => {
+        joins += 1;
+        if (joins > 1) onRejoined?.();
+      })
+      .receive("error", reconnect);
     nextSocket.connect();
   };
 
