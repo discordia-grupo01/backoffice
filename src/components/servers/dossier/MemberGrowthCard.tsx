@@ -1,127 +1,135 @@
 "use client";
 
-import { AlertTriangle, Minus, TrendingDown, TrendingUp } from "lucide-react";
-import { useId } from "react";
+import { AlertTriangle } from "lucide-react";
+import type { ReactNode } from "react";
 
+import { ChartCard } from "@/components/metrics/ChartCard";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { cn } from "@/lib/cn";
+import { TimeAreaChart } from "@/components/ui/TimeAreaChart";
 import { formatInteger, formatSeriesTooltipLabel } from "@/utils/chartFormat";
-import { parseIsoDate } from "@/utils/metricsPeriod";
+import { formatDate } from "@/utils/formatDate";
+import { parseIsoDate, toIsoDate } from "@/utils/metricsPeriod";
 import type { MetricsPeriod, ServerGrowthPoint } from "@/types/metrics.types";
 
 import { useServerGrowth } from "./hooks/useServerGrowth";
-import { MemberGrowthChart } from "./MemberGrowthChart";
-import { summarizeGrowth } from "./memberGrowthSummary";
+
+const TITLE = "Crecimiento de miembros";
+const SUBTITLE = "Miembros del servidor al cierre de cada día";
 
 interface MemberGrowthCardProps {
   serverId: string;
+  /** Período ya validado; nulo mientras el personalizado sea inválido. */
   period: MetricsPeriod | null;
+  /** Falso cuando arriba ya se pide un período más amplio. */
+  showPeriodHint?: boolean;
 }
 
-export function MemberGrowthCard({ serverId, period }: MemberGrowthCardProps) {
+export function MemberGrowthCard({
+  serverId,
+  period,
+  showPeriodHint = true,
+}: MemberGrowthCardProps) {
   const { status, growth, retry } = useServerGrowth(serverId, period);
-  const headingId = useId();
 
   if (!period || status === "forbidden") return null;
   if (status === "loading") {
     return (
       <div aria-busy="true" aria-label="Cargando el crecimiento de miembros">
-        <Skeleton className="h-[296px] rounded-xl" />
+        <Skeleton className="h-[340px] rounded-xl" />
       </div>
     );
   }
 
-  return (
-    <section
-      aria-labelledby={headingId}
-      className="border-line bg-surface-input rounded-xl border p-4"
-    >
-      <h3 id={headingId} className="text-sm font-semibold">
-        Crecimiento de miembros
-      </h3>
-      <p className="text-content-muted mt-0.5 text-xs">
-        Miembros del servidor al cierre de cada día.
-      </p>
+  const drawsChart =
+    status === "success" && !!growth && growth.points.length > 1;
+  const singleDay =
+    status === "success" && growth?.points.length === 1
+      ? growth.points[0]
+      : undefined;
 
+  return (
+    <ChartCard
+      inset
+      compact={!drawsChart}
+      title={TITLE}
+      subtitle={singleDay ? singleDaySubtitle(singleDay.date) : SUBTITLE}
+    >
       {status === "error" || !growth ? (
-        <GrowthError onRetry={retry} />
+        <GrowthMessage>
+          <AlertTriangle size={16} aria-hidden="true" />
+          <span>No pudimos cargar el crecimiento de miembros.</span>
+          <Button variant="secondary" size="sm" onClick={retry}>
+            Reintentar
+          </Button>
+        </GrowthMessage>
       ) : (
-        <GrowthBody points={growth.points} />
+        <GrowthBody points={growth.points} showPeriodHint={showPeriodHint} />
       )}
-    </section>
+    </ChartCard>
   );
 }
 
-function GrowthBody({ points }: { points: ServerGrowthPoint[] }) {
-  const summary = summarizeGrowth(points);
-  if (!summary) {
+function GrowthBody({
+  points,
+  showPeriodHint,
+}: {
+  points: ServerGrowthPoint[];
+  showPeriodHint: boolean;
+}) {
+  const [first] = points;
+  if (!first) {
     return (
-      <p className="text-content-muted mt-4 text-xs">
-        No hay datos de miembros para este período.
-      </p>
+      <GrowthMessage>No hay datos de miembros para este período.</GrowthMessage>
+    );
+  }
+  if (points.length === 1) {
+    return (
+      <div role="status" className="flex flex-col gap-1">
+        <p className="flex items-baseline gap-1.5">
+          <span className="font-mono text-2xl font-bold tabular-nums">
+            {formatInteger(first.members)}
+          </span>
+          <span className="text-content-muted text-sm">miembros</span>
+        </p>
+        {showPeriodHint ? (
+          <p className="text-content-muted text-xs">
+            Elegí un período más largo para ver la evolución.
+          </p>
+        ) : null}
+      </div>
     );
   }
 
   return (
     <>
-      <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <p className="flex items-baseline gap-1.5">
-          <span className="font-mono text-2xl font-bold tabular-nums">
-            {formatInteger(summary.members)}
-          </span>
-          <span className="text-content-muted text-sm">miembros</span>
-        </p>
-        {summary.change !== null ? (
-          <GrowthChange change={summary.change} since={summary.since} />
-        ) : null}
+      <div aria-hidden="true" className="h-full">
+        <TimeAreaChart
+          data={points}
+          dataKey="members"
+          granularity="day"
+          valueLabel="miembros"
+          colorVar="--chart-1"
+        />
       </div>
-
-      {points.length > 1 ? (
-        <>
-          <div aria-hidden="true" className="mt-3 -ml-2 h-48">
-            <MemberGrowthChart points={points} />
-          </div>
-          <GrowthTable points={points} />
-        </>
-      ) : (
-        <p className="text-content-muted mt-2 text-xs">
-          Elegí un período más largo para ver la evolución.
-        </p>
-      )}
+      <GrowthTable points={points} />
     </>
   );
 }
 
-function shortDate(isoDate: string): string {
-  return parseIsoDate(isoDate).toLocaleDateString("es-AR", {
-    day: "numeric",
-    month: "short",
-  });
+function singleDaySubtitle(isoDate: string): string {
+  if (isoDate === toIsoDate(new Date())) return "Miembros del servidor hoy";
+  return `Miembros del servidor al cierre del ${formatDate(parseIsoDate(isoDate).toISOString())}`;
 }
 
-function GrowthChange({ change, since }: { change: number; since: string }) {
-  const Icon = change > 0 ? TrendingUp : change < 0 ? TrendingDown : Minus;
-  const amount = formatInteger(Math.abs(change));
-  const text =
-    change > 0
-      ? `${amount} más`
-      : change < 0
-        ? `${amount} menos`
-        : "Sin cambios";
-
+function GrowthMessage({ children }: { children: ReactNode }) {
   return (
-    <p
-      className={cn(
-        "flex items-center gap-1 text-xs font-semibold tabular-nums",
-        change > 0 && "text-success-readable",
-        change < 0 && "text-danger-readable",
-        change === 0 && "text-content-muted",
-      )}
+    <div
+      role="status"
+      className="text-content-muted flex flex-wrap items-center gap-x-3 gap-y-2 text-xs"
     >
-      <Icon size={14} aria-hidden="true" />
-      {text} desde el {shortDate(since)}
-    </p>
+      {children}
+    </div>
   );
 }
 
@@ -129,7 +137,7 @@ function GrowthTable({ points }: { points: ServerGrowthPoint[] }) {
   return (
     <div className="sr-only">
       <table>
-        <caption>Miembros del servidor al cierre de cada día</caption>
+        <caption>{SUBTITLE}</caption>
         <thead>
           <tr>
             <th scope="col">Día</th>
@@ -145,21 +153,6 @@ function GrowthTable({ points }: { points: ServerGrowthPoint[] }) {
           ))}
         </tbody>
       </table>
-    </div>
-  );
-}
-
-function GrowthError({ onRetry }: { onRetry: () => void }) {
-  return (
-    <div
-      role="alert"
-      className="text-content-muted mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs"
-    >
-      <AlertTriangle size={16} aria-hidden="true" />
-      <span>No pudimos cargar el crecimiento de miembros.</span>
-      <Button variant="secondary" size="sm" onClick={onRetry}>
-        Reintentar
-      </Button>
     </div>
   );
 }

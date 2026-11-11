@@ -5,10 +5,8 @@ import { useId, type ReactNode } from "react";
 
 import { MetricCard } from "@/components/metrics/MetricCard";
 import { MetricsPeriodBar } from "@/components/metrics/MetricsPeriodBar";
-import {
-  MetricsEmptyState,
-  MetricsErrorState,
-} from "@/components/metrics/MetricsStates";
+import { MetricsErrorState } from "@/components/metrics/MetricsStates";
+import { Card } from "@/components/ui/Card";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateBox } from "@/components/ui/StateBox";
 import { formatDate } from "@/utils/formatDate";
@@ -67,9 +65,7 @@ export function ServerMetricsSection({
       );
     }
     if (!metrics.has_activity) {
-      return (
-        <MetricsEmptyState title="Este servidor no tuvo actividad en el período elegido" />
-      );
+      return <ServerNoActivity />;
     }
     return <ServerMetricCards metrics={metrics} />;
   }
@@ -101,11 +97,27 @@ export function ServerMetricsSection({
           {renderBody()}
 
           {customError || status === "forbidden" ? null : (
-            <MemberGrowthCard serverId={serverId} period={period} />
+            <MemberGrowthCard
+              serverId={serverId}
+              period={period}
+              showPeriodHint={metrics?.has_activity !== false}
+            />
           )}
         </section>
       </div>
     </>
+  );
+}
+
+function ServerNoActivity() {
+  return (
+    <Card role="status" className="bg-surface-input rounded-xl p-4">
+      <p className="text-sm font-semibold">Sin actividad en este período</p>
+      <p className="text-content-muted mt-0.5 text-xs">
+        Nadie mandó mensajes, entró ni salió del servidor. Probá con un rango de
+        fechas más amplio.
+      </p>
+    </Card>
   );
 }
 
