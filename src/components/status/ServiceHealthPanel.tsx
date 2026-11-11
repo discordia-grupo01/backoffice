@@ -47,7 +47,7 @@ export function ServiceHealthPanel({
               <Skeleton key={service.id} className="h-[76px] rounded-xl" />
             ))}
           </div>
-        ) : state.phase === "error" ? (
+        ) : state.phase === "error" || state.phase === "forbidden" ? (
           <p className="text-content-muted text-sm">{state.message}</p>
         ) : (
           <ul className={GRID_CLASS}>

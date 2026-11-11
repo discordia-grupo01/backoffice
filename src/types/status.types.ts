@@ -50,9 +50,11 @@ export interface ServiceHealthCheck {
 }
 
 export type ServiceHealthResult =
-  { ok: true; checks: ServiceHealthCheck[] } | { ok: false; message: string };
+  | { ok: true; checks: ServiceHealthCheck[] }
+  | { ok: false; status: number; message: string };
 
 export type ServiceHealthState =
   | { phase: "loading" }
   | { phase: "error"; message: string }
+  | { phase: "forbidden"; message: string }
   | { phase: "ready"; checks: ServiceHealthCheck[] };

@@ -1,7 +1,7 @@
+import { TimeAreaChart } from "@/components/ui/TimeAreaChart";
 import { TimeBarChart } from "@/components/ui/TimeBarChart";
 import type { PlatformMetrics } from "@/types/metrics.types";
 
-import { ActiveUsersAreaChart } from "./ActiveUsersAreaChart";
 import { ChartCard } from "./ChartCard";
 
 export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
@@ -14,7 +14,13 @@ export function MetricsCharts({ metrics }: { metrics: PlatformMetrics }) {
         title="Usuarios activos"
         subtitle={`Usuarios con actividad, ${unit}`}
       >
-        <ActiveUsersAreaChart metrics={metrics} />
+        <TimeAreaChart
+          data={metrics.series}
+          granularity={metrics.granularity}
+          dataKey="active_users"
+          valueLabel="usuarios activos"
+          colorVar="--chart-1"
+        />
       </ChartCard>
       <ChartCard
         title="Servidores creados"

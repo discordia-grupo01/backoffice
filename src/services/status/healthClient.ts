@@ -56,6 +56,7 @@ export async function getServiceHealth(): Promise<ServiceHealthResult> {
     if (status !== 200 || !Array.isArray(services)) {
       return {
         ok: false,
+        status,
         message: data?.message ?? REQUEST_FAILED_MESSAGE,
       };
     }
@@ -66,6 +67,6 @@ export async function getServiceHealth(): Promise<ServiceHealthResult> {
         .filter((check): check is ServiceHealthCheck => check !== null),
     };
   } catch {
-    return { ok: false, message: REQUEST_FAILED_MESSAGE };
+    return { ok: false, status: 0, message: REQUEST_FAILED_MESSAGE };
   }
 }

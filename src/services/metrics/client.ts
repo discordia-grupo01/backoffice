@@ -1,11 +1,13 @@
 import { REQUEST_FAILED_MESSAGE } from "@discordia/client-shared";
 
 import { api } from "@/lib/browserApiClient";
-import { periodToRange } from "@/utils/metricsPeriod";
+import { periodToRange, toIsoDate } from "@/utils/metricsPeriod";
 import type {
   GlobalMetricsResponse,
   MetricsPeriod,
   MetricsResult,
+  ServerGrowthResponse,
+  ServerGrowthResult,
   ServerMetricsResponse,
   ServerMetricsResult,
 } from "@/types/metrics.types";
@@ -66,6 +68,44 @@ export async function getServerMetrics(
           messages_sent,
           new_members,
           has_activity,
+        },
+      };
+    }
+    return {
+      ok: false,
+      status,
+      message: data?.message ?? REQUEST_FAILED_MESSAGE,
+    };
+  } catch {
+    return { ok: false, status: 0, message: REQUEST_FAILED_MESSAGE };
+  }
+}
+
+interface ServerGrowthBody {
+  ok?: boolean;
+  message?: string;
+  growth?: ServerGrowthResponse;
+}
+
+export async function getServerGrowth(
+  serverId: string,
+  period: MetricsPeriod,
+): Promise<ServerGrowthResult> {
+  try {
+    const { data, status } = await api.get<ServerGrowthBody>(
+      `/servers/${encodeURIComponent(serverId)}/metrics/growth`,
+      { params: periodToRange(period) },
+    );
+
+    if (status === 200 && data.ok && data.growth) {
+      return {
+        ok: true,
+        growth: {
+          period,
+          points: data.growth.points.map(({ start, members }) => ({
+            date: toIsoDate(new Date(start)),
+            members,
+          })),
         },
       };
     }

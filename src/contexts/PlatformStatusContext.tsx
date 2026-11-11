@@ -42,11 +42,14 @@ export function PlatformStatusProvider({ children }: { children: ReactNode }) {
       });
       void getServiceHealth().then((result) => {
         if (cancelled) return;
-        setHealth(
-          result.ok
-            ? { phase: "ready", checks: result.checks }
-            : { phase: "error", message: result.message },
-        );
+        if (result.ok) {
+          setHealth({ phase: "ready", checks: result.checks });
+        } else {
+          setHealth({
+            phase: result.status === 403 ? "forbidden" : "error",
+            message: result.message,
+          });
+        }
       });
     };
 

@@ -50,7 +50,9 @@ export function PlatformStatusView() {
     onForbidden: markForbidden,
   });
 
-  if (load === "forbidden") return <NoStaffAccess />;
+  if (load === "forbidden" || health.phase === "forbidden") {
+    return <NoStaffAccess />;
+  }
 
   const unreported =
     health.phase === "ready" && data
