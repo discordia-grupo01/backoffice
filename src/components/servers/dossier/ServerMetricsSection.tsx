@@ -16,6 +16,7 @@ import { parseIsoDate } from "@/utils/metricsPeriod";
 import type { MetricsPeriod, ServerMetrics } from "@/types/metrics.types";
 
 import { useServerMetrics } from "./hooks/useServerMetrics";
+import { MemberGrowthCard } from "./MemberGrowthCard";
 
 const CARDS_GRID = "grid grid-cols-1 gap-3 sm:grid-cols-3";
 
@@ -34,6 +35,7 @@ export function ServerMetricsSection({
     customRange,
     setCustomRange,
     customError,
+    period,
     status,
     metrics,
     retry,
@@ -97,6 +99,10 @@ export function ServerMetricsSection({
           />
 
           {renderBody()}
+
+          {customError || status === "forbidden" ? null : (
+            <MemberGrowthCard serverId={serverId} period={period} />
+          )}
         </section>
       </div>
     </>

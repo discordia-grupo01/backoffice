@@ -15,7 +15,6 @@ export interface MetricsTotals {
   messages_sent: number;
 }
 
-/** `date` es `YYYY-MM-DD`, o `YYYY-MM-DDTHH:00` si la granularidad es horaria. */
 export interface MetricsSeriesPoint extends MetricsTotals {
   date: string;
 }
@@ -68,4 +67,25 @@ export interface ServerMetrics extends ServerMetricsCounts {
 
 export type ServerMetricsResult =
   | { ok: true; metrics: ServerMetrics }
+  | { ok: false; status: number; message: string };
+
+export interface ServerGrowthResponse {
+  from: string;
+  to: string;
+  has_activity: boolean;
+  points: { start: string; members: number }[];
+}
+
+export interface ServerGrowthPoint {
+  date: string;
+  members: number;
+}
+
+export interface ServerGrowth {
+  period: MetricsPeriod;
+  points: ServerGrowthPoint[];
+}
+
+export type ServerGrowthResult =
+  | { ok: true; growth: ServerGrowth }
   | { ok: false; status: number; message: string };
