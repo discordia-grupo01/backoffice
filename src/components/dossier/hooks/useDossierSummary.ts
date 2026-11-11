@@ -1,9 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { type ChangeFilter } from "@discordia/client-shared";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { useRefreshOnChange } from "@/hooks/useRefreshOnChange";
 
 import { ROUTES } from "@/lib/constants";
 import type { DossierSummaryResult } from "@/types/dossier.types";
+
+const SUMMARY_CHANGE: ChangeFilter = {
+  resources: ["backoffice"],
+  kinds: ["dossier", "users", "servers", "reports"],
+};
 
 export type DossierStatus =
   "loading" | "success" | "error" | "forbidden" | "not-found";
@@ -43,6 +52,21 @@ export function useDossierSummary<T>(
       cancelled = true;
     };
   }, [subjectId, fetchSummary, attempt, refreshKey]);
+
+  const subjectRef = useRef(subjectId);
+  useEffect(() => {
+    subjectRef.current = subjectId;
+  }, [subjectId]);
+
+  const refresh = useCallback(async () => {
+    const requested = subjectId;
+    const result = await fetchSummary(requested);
+    if (result.ok && requested === subjectRef.current) {
+      setSummary(result.summary);
+    }
+  }, [subjectId, fetchSummary]);
+
+  useRefreshOnChange(SUMMARY_CHANGE, refresh);
 
   return {
     status,

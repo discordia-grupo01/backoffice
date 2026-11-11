@@ -1,5 +1,7 @@
 "use client";
 
+import { type ChangeFilter } from "@discordia/client-shared";
+
 import { usePagedList, type PageRequest } from "@/hooks/usePagedList";
 import { getUsers } from "@/services/users/client";
 import type { PlatformUser, UserStatusFilter } from "@/types/users.types";
@@ -14,6 +16,11 @@ interface UserListFilters {
 }
 
 const EMPTY_FILTERS: UserListFilters = { status: "all" };
+
+const USERS_CHANGE: ChangeFilter = {
+  resources: ["backoffice"],
+  kinds: ["users"],
+};
 
 async function fetchUsers({
   search,
@@ -37,6 +44,7 @@ export function useUsers() {
   const list = usePagedList<PlatformUser, UserListFilters>({
     fetchPage: fetchUsers,
     emptyFilters: EMPTY_FILTERS,
+    refreshOn: USERS_CHANGE,
   });
 
   return {

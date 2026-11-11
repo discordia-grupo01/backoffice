@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { api } from "@/lib/browserApiClient";
+import { changeBus } from "@/lib/changeBus";
 import { getPlatformStatus } from "@/services/status/client";
 import { getServiceHealth } from "@/services/status/healthClient";
 import { connectHealthNotifications } from "@/services/notifications/socket";
@@ -63,6 +64,8 @@ export function PlatformStatusProvider({ children }: { children: ReactNode }) {
           data.userId,
           refresh,
           refresh,
+          changeBus.publish,
+          changeBus.refreshAll,
         );
         if (cancelled) close();
         else disconnect = close;
