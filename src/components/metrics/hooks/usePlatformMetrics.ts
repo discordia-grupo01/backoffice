@@ -1,11 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { type ChangeFilter } from "@discordia/client-shared";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { useRefreshOnChange } from "@/hooks/useRefreshOnChange";
 
 import { useMetricsPeriod } from "@/hooks/useMetricsPeriod";
 import { ROUTES } from "@/lib/constants";
 import { getPlatformMetrics } from "@/services/metrics/client";
 import type { MetricsStatus, PlatformMetrics } from "@/types/metrics.types";
+
+const METRICS_CHANGE: ChangeFilter = {
+  resources: ["backoffice"],
+  kinds: ["metrics"],
+};
 
 export const METRICS_LOAD_ERROR =
   "No pudimos cargar las métricas. Revisá tu conexión e intentá de nuevo.";
@@ -48,6 +57,20 @@ export function usePlatformMetrics() {
       cancelled = true;
     };
   }, [from, to, attempt]);
+
+  const rangeRef = useRef(`${from}|${to}`);
+  useEffect(() => {
+    rangeRef.current = `${from}|${to}`;
+  }, [from, to]);
+
+  const refresh = useCallback(async () => {
+    if (!from || !to) return;
+    const range = `${from}|${to}`;
+    const result = await getPlatformMetrics({ from, to });
+    if (result.ok && range === rangeRef.current) setMetrics(result.metrics);
+  }, [from, to]);
+
+  useRefreshOnChange(METRICS_CHANGE, refresh, { enabled: Boolean(from && to) });
 
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { pageCountOf } from "@discordia/client-shared";
+import { type ChangeFilter, pageCountOf } from "@discordia/client-shared";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -8,6 +8,7 @@ import { ROUTES } from "@/lib/constants";
 import { offsetOfPage, PAGE_SIZE } from "@/utils/pagination";
 
 import { useDebouncedValue } from "./useDebouncedValue";
+import { useRefreshOnChange } from "./useRefreshOnChange";
 
 export type PagedListStatus = "loading" | "success" | "error" | "forbidden";
 
@@ -28,6 +29,7 @@ interface UsePagedListOptions<T, F extends object> {
   /** Valores de los filtros sin ninguna selección: sirve para saber si hay filtros activos. */
   emptyFilters: F;
   pageSize?: number;
+  refreshOn?: ChangeFilter;
 }
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -41,6 +43,7 @@ export function usePagedList<T, F extends object>({
   fetchPage,
   emptyFilters,
   pageSize = PAGE_SIZE,
+  refreshOn,
 }: UsePagedListOptions<T, F>) {
   const [search, setSearchState] = useState("");
   const [filters, setFiltersState] = useState<F>(emptyFilters);
@@ -105,6 +108,29 @@ export function usePagedList<T, F extends object>({
       cancelled = true;
     };
   }, [requestKey, debouncedSearch, filters, page, pageSize]);
+
+  const requestKeyRef = useRef(requestKey);
+  useEffect(() => {
+    requestKeyRef.current = requestKey;
+  }, [requestKey]);
+
+  const refresh = useCallback(async () => {
+    const key = requestKey;
+    const result = await fetchPageRef.current({
+      search: debouncedSearch,
+      filters,
+      limit: pageSize,
+      offset: offsetOfPage(page, pageSize),
+    });
+    if (!result.ok || key !== requestKeyRef.current) return;
+    if (page > pageCountOf(result.total, pageSize)) return;
+    setItems(result.items);
+    setTotal(result.total);
+  }, [requestKey, debouncedSearch, filters, page, pageSize]);
+
+  useRefreshOnChange(refreshOn ?? { resources: [] }, refresh, {
+    enabled: refreshOn !== undefined,
+  });
 
   const status: PagedListStatus =
     trimmedSearch !== debouncedSearch || settled?.key !== requestKey
