@@ -1,6 +1,9 @@
 "use client";
 
-import { type ChangeFilter } from "@discordia/client-shared";
+import {
+  CHANGE_POLL_INTERVAL_MS,
+  type ChangeFilter,
+} from "@discordia/client-shared";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -65,7 +68,10 @@ export function useServerGrowth(
     if (result.ok && range === rangeRef.current) setGrowth(result.growth);
   }, [serverId, from, to]);
 
-  useRefreshOnChange(GROWTH_CHANGE, refresh, { enabled: Boolean(from && to) });
+  useRefreshOnChange(GROWTH_CHANGE, refresh, {
+    enabled: Boolean(from && to),
+    pollMs: CHANGE_POLL_INTERVAL_MS,
+  });
 
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
 
