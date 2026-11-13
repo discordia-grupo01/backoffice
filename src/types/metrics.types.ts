@@ -1,3 +1,5 @@
+export type MetricsStatus = "loading" | "success" | "error" | "forbidden";
+
 export type MetricsPeriodKey = "today" | "7d" | "30d" | "90d" | "custom";
 
 export interface MetricsPeriod {
@@ -13,7 +15,6 @@ export interface MetricsTotals {
   messages_sent: number;
 }
 
-/** `date` es `YYYY-MM-DD`, o `YYYY-MM-DDTHH:00` si la granularidad es horaria. */
 export interface MetricsSeriesPoint extends MetricsTotals {
   date: string;
 }
@@ -46,3 +47,48 @@ export interface GlobalMetricsResponse extends MetricsTotals {
 export type MetricsResult =
   | { ok: true; metrics: PlatformMetrics }
   | { ok: false; status: number; message: string };
+
+export interface ServerMetricsCounts {
+  active_members: number;
+  messages_sent: number;
+  new_members: number;
+}
+
+export interface ServerMetricsResponse extends ServerMetricsCounts {
+  from: string;
+  to: string;
+  has_activity: boolean;
+}
+
+export interface ServerMetrics extends ServerMetricsCounts {
+  period: MetricsPeriod;
+  has_activity: boolean;
+}
+
+export type ServerMetricsResult =
+  | { ok: true; metrics: ServerMetrics }
+  | { ok: false; status: number; message: string };
+
+export interface ServerGrowthResponse {
+  from: string;
+  to: string;
+  has_activity: boolean;
+  points: { start: string; members: number }[];
+}
+
+export interface ServerGrowthPoint {
+  date: string;
+  members: number;
+}
+
+export interface ServerGrowth {
+  period: MetricsPeriod;
+  points: ServerGrowthPoint[];
+}
+
+export type ServerGrowthResult =
+  | { ok: true; growth: ServerGrowth }
+  | { ok: false; status: number; message: string };
+
+export type ServerMetricsExportResult =
+  { ok: true; csv: string } | { ok: false; status: number; message: string };

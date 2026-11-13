@@ -6,6 +6,7 @@ import { useDossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
+import { ListSkeleton } from "@/components/ui/ListSkeleton";
 import { PaginationBar } from "@/components/ui/PaginationBar";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { ViewModeToggle } from "@/components/ui/ViewModeToggle";
@@ -18,12 +19,11 @@ import {
   DeleteServerResultDialog,
 } from "./DeleteServerDialog";
 import { ServerDossierDialog } from "./dossier/ServerDossierDialog";
-import { SERVER_DOSSIER_SECTION_ORDER } from "./dossier/ServerDossierItems";
+import { SERVER_DOSSIER_VIEWS } from "./dossier/ServerDossierItems";
 import { useServerDeletion } from "./hooks/useServerDeletion";
 import { useServers } from "./hooks/useServers";
 import { useServerSuspension } from "./hooks/useServerSuspension";
 import { ServersList } from "./ServersList";
-import { ServersSkeleton } from "./ServersSkeleton";
 import { ServersEmptyState, ServersErrorState } from "./ServersStates";
 import { ServerSuspensionDialog } from "./ServerSuspensionDialog";
 
@@ -43,7 +43,7 @@ export function ServersView() {
   } = useServers();
 
   const { viewMode, setViewMode } = useViewMode();
-  const dossier = useDossierUrl(SERVER_DOSSIER_SECTION_ORDER);
+  const dossier = useDossierUrl(SERVER_DOSSIER_VIEWS);
   const [dossierVersion, setDossierVersion] = useState(0);
   const deletion = useServerDeletion({
     onDeleted: (server) => {
@@ -64,7 +64,13 @@ export function ServersView() {
   function renderResults() {
     if (status === "error") return <ServersErrorState onRetry={retry} />;
     if (status === "loading" && !hasData)
-      return <ServersSkeleton view={viewMode} />;
+      return (
+        <ListSkeleton
+          view={viewMode}
+          label="Cargando servidores"
+          rowHeightPx={65}
+        />
+      );
     if (!hasData) {
       return <ServersEmptyState hasSearch={hasActiveFilters} onClear={clear} />;
     }

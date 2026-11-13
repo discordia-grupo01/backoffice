@@ -13,10 +13,7 @@ import { useDossierSummary } from "@/components/dossier/hooks/useDossierSummary"
 import type { DossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { Avatar } from "@/components/ui/Avatar";
 import { getServerDossierSummary } from "@/services/servers/dossierClient";
-import type {
-  PlatformServer,
-  ServerDossierSection,
-} from "@/types/servers.types";
+import type { PlatformServer, ServerDossierView } from "@/types/servers.types";
 
 import {
   ServerDossierActions,
@@ -24,9 +21,10 @@ import {
 } from "./ServerDossierActions";
 import { ServerDossierOverview } from "./ServerDossierOverview";
 import { ServerDossierSection as SectionScreen } from "./ServerDossierSection";
+import { ServerMetricsSection } from "./ServerMetricsSection";
 
 interface ServerDossierDialogProps extends ServerDossierActionHandlers {
-  nav: DossierUrl<ServerDossierSection>;
+  nav: DossierUrl<ServerDossierView>;
   placeholder: PlatformServer | null;
   refreshKey: number;
 }
@@ -36,7 +34,7 @@ export function ServerDossierDialog({
   ...props
 }: ServerDossierDialogProps) {
   return (
-    <DossierDialog<ServerDossierSection> nav={nav}>
+    <DossierDialog<ServerDossierView> nav={nav}>
       {(view) => <ServerDossierContent view={view} {...props} />}
     </DossierDialog>
   );
@@ -50,7 +48,7 @@ function ServerDossierContent({
   refreshKey,
   ...actions
 }: Omit<ServerDossierDialogProps, "nav"> & {
-  view: DossierView<ServerDossierSection> & { subjectId: string };
+  view: DossierView<ServerDossierView> & { subjectId: string };
 }) {
   const { status, summary, retry } = useDossierSummary(
     view.subjectId,
@@ -68,8 +66,20 @@ function ServerDossierContent({
       avatar={<Avatar name={name} size={44} className="rounded-xl" />}
       titleId={view.titleId}
       onClose={view.onClose}
+      onBack={view.section ? view.onBack : undefined}
+      backRef={view.backRef}
     />
   );
+
+  if (view.section === "metrics") {
+    return (
+      <ServerMetricsSection
+        serverId={view.subjectId}
+        serverName={name}
+        header={header}
+      />
+    );
+  }
 
   if (view.section) {
     return (
@@ -77,8 +87,6 @@ function ServerDossierContent({
         serverId={view.subjectId}
         section={view.section}
         header={header}
-        onBack={view.onBack}
-        backRef={view.backRef}
       />
     );
   }

@@ -13,6 +13,7 @@ interface SidebarItemProps {
   onClick?: () => void;
   disabled?: boolean;
   isCurrent?: boolean;
+  count?: number;
   isRail: boolean;
   onNavigate?: () => void;
 }
@@ -30,6 +31,7 @@ export function SidebarItem({
   onClick,
   disabled = false,
   isCurrent = false,
+  count = 0,
   isRail,
   onNavigate,
 }: SidebarItemProps) {
@@ -37,6 +39,23 @@ export function SidebarItem({
     <>
       <Icon size={20} className="shrink-0" aria-hidden="true" />
       <span className={RAIL_FADE}>{label}</span>
+      {count > 0 ? (
+        <>
+          <span
+            className={cn(
+              "bg-danger/15 text-danger-readable ml-auto rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums",
+              RAIL_FADE,
+            )}
+          >
+            {count}
+            <span className="sr-only"> pendientes</span>
+          </span>
+          <span
+            aria-hidden="true"
+            className="bg-danger absolute top-2.5 left-8 hidden size-2 rounded-full md:group-data-[rail=true]/shell:block"
+          />
+        </>
+      ) : null}
     </>
   );
 

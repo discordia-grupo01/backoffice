@@ -1,13 +1,17 @@
 import { X } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 
 import { IconButton } from "@/components/ui/IconButton";
+
+import { DossierBackButton } from "./DossierBackButton";
 
 interface DossierHeaderProps {
   name: string;
   avatar: ReactNode;
   titleId: string;
   onClose: () => void;
+  onBack?: () => void;
+  backRef?: Ref<HTMLButtonElement>;
 }
 
 export function DossierHeader({
@@ -15,9 +19,12 @@ export function DossierHeader({
   avatar,
   titleId,
   onClose,
+  onBack,
+  backRef,
 }: DossierHeaderProps) {
   return (
     <header className="border-line flex items-center gap-3 border-b px-5 py-4">
+      {onBack ? <DossierBackButton ref={backRef} onClick={onBack} /> : null}
       {avatar}
       <h2
         id={titleId}

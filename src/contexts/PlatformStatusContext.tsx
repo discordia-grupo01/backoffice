@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { api } from "@/lib/browserApiClient";
+import { changeBus } from "@/lib/changeBus";
 import { getPlatformStatus } from "@/services/status/client";
 import { getServiceHealth } from "@/services/status/healthClient";
 import { connectHealthNotifications } from "@/services/notifications/socket";
@@ -42,11 +43,14 @@ export function PlatformStatusProvider({ children }: { children: ReactNode }) {
       });
       void getServiceHealth().then((result) => {
         if (cancelled) return;
-        setHealth(
-          result.ok
-            ? { phase: "ready", checks: result.checks }
-            : { phase: "error", message: result.message },
-        );
+        if (result.ok) {
+          setHealth({ phase: "ready", checks: result.checks });
+        } else {
+          setHealth({
+            phase: result.status === 403 ? "forbidden" : "error",
+            message: result.message,
+          });
+        }
       });
     };
 
@@ -60,6 +64,8 @@ export function PlatformStatusProvider({ children }: { children: ReactNode }) {
           data.userId,
           refresh,
           refresh,
+          changeBus.publish,
+          changeBus.refreshAll,
         );
         if (cancelled) close();
         else disconnect = close;

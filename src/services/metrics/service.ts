@@ -4,6 +4,8 @@ import { apiRequest, type ApiResult } from "@/lib/apiClient";
 import type {
   GlobalMetricsResponse,
   MetricsRange,
+  ServerGrowthResponse,
+  ServerMetricsResponse,
 } from "@/types/metrics.types";
 
 export function getGlobalMetrics(
@@ -14,4 +16,37 @@ export function getGlobalMetrics(
     token,
     params: range,
   });
+}
+
+export function getServerMetrics(
+  token: string,
+  serverId: string,
+  range: MetricsRange,
+): Promise<ApiResult<ServerMetricsResponse>> {
+  return apiRequest<ServerMetricsResponse>(
+    `/v1/servers/${encodeURIComponent(serverId)}/metrics`,
+    { token, params: range },
+  );
+}
+
+export function getServerGrowth(
+  token: string,
+  serverId: string,
+  range: MetricsRange,
+): Promise<ApiResult<ServerGrowthResponse>> {
+  return apiRequest<ServerGrowthResponse>(
+    `/v1/servers/${encodeURIComponent(serverId)}/metrics/growth`,
+    { token, params: range },
+  );
+}
+
+export function exportServerMetrics(
+  token: string,
+  serverId: string,
+  range: MetricsRange,
+): Promise<ApiResult<string>> {
+  return apiRequest<string>(
+    `/v1/servers/${encodeURIComponent(serverId)}/metrics/export.csv`,
+    { token, params: range, responseType: "text" },
+  );
 }

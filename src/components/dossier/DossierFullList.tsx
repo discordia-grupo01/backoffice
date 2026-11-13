@@ -1,7 +1,7 @@
 "use client";
 
-import { AlertTriangle, ArrowLeft } from "lucide-react";
-import { useId, type ReactNode, type Ref } from "react";
+import { AlertTriangle } from "lucide-react";
+import { useId, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { PaginationBar } from "@/components/ui/PaginationBar";
@@ -31,8 +31,6 @@ interface DossierFullListProps<T> {
   empty: string;
   list: PagedSection<T>;
   renderItems: (items: T[]) => ReactNode;
-  onBack: () => void;
-  backRef: Ref<HTMLButtonElement>;
 }
 
 export function DossierFullList<T>({
@@ -41,8 +39,6 @@ export function DossierFullList<T>({
   empty,
   list,
   renderItems,
-  onBack,
-  backRef,
 }: DossierFullListProps<T>) {
   const { items, total, status, page, pageSize, setPage, retry } = list;
   const hasData = items.length > 0;
@@ -98,17 +94,7 @@ export function DossierFullList<T>({
       {header}
 
       <div className="min-h-0 flex-1 overflow-y-auto p-5">
-        <button
-          ref={backRef}
-          type="button"
-          onClick={onBack}
-          className="text-content-muted hover:text-content focus-visible:ring-bo -ml-1 flex cursor-pointer items-center gap-1.5 rounded-md px-1 py-0.5 text-[13px] font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
-        >
-          <ArrowLeft size={16} aria-hidden="true" />
-          Volver al expediente
-        </button>
-
-        <section aria-labelledby={headingId} className="mt-5">
+        <section aria-labelledby={headingId}>
           <h3
             id={headingId}
             className="font-display mb-2 text-sm font-semibold"
