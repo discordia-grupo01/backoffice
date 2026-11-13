@@ -1,6 +1,8 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { changeBus } from "@/lib/changeBus";
+
 import { usePagedList, type PagedResult } from "./usePagedList";
 
 interface Filters {
@@ -158,5 +160,42 @@ describe("usePagedList", () => {
     await waitFor(() => expect(result.current.status).toBe("error"));
     act(() => result.current.retry());
     await waitFor(() => expect(result.current.status).toBe("forbidden"));
+  });
+
+  it("se actualiza sola cuando llega el aviso y no muestra la carga", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce(pageOf(1, ["a"]))
+      .mockResolvedValue(pageOf(2, ["a", "b"]));
+    const { result } = renderHook(() =>
+      usePagedList({
+        fetchPage,
+        emptyFilters: EMPTY,
+        pageSize: 10,
+        refreshOn: { resources: ["backoffice"], kinds: ["users"] },
+      }),
+    );
+    await waitFor(() => expect(result.current.status).toBe("success"));
+
+    act(() => changeBus.publish({ resource: "backoffice", kind: "reports" }));
+    await act(() => vi.advanceTimersByTimeAsync(500));
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+
+    act(() => changeBus.publish({ resource: "backoffice", kind: "users" }));
+    await waitFor(() => expect(result.current.items).toEqual(["a", "b"]));
+    expect(result.current.total).toBe(2);
+    expect(result.current.status).toBe("success");
+  });
+
+  it("sin refreshOn no escucha los avisos", async () => {
+    const fetchPage = vi.fn().mockResolvedValue(pageOf(1));
+    const { result } = renderHook(() =>
+      usePagedList({ fetchPage, emptyFilters: EMPTY, pageSize: 10 }),
+    );
+    await waitFor(() => expect(result.current.status).toBe("success"));
+
+    act(() => changeBus.publish({ resource: "backoffice", kind: "users" }));
+    await act(() => vi.advanceTimersByTimeAsync(500));
+    expect(fetchPage).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,7 +1,11 @@
 declare module "phoenix" {
+  export interface Push {
+    receive(event: string, callback: () => void): Push;
+  }
+
   export class Channel {
     on<T>(event: string, callback: (payload: T) => void): number;
-    join(): { receive(event: string, callback: () => void): unknown };
+    join(): Push;
     leave(): void;
   }
 

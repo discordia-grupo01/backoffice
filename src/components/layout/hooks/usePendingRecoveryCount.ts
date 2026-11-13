@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { useBackofficeChange } from "@/contexts/BackofficeChangesContext";
+import { useRefreshOnChange } from "@/hooks/useRefreshOnChange";
+import { RECOVERY_REQUESTS_CHANGE } from "@/lib/recoveryRequestsChange";
 import { getRecoveryRequests } from "@/services/recovery/client";
 
 export function usePendingRecoveryCount(): number {
@@ -24,10 +25,8 @@ export function usePendingRecoveryCount(): number {
     };
   }, [attempt]);
 
-  useBackofficeChange(
-    "recovery_requests",
-    useCallback(() => setAttempt((value) => value + 1), []),
-  );
+  const refetch = useCallback(() => setAttempt((value) => value + 1), []);
+  useRefreshOnChange(RECOVERY_REQUESTS_CHANGE, refetch);
 
   return count;
 }

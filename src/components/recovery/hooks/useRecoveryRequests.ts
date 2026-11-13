@@ -1,7 +1,7 @@
 "use client";
 
-import { useBackofficeChange } from "@/contexts/BackofficeChangesContext";
 import { usePagedList, type PageRequest } from "@/hooks/usePagedList";
+import { RECOVERY_REQUESTS_CHANGE } from "@/lib/recoveryRequestsChange";
 import { getRecoveryRequests } from "@/services/recovery/client";
 import type {
   RecoveryRequest,
@@ -42,8 +42,8 @@ export function useRecoveryRequests() {
   const list = usePagedList<RecoveryRequest, RecoveryListFilters>({
     fetchPage: fetchRecoveryRequests,
     emptyFilters: DEFAULT_FILTERS,
+    refreshOn: RECOVERY_REQUESTS_CHANGE,
   });
-  useBackofficeChange("recovery_requests", list.retry);
 
   return {
     ...list,

@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@discordia/client-shared": "github:discordia-grupo01/client-shared#v0.13.84",
+    "@discordia/client-shared": "github:discordia-grupo01/client-shared#v0.13.93",
     "axios": "^1.20.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.454.0",

@@ -9,8 +9,8 @@ import {
   type ReactNode,
 } from "react";
 
-import { usePublishBackofficeChange } from "@/contexts/BackofficeChangesContext";
 import { api } from "@/lib/browserApiClient";
+import { changeBus } from "@/lib/changeBus";
 import { getPlatformStatus } from "@/services/status/client";
 import { getServiceHealth } from "@/services/status/healthClient";
 import { connectHealthNotifications } from "@/services/notifications/socket";
@@ -34,7 +34,6 @@ export function PlatformStatusProvider({ children }: { children: ReactNode }) {
   const [health, setHealth] = useState<ServiceHealthState>({
     phase: "loading",
   });
-  const publishChange = usePublishBackofficeChange();
 
   useEffect(() => {
     let cancelled = false;
@@ -65,7 +64,8 @@ export function PlatformStatusProvider({ children }: { children: ReactNode }) {
           data.userId,
           refresh,
           refresh,
-          publishChange,
+          changeBus.publish,
+          changeBus.refreshAll,
         );
         if (cancelled) close();
         else disconnect = close;
@@ -76,7 +76,7 @@ export function PlatformStatusProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       disconnect?.();
     };
-  }, [publishChange]);
+  }, []);
 
   const value = useMemo(
     () => ({ platform, setPlatform, health }),

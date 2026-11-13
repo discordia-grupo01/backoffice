@@ -13,7 +13,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateBox } from "@/components/ui/StateBox";
 import { UserStatusBadge } from "@/components/users/UserStatusBadge";
-import { usePublishBackofficeChange } from "@/contexts/BackofficeChangesContext";
+import { publishRecoveryRequestsChange } from "@/lib/recoveryRequestsChange";
 import type { RecoveryRequestDetail } from "@/types/recovery.types";
 import { formatDate, formatDateTime } from "@/utils/formatDate";
 import {
@@ -46,14 +46,13 @@ export function RecoveryRequestDialog({
 }: RecoveryRequestDialogProps) {
   const titleId = useId();
   const { status, request, reload, replace } = useRecoveryRequest(requestId);
-  const publishChange = usePublishBackofficeChange();
   const { toast, visible, show } = useToast();
   const decision = useRecoveryDecision({
     onSettled: (result, message) => {
       show(message);
       if (result.ok) replace(result.request);
       else reload();
-      publishChange("recovery_requests");
+      publishRecoveryRequestsChange();
     },
   });
   const name = request ? requesterName(request) : "";

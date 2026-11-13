@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { useBackofficeChange } from "@/contexts/BackofficeChangesContext";
+import { useRefreshOnChange } from "@/hooks/useRefreshOnChange";
 import { ROUTES } from "@/lib/constants";
+import { RECOVERY_REQUESTS_CHANGE } from "@/lib/recoveryRequestsChange";
 import { getRecoveryRequest } from "@/services/recovery/client";
 import type { RecoveryRequestDetail } from "@/types/recovery.types";
 
@@ -56,7 +57,9 @@ export function useRecoveryRequest(requestId: string | null) {
   }, [requestId, attempt]);
 
   const reload = useCallback(() => setAttempt((value) => value + 1), []);
-  useBackofficeChange("recovery_requests", reload);
+  useRefreshOnChange(RECOVERY_REQUESTS_CHANGE, reload, {
+    enabled: requestId !== null,
+  });
 
   const current = loaded?.id === requestId ? loaded : null;
 
