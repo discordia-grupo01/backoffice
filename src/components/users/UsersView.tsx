@@ -6,6 +6,7 @@ import { useDossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { NoStaffAccess } from "@/components/layout/NoStaffAccess";
 import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
+import { ListSkeleton } from "@/components/ui/ListSkeleton";
 import { PaginationBar } from "@/components/ui/PaginationBar";
 import { useViewMode } from "@/hooks/useViewMode";
 import { cn } from "@/lib/cn";
@@ -16,7 +17,6 @@ import { useUsers } from "./hooks/useUsers";
 import { UserFilters } from "./UserFilters";
 import { UsersList } from "./UsersList";
 import { UsersEmptyState, UsersErrorState } from "./UsersStates";
-import { UsersSkeleton } from "./UsersSkeleton";
 import { UserSuspensionDialog } from "./UserSuspensionDialog";
 import { UserDossierDialog } from "./dossier/UserDossierDialog";
 import { USER_DOSSIER_SECTION_ORDER } from "./dossier/UserDossierItems";
@@ -54,7 +54,13 @@ export function UsersView() {
   function renderResults() {
     if (status === "error") return <UsersErrorState onRetry={retry} />;
     if (status === "loading" && !hasData)
-      return <UsersSkeleton view={viewMode} />;
+      return (
+        <ListSkeleton
+          view={viewMode}
+          label="Cargando usuarios"
+          rowHeightPx={61}
+        />
+      );
     if (!hasData) {
       return (
         <UsersEmptyState hasActiveFilters={hasActiveFilters} onClear={clear} />

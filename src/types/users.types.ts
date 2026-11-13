@@ -1,4 +1,5 @@
 import type { DossierModerationAction, DossierReport } from "./dossier.types";
+import type { RecoveryRequestStatus, StaffRef } from "./recovery.types";
 
 /** `pending`: todavía no confirmó su email. */
 export type UserStatus = "active" | "pending" | "suspended";
@@ -11,7 +12,6 @@ export interface PlatformUser {
   email: string;
   status: UserStatus;
   created_at: string;
-  /** Cuándo se suspendió; `null` si no está suspendido. */
   suspended_at: string | null;
 }
 
@@ -34,7 +34,8 @@ export type UsersResult =
   | { ok: false; status: number; message: string };
 
 /** Secciones del expediente de un usuario. */
-export type DossierSection = "servers" | "activity" | "reports" | "moderation";
+export type DossierSection =
+  "servers" | "activity" | "reports" | "moderation" | "recovery_requests";
 
 export interface DossierMembership {
   server_id: string;
@@ -55,11 +56,20 @@ export interface DossierActivity {
   occurred_at: string;
 }
 
+export interface DossierRecoveryRequest {
+  id: string;
+  status: RecoveryRequestStatus;
+  requested_at: string;
+  resolved_at: string | null;
+  resolved_by: StaffRef | null;
+}
+
 export interface DossierSectionItems {
   servers: DossierMembership;
   activity: DossierActivity;
   reports: DossierReport;
   moderation: DossierModerationAction;
+  recovery_requests: DossierRecoveryRequest;
 }
 
 export interface UserDossierSummary {

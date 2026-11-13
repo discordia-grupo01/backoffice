@@ -18,9 +18,9 @@ export const VIEW_MODE_STORAGE_KEY = "discordia:backoffice-view";
 export const ROUTES = {
   root: "/",
   login: "/login",
-  /** Landing despues de iniciar sesion: el dashboard de metricas. */
   home: "/dashboard",
   users: "/users",
+  recoveryRequests: "/recovery-requests",
   servers: "/servers",
   status: "/status",
 } as const;

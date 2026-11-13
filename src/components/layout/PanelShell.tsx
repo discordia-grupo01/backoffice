@@ -11,7 +11,6 @@ import { NoStaffAccess } from "./NoStaffAccess";
 import { Sidebar } from "./Sidebar";
 import { SidebarContext } from "./SidebarContext";
 
-/** Marco del panel: solo muestra su contenido a quien tiene rol de staff. */
 export function PanelShell({ children }: { children: ReactNode }) {
   const access = useStaffAccess();
   const { isOpen, isRail, mobileOpen, toggle, closeMobile } = useSidebar();
