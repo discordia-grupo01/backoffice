@@ -6,6 +6,7 @@ import { parseSessionCookie } from "@/services/auth/session-shape";
 const PROTECTED_PREFIXES = [
   ROUTES.home,
   ROUTES.users,
+  ROUTES.recoveryRequests,
   ROUTES.servers,
   ROUTES.status,
 ];

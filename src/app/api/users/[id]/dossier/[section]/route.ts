@@ -24,6 +24,7 @@ const SECTIONS: readonly DossierSection[] = [
   "activity",
   "reports",
   "moderation",
+  "recovery_requests",
 ];
 
 function isSection(value: string): value is DossierSection {

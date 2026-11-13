@@ -18,10 +18,16 @@ export interface HealthCheckChangedPayload {
   consecutive_failures: number;
 }
 
+interface ChangedPayload {
+  resource?: string;
+  kind?: string;
+}
+
 export async function connectHealthNotifications(
   userId: string,
   onHealthCheckChanged: (payload: HealthCheckChangedPayload) => void,
   onStatusChanged?: () => void,
+  onBackofficeChanged?: (kind: string) => void,
 ): Promise<() => void> {
   let stopped = false;
   let retryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -65,6 +71,13 @@ export async function connectHealthNotifications(
     nextSocket.onClose(reconnect);
     nextChannel.on("health_check_changed", onHealthCheckChanged);
     if (onStatusChanged) nextChannel.on("status_changed", onStatusChanged);
+    if (onBackofficeChanged) {
+      nextChannel.on("changed", (payload: ChangedPayload) => {
+        if (payload.resource === "backoffice" && payload.kind) {
+          onBackofficeChanged(payload.kind);
+        }
+      });
+    }
     nextChannel.join().receive("error", reconnect);
     nextSocket.connect();
   };

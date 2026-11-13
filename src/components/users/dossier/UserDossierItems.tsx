@@ -1,5 +1,12 @@
-import { LogIn, LogOut, MessageCircle, type LucideIcon } from "lucide-react";
+import {
+  KeyRound,
+  LogIn,
+  LogOut,
+  MessageCircle,
+  type LucideIcon,
+} from "lucide-react";
 
+import { RecoveryStatusBadge } from "@/components/recovery/RecoveryStatusBadge";
 import { Avatar } from "@/components/ui/Avatar";
 import {
   DossierCard,
@@ -12,6 +19,8 @@ import {
   type DossierTone,
 } from "@/components/dossier/DossierCards";
 import { formatDate } from "@/utils/formatDate";
+import { recoveryRequestHref } from "@/utils/recoveryRequestHref";
+import { resolutionText } from "@/utils/recoveryText";
 import type {
   DossierActivityKind,
   DossierSection,
@@ -46,6 +55,10 @@ export const USER_DOSSIER_SECTIONS: Record<
   moderation: {
     title: "Acciones de moderación",
     empty: "No tiene acciones de moderación aplicadas.",
+  },
+  recovery_requests: {
+    title: "Seguridad de la cuenta",
+    empty: "El usuario no envió solicitudes de recuperación.",
   },
 };
 
@@ -113,5 +126,22 @@ export function UserDossierItems({ section, items }: UserDossierItemsProps) {
       return <ReportCards items={items} perspective="user" />;
     case "moderation":
       return <ModerationCards items={items} perspective="user" />;
+    case "recovery_requests":
+      return (
+        <DossierCardList>
+          {items.map((request) => (
+            <DossierEntry
+              key={request.id}
+              icon={KeyRound}
+              tone="accent"
+              title="Solicitud de recuperación de cuenta"
+              date={request.requested_at}
+              detail={resolutionText(request) ?? undefined}
+              href={recoveryRequestHref(request.id)}
+              badge={<RecoveryStatusBadge status={request.status} />}
+            />
+          ))}
+        </DossierCardList>
+      );
   }
 }

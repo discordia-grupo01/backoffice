@@ -2,6 +2,7 @@
 
 import {
   Activity,
+  KeyRound,
   LayoutDashboard,
   LogOut,
   Server,
@@ -17,12 +18,14 @@ import { IconButton } from "@/components/ui/IconButton";
 import { ROUTES } from "@/lib/constants";
 import { logoutRequest } from "@/services/auth/client";
 
+import { usePendingRecoveryCount } from "./hooks/usePendingRecoveryCount";
 import { useSidebarControls } from "./SidebarContext";
 import { SidebarItem } from "./SidebarItem";
 
 const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutDashboard, href: ROUTES.home },
   { label: "Usuarios", icon: Users, href: ROUTES.users },
+  { label: "Solicitudes", icon: KeyRound, href: ROUTES.recoveryRequests },
   { label: "Servidores", icon: Server, href: ROUTES.servers },
   { label: "Estado", icon: Activity, href: ROUTES.status },
 ] as const;
@@ -35,6 +38,7 @@ export function Sidebar() {
   const { isRail, closeMobile } = useSidebarControls();
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const pendingRecoveries = usePendingRecoveryCount();
 
   async function handleLogout() {
     setIsLoggingOut(true);
@@ -71,6 +75,11 @@ export function Sidebar() {
             key={item.label}
             {...item}
             isCurrent={isCurrentPath(pathname, item.href)}
+            count={
+              item.href === ROUTES.recoveryRequests
+                ? pendingRecoveries
+                : undefined
+            }
             isRail={isRail}
             onNavigate={closeMobile}
           />

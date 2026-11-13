@@ -89,6 +89,8 @@ interface DossierEntryProps {
   date: string;
   href?: string;
   badge?: ReactNode;
+  /** Línea extra bajo la fecha. */
+  detail?: string;
 }
 
 export function DossierEntry({
@@ -98,6 +100,7 @@ export function DossierEntry({
   date,
   href,
   badge,
+  detail,
 }: DossierEntryProps) {
   return (
     <DossierCard href={href}>
@@ -118,6 +121,9 @@ export function DossierEntry({
         >
           {formatDateTime(date)}
         </time>
+        {detail ? (
+          <p className="text-content-muted mt-1 text-xs">{detail}</p>
+        ) : null}
       </div>
       {badge ? <span className="shrink-0">{badge}</span> : null}
     </DossierCard>
