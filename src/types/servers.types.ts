@@ -3,6 +3,8 @@ import type { DossierModerationAction, DossierReport } from "./dossier.types";
 export interface PlatformServer {
   id: string;
   name: string;
+  /** Dirección del ícono tal como la guarda servers; pasar por `imageSrc`. */
+  icon_url: string | null;
   owner_id: string;
   owner_name: string | null;
   member_count: number;

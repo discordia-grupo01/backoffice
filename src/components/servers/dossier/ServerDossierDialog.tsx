@@ -13,6 +13,7 @@ import { useDossierSummary } from "@/components/dossier/hooks/useDossierSummary"
 import type { DossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { Avatar } from "@/components/ui/Avatar";
 import { getServerDossierSummary } from "@/services/servers/dossierClient";
+import { imageSrc } from "@/utils/imageSrc";
 import type { PlatformServer, ServerDossierView } from "@/types/servers.types";
 
 import {
@@ -63,7 +64,14 @@ function ServerDossierContent({
   const header = (
     <DossierHeader
       name={name}
-      avatar={<Avatar name={name} size={44} className="rounded-xl" />}
+      avatar={
+        <Avatar
+          name={name}
+          src={imageSrc(server?.icon_url)}
+          size={44}
+          className="rounded-xl"
+        />
+      }
       titleId={view.titleId}
       onClose={view.onClose}
       onBack={view.section ? view.onBack : undefined}

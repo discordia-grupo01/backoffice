@@ -13,6 +13,7 @@ const mockedDelete = vi.mocked(deleteServer);
 const TRUCHOS: PlatformServer = {
   id: "s1",
   name: "Truchos SA",
+  icon_url: null,
   owner_id: "u1",
   owner_name: "Beto",
   member_count: 3,

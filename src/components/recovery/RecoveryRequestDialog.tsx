@@ -16,6 +16,7 @@ import { UserStatusBadge } from "@/components/users/UserStatusBadge";
 import { publishRecoveryRequestsChange } from "@/lib/recoveryRequestsChange";
 import type { RecoveryRequestDetail } from "@/types/recovery.types";
 import { formatDate, formatDateTime } from "@/utils/formatDate";
+import { imageSrc } from "@/utils/imageSrc";
 import {
   previousRequestsText,
   requesterName,
@@ -66,7 +67,13 @@ export function RecoveryRequestDialog({
         className="sm:h-fit sm:max-h-[min(100dvh-3rem,46rem)] sm:w-[min(100vw-3rem,40rem)]"
       >
         <header className="border-line flex items-center gap-3 border-b px-5 py-4">
-          {request ? <Avatar name={name} size={44} /> : null}
+          {request ? (
+            <Avatar
+              name={name}
+              src={imageSrc(request.user?.avatar_url)}
+              size={44}
+            />
+          ) : null}
           <div className="min-w-0 flex-1">
             <h2
               id={titleId}
