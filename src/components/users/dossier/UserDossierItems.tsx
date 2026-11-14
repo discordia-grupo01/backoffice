@@ -19,6 +19,7 @@ import {
   type DossierTone,
 } from "@/components/dossier/DossierCards";
 import { formatDate } from "@/utils/formatDate";
+import { imageSrc } from "@/utils/imageSrc";
 import { recoveryRequestHref } from "@/utils/recoveryRequestHref";
 import { resolutionText } from "@/utils/recoveryText";
 import type {
@@ -86,7 +87,12 @@ export function UserDossierItems({ section, items }: UserDossierItemsProps) {
                     : undefined
                 }
               >
-                <Avatar name={name} size={32} className="rounded-lg" />
+                <Avatar
+                  name={name}
+                  src={imageSrc(membership.server_icon_url)}
+                  size={32}
+                  className="rounded-lg"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm">{name}</p>
                   <p className="text-content-muted mt-0.5 text-xs">

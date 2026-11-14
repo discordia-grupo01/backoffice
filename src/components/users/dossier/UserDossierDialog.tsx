@@ -13,6 +13,7 @@ import { useDossierSummary } from "@/components/dossier/hooks/useDossierSummary"
 import type { DossierUrl } from "@/components/dossier/hooks/useDossierUrl";
 import { Avatar } from "@/components/ui/Avatar";
 import { getUserDossierSummary } from "@/services/users/dossierClient";
+import { imageSrc } from "@/utils/imageSrc";
 import type { DossierSection, PlatformUser } from "@/types/users.types";
 
 import { UserDossierActions } from "./UserDossierActions";
@@ -61,7 +62,7 @@ function UserDossierContent({
   const header = (
     <DossierHeader
       name={name}
-      avatar={<Avatar name={name} size={44} />}
+      avatar={<Avatar name={name} src={imageSrc(user?.avatar_url)} size={44} />}
       titleId={view.titleId}
       onClose={view.onClose}
       onBack={view.section ? view.onBack : undefined}

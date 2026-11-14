@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Fact, FactGrid } from "@/components/ui/Fact";
 import { cn } from "@/lib/cn";
 import { formatDate } from "@/utils/formatDate";
+import { imageSrc } from "@/utils/imageSrc";
 import type { PlatformUser } from "@/types/users.types";
 
 import { UserActions, type UserActionHandlers } from "./UserActions";
@@ -23,7 +24,7 @@ export function UserCard({ user, ...handlers }: UserCardProps) {
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <Avatar name={user.name} size={40} />
+          <Avatar name={user.name} src={imageSrc(user.avatar_url)} size={40} />
           <div className="min-w-0">
             <p className="truncate font-medium" title={user.name}>
               {user.name}
