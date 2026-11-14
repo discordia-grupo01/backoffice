@@ -10,6 +10,8 @@ export interface PlatformUser {
   id: string;
   name: string;
   email: string;
+  /** Dirección de la foto tal como la guarda identify; pasar por `imageSrc`. */
+  avatar_url: string | null;
   status: UserStatus;
   created_at: string;
   suspended_at: string | null;
@@ -41,6 +43,8 @@ export interface DossierMembership {
   server_id: string;
   /** `null` si admin todavía no conoce el servidor. */
   server_name: string | null;
+  /** Dirección del ícono tal como la guarda servers; pasar por `imageSrc`. */
+  server_icon_url: string | null;
   joined_at: string;
 }
 

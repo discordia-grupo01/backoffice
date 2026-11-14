@@ -24,7 +24,12 @@ export function RecoveryRequestsTable({
       header: "Usuario",
       width: "22%",
       cell: (request) => (
-        <UserIdentity user={{ name: requesterName(request) }} />
+        <UserIdentity
+          user={{
+            name: requesterName(request),
+            avatar_url: request.user?.avatar_url,
+          }}
+        />
       ),
     },
     {

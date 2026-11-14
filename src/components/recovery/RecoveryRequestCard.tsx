@@ -2,6 +2,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Card } from "@/components/ui/Card";
 import type { RecoveryRequest } from "@/types/recovery.types";
 import { formatDateTime } from "@/utils/formatDate";
+import { imageSrc } from "@/utils/imageSrc";
 import { requesterName } from "@/utils/recoveryText";
 
 import {
@@ -25,7 +26,11 @@ export function RecoveryRequestCard({
     <Card as="article" className="flex h-full flex-col gap-4 rounded-xl p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <Avatar name={name} size={40} />
+          <Avatar
+            name={name}
+            src={imageSrc(request.user?.avatar_url)}
+            size={40}
+          />
           <div className="min-w-0">
             <p className="truncate font-medium" title={name}>
               {name}

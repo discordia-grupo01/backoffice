@@ -18,6 +18,7 @@ const BETO: PlatformUser = {
   id: "b3c1",
   name: "Beto",
   email: "beto@mail.com",
+  avatar_url: null,
   status: "active",
   created_at: "2026-01-01T00:00:00Z",
   suspended_at: null,
