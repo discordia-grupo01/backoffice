@@ -122,8 +122,5 @@ export async function POST(
     user,
   });
 
-  return NextResponse.json(
-    { ok: true, user },
-    { status: 200 },
-  );
+  return NextResponse.json({ ok: true, user }, { status: 200 });
 }
