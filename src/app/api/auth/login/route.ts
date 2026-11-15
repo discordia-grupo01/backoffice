@@ -12,7 +12,7 @@ import {
 
 import { NextResponse } from "next/server";
 
-import { login } from "@/services/auth/service";
+import { checkStaff, login, logout } from "@/services/auth/service";
 import { createSession } from "@/services/auth/session";
 
 const TWO_FACTOR_UNSUPPORTED =
@@ -99,14 +99,28 @@ export async function POST(
     );
   }
 
+  const { token, user } = result.data;
+  const staff = await checkStaff(token);
+  if (!staff.ok) {
+    if (refreshToken) await logout(token, refreshToken);
+
+    if (staff.status === 401 || staff.status === 403) {
+      return NextResponse.json(
+        { ok: false, message: INVALID_CREDENTIALS },
+        { status: 401 },
+      );
+    }
+    return NextResponse.json(
+      { ok: false, message: LOGIN_UNAVAILABLE },
+      { status: 502 },
+    );
+  }
+
   createSession({
-    token: result.data.token,
+    token,
     refreshToken: refreshToken ?? "",
-    user: result.data.user,
+    user,
   });
 
-  return NextResponse.json(
-    { ok: true, user: result.data.user },
-    { status: 200 },
-  );
+  return NextResponse.json({ ok: true, user }, { status: 200 });
 }
