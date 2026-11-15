@@ -1,17 +1,55 @@
-# discordia-backoffice
+# backoffice
 
-Panel de administración de Discordia, de uso exclusivo del staff de la plataforma (React + Next.js, App Router).
+Panel de administración de Discordia, de uso exclusivo del staff.
 
-## Stack
+## Tabla de contenidos
 
-- Next.js 14 (App Router) + React 18 + TypeScript estricto
-- Tailwind CSS v4 (`@tailwindcss/postcss`, sin archivo de config) con los design tokens de Discordia (`@discordia/client-shared/theme.css`)
-- Formularios con `useState` + validación en funciones propias (sin librería)
-- `@discordia/client-shared` para contratos, validaciones y textos compartidos con el resto de los fronts
-- axios para HTTP, lucide-react para iconos, recharts para los gráficos, papaparse para el CSV
-- Vitest + Testing Library (jsdom) para tests
+- [Introducción](#introducción)
+- [Pre-requisitos](#pre-requisitos)
+- [Cómo correr](#cómo-correr)
+- [Variables de entorno](#variables-de-entorno)
+- [Comandos Docker](#comandos-docker)
+- [Tests](#tests)
+- [Más documentación](#más-documentación)
 
-## Setup local
+## Introducción
+
+`backoffice` es la aplicación web que usa el staff de la plataforma para controlar abusos y ver cómo anda todo. Se divide en tres partes:
+
+- **Usuarios y servidores:** listar con filtros, suspender y reactivar cuentas, suspender o eliminar servidores completos, y revisar los pedidos de recuperación de cuenta de quien perdió su segundo factor.
+- **Expediente:** reunir en una sola pantalla lo que se sabe de un usuario o de un servidor (reportes, acciones de moderación y actividad) para investigar.
+- **Métricas y estado:** actividad global y por servidor, crecimiento de miembros con exportación a CSV, y el estado de la plataforma con la publicación y resolución de incidentes.
+
+Está hecho con Next.js 14 (App Router), React 18 y TypeScript, con Tailwind CSS para los estilos y Vitest para los tests. Usa el paquete [`client-shared`](https://github.com/discordia-grupo01/client-shared) para los tipos, textos y funciones que comparte con la web y la app móvil.
+
+El navegador no le habla directo al backend: las pantallas llaman a rutas del propio servidor de Next (un BFF), que reenvía el pedido al gateway con el JWT guardado en una cookie. El gateway (Kong) valida el token, y es `admin` quien decide si el usuario es staff. Para que las pantallas se actualicen solas cuando algo cambia, se conecta por WebSocket a `notifications`. En producción corre en Vercel.
+
+## Pre-requisitos
+
+- **Node.js 20** y **npm**, si querés correrlo en tu máquina.
+- **Docker** y **Docker Compose** v2.24 o más nuevo, si preferís correrlo en un contenedor.
+- **El backend**, para que el panel tenga a quién hablarle. Lo más simple es levantarlo con el repositorio [`infrastructure`](https://github.com/discordia-grupo01/infrastructure). Sin backend, el panel abre igual y muestra la pantalla de acceso.
+- **Un usuario con permisos de staff** para entrar. Cómo se da de alta está explicado en el README de [`admin`](https://github.com/discordia-grupo01/admin).
+
+## Cómo correr
+
+### Con Docker Compose
+
+Levanta el panel en modo desarrollo dentro de un contenedor:
+
+```bash
+docker compose up
+```
+
+La primera vez tarda un poco, porque instala las dependencias. Cuando termine, abrí http://localhost:3001.
+
+El contenedor busca el gateway en `host.docker.internal:8000`, que desde un contenedor es tu máquina. Si el gateway corre en otro lado, completá `API_URL_DOCKER` en el `.env`.
+
+Este compose levanta solo el panel. Para el sistema completo, usá el compose del repositorio `infrastructure`.
+
+### Para desarrollar
+
+Si vas a tocar el código, te conviene correrlo en tu máquina, con recarga en caliente:
 
 ```bash
 cp .env.example .env
@@ -19,146 +57,65 @@ npm install
 npm run dev
 ```
 
-## Conectar con el backend real
-
-El login le pega al backend real. Las requests siempre van al Gateway (Kong), nunca directo a un microservicio, y el Gateway queda en `http://localhost:8000`, que es el valor por defecto de `NEXT_PUBLIC_API_URL`.
-
-Para probar el login alcanza con `identity` y el Gateway. Desde `infrastructure/`:
-
-```bash
-cp -n .env.example .env
-docker compose up -d --build identity-db identity-migrations identity servers-db servers-migrations servers rabbitmq kong-config mailhog
-docker compose up -d --no-deps gateway
-```
-
-El Gateway se levanta aparte con `--no-deps` porque depende de `signaling`, que se construye desde el repo `voice-sfu`. Si lo tenés clonado alcanza con `docker compose up --build`.
-
-Para entrar hace falta una cuenta con el mail verificado. Los mails llegan a Mailhog, en `http://localhost:8025`.
+Con el `.env` de ejemplo, el panel le habla al gateway en `http://localhost:8000` y queda en http://localhost:3000.
 
 ## Variables de entorno
 
-| Variable            | Default               | Descripcion                                                              |
-| ------------------- | --------------------- | ------------------------------------------------------------------------ |
-| NEXT_PUBLIC_API_URL | http://localhost:8000 | URL base del Gateway (Kong) al que le pega el servidor de Next (el BFF). |
+Se leen del entorno o de un archivo `.env`. El archivo [`.env.example`](.env.example) trae el valor para correr en local. Las variables que empiezan con `NEXT_PUBLIC_` quedan incluidas en el código al compilar: no pongas secretos ahí.
 
-`.env.example` solo trae la estructura (sin valores sensibles). Los valores reales van en tu propio `.env`, que nunca se sube (ya está en `.gitignore`).
+| Variable | Default | Descripción |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | URL del gateway (Kong), al que le habla el servidor de Next. Nunca apunta directo a un servicio. |
 
-## Estructura de carpetas
+Variables que usa solo `docker-compose.yml`:
 
-```
-discordia-backoffice/
-├── src/
-│   ├── app/                     App Router: cada carpeta con page.tsx es una ruta
-│   │   ├── layout.tsx           layout raíz (fuentes, tema, metadata)
-│   │   ├── globals.css          Tailwind, tokens y estilos base
-│   │   ├── login/               pantalla de acceso
-│   │   ├── (panel)/             route group: las secciones del panel comparten sidebar
-│   │   │   ├── layout.tsx
-│   │   │   ├── dashboard/       home del staff: métricas globales
-│   │   │   ├── users/           listado de usuarios con búsqueda y filtro por estado
-│   │   │   └── status/          estado de la plataforma e incidentes
-│   │   └── api/                 route handlers del BFF (ver "Autenticación")
-│   │       ├── auth/login/
-│   │       ├── incidents/       publicar y resolver incidentes
-│   │       ├── metrics/
-│   │       ├── status/          estado de la plataforma
-│   │       └── users/
-│   ├── middleware.ts            guardia de rutas (corre antes de cada request)
-│   ├── components/
-│   │   ├── ui/                  piezas genéricas reutilizables (Button, IconButton, TextField, Card, StateBox, ...)
-│   │   ├── auth/                componentes del login
-│   │   ├── layout/              marco del panel: Sidebar, PanelHeader, PanelBody, PanelShell
-│   │   │   └── hooks/           useSidebar, useStaffAccess
-│   │   ├── metrics/             componentes del dashboard: tarjetas, gráficos, estados
-│   │   │   ├── hooks/           usePlatformMetrics
-│   │   │   └── utils/           formato de ejes, armado del CSV, estado vacío
-│   │   ├── status/              estado de la plataforma: resumen, incidentes, formulario
-│   │   │   ├── hooks/           usePlatformStatus, useIncidentForm, useResolveIncident
-│   │   │   └── utils/           textos y colores por estado
-│   │   └── users/               listado de usuarios: filtros, tabla, tarjetas
-│   │       └── hooks/           useUserFilters
-│   ├── services/                código agrupado por dominio del backend
-│   │   ├── auth/                client (browser), service (server), session, session-shape
-│   │   ├── metrics/             client (browser), service (server), mockPlatformMetrics
-│   │   ├── status/              client (browser), service (server): estado, health checks reales e incidentes; recibe cambios por notifications
-│   │   └── users/               client (browser), service (server): listado paginado de GET /v1/admin/users
-│   ├── types/                   tipos por dominio: <dominio>.types.ts
-│   ├── hooks/                   hooks de React que usan varias features (useTheme, useMediaQuery)
-│   ├── contexts/                contextos que usan varias features (PlatformStatusContext)
-│   ├── utils/                   funciones auxiliares sin UI (metricsPeriod, userFilters, downloadFile)
-│   └── lib/
-│       ├── apiClient.ts          cliente HTTP hacia el Gateway (server-only)
-│       ├── browserApiClient.ts   cliente HTTP del navegador hacia el BFF (`/api/*`)
-│       ├── cn.ts                 une clases de Tailwind (clsx + tailwind-merge)
-│       ├── apiRoute.ts           respuestas estándar de los route handlers
-│       ├── setCookie.ts          lee cookies del header `Set-Cookie` del backend
-│       ├── constants.ts          constantes de la app (rutas, cookie de sesión, ...)
-│       └── env.ts                lectura centralizada de variables de entorno
-├── public/                      logos
-├── .github/
-│   └── workflows/
-│       └── ci.yml               format:check, lint, test y build en cada PR/push a main
-├── .githooks/
-│   └── pre-commit               hook de prettier local
-├── next.config.mjs
-├── tsconfig.json
-├── postcss.config.mjs           plugin de Tailwind v4
-├── vitest.config.ts             config de tests
-├── vitest.setup.ts              setup de Testing Library
-├── Dockerfile                   build multi-stage para la imagen de producción
-└── .env.example                 estructura de variables de entorno (sin valores sensibles)
+| Variable | Default | Descripción |
+|---|---|---|
+| `BACKOFFICE_PORT` | `3001` | Puerto del panel en tu máquina. |
+| `API_URL_DOCKER` | `http://host.docker.internal:8000` | URL del gateway para el servidor de Next que corre dentro del contenedor. |
+
+## Comandos Docker
+
+Todos desde la raíz del repositorio.
+
+| Qué querés hacer | Comando |
+|---|---|
+| Levantar el panel | `docker compose up` |
+| Levantar en segundo plano | `docker compose up -d` |
+| Ver los logs | `docker compose logs -f backoffice` |
+| Ver qué está corriendo | `docker compose ps` |
+| Bajar todo | `docker compose down` |
+| Bajar todo y borrar las dependencias instaladas | `docker compose down -v` |
+
+El repositorio también trae un `Dockerfile` que compila el panel y lo sirve con `npm start`. La producción no lo usa: se despliega en Vercel.
+
+```bash
+docker build -t backoffice .
+docker run --rm -p 3000:3000 backoffice
 ```
 
-Los tipos de cada dominio (`Session`, `PlatformMetrics`, ...) viven en `types/<dominio>.types.ts`, no dentro de `services/<dominio>/`: así se pueden importar sin arrastrar `service.ts` (server-only) ni `client.ts` (que pega contra el BFF).
+## Tests
 
-Los hooks de una sola feature viven con ella, en su carpeta `hooks/`; los que usan varias features van en `src/hooks/`. Los formatters y demás funciones auxiliares de una feature van en su carpeta `utils/`, para distinguirlos de los componentes.
-
-Si una feature crece y alguna parte tiene entidad propia, esa parte puede vivir en una subcarpeta dentro de la feature, con sus componentes y, si hacen falta, sus propios `hooks/` y `utils/`. Lo que comparten las dos partes se queda en la carpeta de la feature.
-
-## Convenciones de Next (App Router)
-
-- **Rutas por carpeta.** Un `page.tsx` dentro de `src/app/x/` crea la ruta `/x`.
-- **Route groups.** Una carpeta entre paréntesis, como `(panel)`, agrupa rutas para compartir un `layout.tsx` sin aparecer en la URL: `(panel)/dashboard/page.tsx` responde a `/dashboard`.
-- **Route handlers.** Un `route.ts` es un endpoint HTTP. Se exporta una función por verbo (`GET`, `POST`, ...). La lógica vive en `services/`; el `route.ts` es solo la cáscara HTTP.
-- **Server vs client.** Los componentes corren en el servidor por defecto. Los que necesitan estado o eventos del navegador llevan `"use client"` en la primera línea.
-- **`middleware.ts`.** Corre antes de cada request. Se usa para redirigir según haya o no sesión.
-- **Alias `@/`.** `@/x` apunta a `src/x` (configurado en `tsconfig.json`).
-
-## Autenticación
-
-El navegador nunca habla directo con el backend. Pega contra los route handlers de `/api/*` (mismo origen) y Next hace de intermediario (patrón BFF): reenvía la llamada al Gateway y guarda la sesión en una cookie `httpOnly` que el JavaScript del navegador no puede leer.
-
-```
-navegador ──► /api/... (Next) ──► Gateway (Kong) ──► identify-service
-                  │
-                  └─ sesión en cookie httpOnly (discordia_backoffice_session)
+```bash
+npm test
 ```
 
-- `middleware.ts` es el guardia: sin sesión, `/dashboard` redirige a `/login`; con sesión, `/login` redirige al dashboard.
-- Cada feature con llamadas autenticadas sigue el mismo camino: `route.ts` en `app/api/` + lógica en `services/<dominio>/`.
-- La cookie tiene un nombre propio (`discordia_backoffice_session`): las cookies se comparten entre puertos de un mismo host, y con el mismo nombre que otra app se pisarían la sesión en `localhost`.
+Corre los tests con Vitest y Testing Library. Para revisar el resto del código:
 
-## Comandos
+| Qué | Comando |
+|---|---|
+| Linter (ESLint) | `npm run lint` |
+| Tipos (TypeScript) | `npm run typecheck` |
+| Formato | `npm run format:check` (y `npm run format` para arreglarlo) |
 
-- `npm run dev` - corre el servicio localmente.
-- `npm run lint` - corre ESLint (`next/core-web-vitals`).
-- `npm run typecheck` - chequea tipos con `tsc` (sin emitir).
-- `npm run format` / `npm run format:check` - formatea o chequea el formato con Prettier.
-- `npm run test` - corre los tests con Vitest.
-- `npm run build` - compila para producción.
-
-## Formateo automático
-
-Este repo se autoformatea con Prettier en cada commit. Activalo una vez por clone:
+El CI corre todo eso en cada pull request. El repositorio se formatea con Prettier; activá el hook una vez por clon:
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
-Si usan VS Code con la extensión oficial de Prettier, también formatea al guardar (ya configurado en .vscode/settings.json).
+## Más documentación
 
-El CI corre `npm run format:check` como red de seguridad (falla si encuentra archivos sin formatear), por si alguien clonó sin activar el hook.
-
-## Notas
-
-La arquitectura es la misma que la de web-client: mismo stack, cambia el contenido de `src/app` y a qué endpoints del backend le pega.
+- [`docs/historias-de-usuario.md`](docs/historias-de-usuario.md): las historias del catálogo que cubre el panel.
+- [`admin`](https://github.com/discordia-grupo01/admin): la API que usa el panel, con la forma de dar de alta al staff.
+- [`client-shared`](https://github.com/discordia-grupo01/client-shared): los tipos, textos y funciones compartidos.
