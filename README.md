@@ -63,29 +63,29 @@ Con el `.env` de ejemplo, el panel le habla al gateway en `http://localhost:8000
 
 Se leen del entorno o de un archivo `.env`. El archivo [`.env.example`](.env.example) trae el valor para correr en local. Las variables que empiezan con `NEXT_PUBLIC_` quedan incluidas en el código al compilar: no pongas secretos ahí.
 
-| Variable | Default | Descripción |
-|---|---|---|
+| Variable              | Default                 | Descripción                                                                                      |
+| --------------------- | ----------------------- | ------------------------------------------------------------------------------------------------ |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | URL del gateway (Kong), al que le habla el servidor de Next. Nunca apunta directo a un servicio. |
 
 Variables que usa solo `docker-compose.yml`:
 
-| Variable | Default | Descripción |
-|---|---|---|
-| `BACKOFFICE_PORT` | `3001` | Puerto del panel en tu máquina. |
-| `API_URL_DOCKER` | `http://host.docker.internal:8000` | URL del gateway para el servidor de Next que corre dentro del contenedor. |
+| Variable          | Default                            | Descripción                                                               |
+| ----------------- | ---------------------------------- | ------------------------------------------------------------------------- |
+| `BACKOFFICE_PORT` | `3001`                             | Puerto del panel en tu máquina.                                           |
+| `API_URL_DOCKER`  | `http://host.docker.internal:8000` | URL del gateway para el servidor de Next que corre dentro del contenedor. |
 
 ## Comandos Docker
 
 Todos desde la raíz del repositorio.
 
-| Qué querés hacer | Comando |
-|---|---|
-| Levantar el panel | `docker compose up` |
-| Levantar en segundo plano | `docker compose up -d` |
-| Ver los logs | `docker compose logs -f backoffice` |
-| Ver qué está corriendo | `docker compose ps` |
-| Bajar todo | `docker compose down` |
-| Bajar todo y borrar las dependencias instaladas | `docker compose down -v` |
+| Qué querés hacer                                | Comando                             |
+| ----------------------------------------------- | ----------------------------------- |
+| Levantar el panel                               | `docker compose up`                 |
+| Levantar en segundo plano                       | `docker compose up -d`              |
+| Ver los logs                                    | `docker compose logs -f backoffice` |
+| Ver qué está corriendo                          | `docker compose ps`                 |
+| Bajar todo                                      | `docker compose down`               |
+| Bajar todo y borrar las dependencias instaladas | `docker compose down -v`            |
 
 El repositorio también trae un `Dockerfile` que compila el panel y lo sirve con `npm start`. La producción no lo usa: se despliega en Vercel.
 
@@ -102,11 +102,11 @@ npm test
 
 Corre los tests con Vitest y Testing Library. Para revisar el resto del código:
 
-| Qué | Comando |
-|---|---|
-| Linter (ESLint) | `npm run lint` |
-| Tipos (TypeScript) | `npm run typecheck` |
-| Formato | `npm run format:check` (y `npm run format` para arreglarlo) |
+| Qué                | Comando                                                     |
+| ------------------ | ----------------------------------------------------------- |
+| Linter (ESLint)    | `npm run lint`                                              |
+| Tipos (TypeScript) | `npm run typecheck`                                         |
+| Formato            | `npm run format:check` (y `npm run format` para arreglarlo) |
 
 El CI corre todo eso en cada pull request. El repositorio se formatea con Prettier; activá el hook una vez por clon:
 
