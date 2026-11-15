@@ -14,15 +14,6 @@ import { extractCookieValue } from "@/lib/setCookie";
 
 const REFRESH_COOKIE_NAME = "refresh_token";
 
-/**
- * Capa de servicios contra identify-service para el login del backoffice.
- *
- *   POST /v1/login -> 200 { user, token } + Set-Cookie refresh_token | 202 desafio de 2FA | 400 | 401 INVALID_CREDENTIALS
- *   POST /v1/refresh -> 200 { user, token } + Set-Cookie refresh_token (rotado) | 401 SESSION_EXPIRED
- *   POST /v1/logout -> 204 (revoca el refresh token de la cookie) | 401 SESSION_EXPIRED. Kong exige tambien el Bearer.
- *
- * El refresh token nunca viaja en el body: se extrae del header Set-Cookie.
- */
 export async function login(credentials: {
   email: string;
   password: string;
@@ -40,6 +31,10 @@ export async function login(credentials: {
     result,
     refreshToken: extractCookieValue(setCookieHeader, REFRESH_COOKIE_NAME),
   };
+}
+
+export function checkStaff(token: string): Promise<ApiResult<void>> {
+  return apiRequest<void>("/v1/admin/me", { token });
 }
 
 export function logout(
