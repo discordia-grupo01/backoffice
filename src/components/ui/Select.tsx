@@ -16,13 +16,23 @@ interface SelectProps {
   onChange: (value: string) => void;
   options: readonly SelectOption[];
   id?: string;
+  /** `toolbar`: a la altura de una barra de filtros, con la etiqueta solo para lectores de pantalla. */
+  variant?: "field" | "toolbar";
 }
 
 /**
  * Select estilizado para listas cortas -- reemplaza un `<select>` nativo,
  * cuyo popup de opciones no se puede estilizar en ningún browser.
  */
-export function Select({ label, value, onChange, options, id }: SelectProps) {
+export function Select({
+  label,
+  value,
+  onChange,
+  options,
+  id,
+  variant = "field",
+}: SelectProps) {
+  const isToolbar = variant === "toolbar";
   const [isOpen, setIsOpen] = useState(false);
   const generatedId = useId();
   const selectId = id ?? generatedId;
@@ -33,7 +43,11 @@ export function Select({ label, value, onChange, options, id }: SelectProps) {
     <div className="relative">
       <label
         htmlFor={selectId}
-        className="text-content-subtle mb-1.5 block text-xs font-bold tracking-wider uppercase"
+        className={
+          isToolbar
+            ? "sr-only"
+            : "text-content-subtle mb-1.5 block text-xs font-bold tracking-wider uppercase"
+        }
       >
         {label}
       </label>
@@ -44,7 +58,10 @@ export function Select({ label, value, onChange, options, id }: SelectProps) {
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          "bg-surface-input border-line text-content flex w-full cursor-pointer items-center justify-between gap-2 rounded-xl border px-4 py-3 text-left text-sm transition-colors",
+          "border-line text-content flex w-full cursor-pointer items-center justify-between gap-2 border text-left text-sm transition-colors",
+          isToolbar
+            ? "bg-surface-raised h-10 rounded-lg px-3.5"
+            : "bg-surface-input rounded-xl px-4 py-3",
           "focus-visible:ring-bo focus-visible:ring-2 focus-visible:outline-none",
           isOpen && "border-bo",
         )}

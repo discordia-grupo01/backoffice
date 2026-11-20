@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   activeIncidentsLabel,
+  formatIncidentDuration,
   formatSince,
   userNoticeLabel,
 } from "./statusDisplay";
@@ -30,5 +31,20 @@ describe("formatSince", () => {
     expect(formatSince("2026-11-03T11:35:00Z", now)).toBe("hace 25 min");
     expect(formatSince("2026-11-03T09:00:00Z", now)).toBe("hace 3 h");
     expect(formatSince("2026-11-01T12:00:00Z", now)).toBe("hace 2 d");
+  });
+});
+
+describe("formatIncidentDuration", () => {
+  const start = "2026-11-18T21:10:00Z";
+  const after = (minutes: number) =>
+    new Date(Date.parse(start) + minutes * 60_000).toISOString();
+
+  it("muestra minutos, horas y días sin unidades vacías", () => {
+    expect(formatIncidentDuration(start, after(0.5))).toBe("menos de 1 min");
+    expect(formatIncidentDuration(start, after(55))).toBe("55 min");
+    expect(formatIncidentDuration(start, after(60))).toBe("1 h");
+    expect(formatIncidentDuration(start, after(90))).toBe("1 h 30 min");
+    expect(formatIncidentDuration(start, after(24 * 60))).toBe("1 d");
+    expect(formatIncidentDuration(start, after(51 * 60 + 20))).toBe("2 d 3 h");
   });
 });
