@@ -23,4 +23,5 @@ export const ROUTES = {
   recoveryRequests: "/recovery-requests",
   servers: "/servers",
   status: "/status",
+  statusHistory: "/status/history",
 } as const;

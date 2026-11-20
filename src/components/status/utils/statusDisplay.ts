@@ -1,4 +1,8 @@
-import type { IncidentType, PlatformStatus } from "@/types/status.types";
+import type {
+  Incident,
+  IncidentType,
+  PlatformStatus,
+} from "@/types/status.types";
 
 interface Tone {
   label: string;
@@ -88,4 +92,33 @@ export function userNoticeLabel(count: number): string {
   return count === 1
     ? "Los usuarios ven el aviso en la app."
     : "Los usuarios ven los avisos en la app.";
+}
+
+/** `45 min`, `1 h 30 min`, `2 d 3 h`; menos de un minuto es `menos de 1 min`. */
+export function formatIncidentDuration(
+  createdAt: string,
+  resolvedAt: string,
+): string {
+  const minutes = Math.floor(
+    (new Date(resolvedAt).getTime() - new Date(createdAt).getTime()) / 60_000,
+  );
+  if (minutes < 1) return "menos de 1 min";
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) {
+    const rest = minutes % 60;
+    return rest ? `${hours} h ${rest} min` : `${hours} h`;
+  }
+  const days = Math.floor(hours / 24);
+  const restHours = hours % 24;
+  return restHours ? `${days} d ${restHours} h` : `${days} d`;
+}
+
+export function incidentDurationLabel({
+  created_at,
+  resolved_at,
+}: Pick<Incident, "created_at" | "resolved_at">): string {
+  return resolved_at
+    ? formatIncidentDuration(created_at, resolved_at)
+    : "Sin datos";
 }

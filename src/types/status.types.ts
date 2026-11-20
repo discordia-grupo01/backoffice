@@ -22,6 +22,19 @@ export interface Incident {
   resolved_at?: string;
 }
 
+/** Staff que publicó o resolvió un incidente. `name` es el nombre de usuario; los dos son `null` si admin no lo encontró. */
+export interface IncidentAuthor {
+  id: string;
+  name: string | null;
+  email: string | null;
+}
+
+/** Incidente del historial: el BFF cambia los ids de `created_by` y `resolved_by` por los datos del staff. */
+export interface ResolvedIncident extends Incident {
+  created_by: IncidentAuthor | null;
+  resolved_by: IncidentAuthor | null;
+}
+
 export interface PlatformStatusResponse {
   status: PlatformStatus;
   incidents: Incident[];
@@ -40,6 +53,29 @@ export type StatusResult =
 
 export type IncidentActionResult =
   { ok: true } | { ok: false; status: number; message: string };
+
+export type IncidentTypeFilter = "all" | IncidentType;
+
+export type IncidentServiceFilter = "all" | PlatformServiceId;
+
+export interface IncidentHistoryQuery {
+  search: string;
+  type: IncidentTypeFilter;
+  service: IncidentServiceFilter;
+  /** ISO; sin valor trae el historial completo. */
+  from?: string;
+  limit: number;
+  offset: number;
+}
+
+export interface IncidentHistoryPage {
+  incidents: ResolvedIncident[];
+  total: number;
+}
+
+export type IncidentHistoryResult =
+  | { ok: true; page: IncidentHistoryPage }
+  | { ok: false; status: number; message: string };
 
 export type ServiceHealth = "healthy" | "unavailable" | "no_data";
 

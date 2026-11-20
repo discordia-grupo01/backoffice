@@ -10,11 +10,13 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { SuccessDialog } from "@/components/ui/SuccessDialog";
 import { usePlatformStatusContext } from "@/contexts/PlatformStatusContext";
 
+import { useRecentIncidents } from "./history/hooks/useRecentIncidents";
 import { useIncidentForm } from "./hooks/useIncidentForm";
 import { usePlatformStatus } from "./hooks/usePlatformStatus";
 import { useResolveIncident } from "./hooks/useResolveIncident";
 import { IncidentFormDialog } from "./IncidentFormDialog";
 import { IncidentList } from "./IncidentList";
+import { RecentIncidentsCard } from "./RecentIncidentsCard";
 import { ServiceHealthPanel } from "./ServiceHealthPanel";
 import { StatusErrorState, StatusSkeleton } from "./StatusStates";
 import { StatusSummaryCard } from "./StatusSummaryCard";
@@ -27,6 +29,7 @@ export function PlatformStatusView() {
     message: string;
   } | null>(null);
   const { health } = usePlatformStatusContext();
+  const recent = useRecentIncidents();
 
   const form = useIncidentForm({
     onPublished: () => {
@@ -42,6 +45,7 @@ export function PlatformStatusView() {
   const resolution = useResolveIncident({
     onResolved: () => {
       void refresh();
+      recent.refresh();
       setSuccess({
         title: "Incidente resuelto",
         message: "El aviso dejó de mostrarse a los usuarios.",
@@ -85,6 +89,7 @@ export function PlatformStatusView() {
               onResolve={resolution.request}
             />
             <ServiceHealthPanel state={health} unreported={unreported} />
+            <RecentIncidentsCard state={recent.state} onRetry={recent.retry} />
           </div>
         )}
       </PanelBody>

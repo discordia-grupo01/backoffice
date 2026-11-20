@@ -20,13 +20,16 @@ export const PLATFORM_SERVICES: readonly {
   { id: "metrics", label: "Métricas" },
 ];
 
-const INCIDENT_TYPES: readonly IncidentType[] = ["degraded", "maintenance"];
+export const INCIDENT_TYPES: readonly IncidentType[] = [
+  "degraded",
+  "maintenance",
+];
 
 export function serviceLabel(id: string): string {
   return PLATFORM_SERVICES.find((service) => service.id === id)?.label ?? id;
 }
 
-function isServiceId(value: unknown): value is PlatformServiceId {
+export function isServiceId(value: unknown): value is PlatformServiceId {
   return PLATFORM_SERVICES.some((service) => service.id === value);
 }
 
