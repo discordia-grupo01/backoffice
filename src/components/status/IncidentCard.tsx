@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import type { Incident } from "@/types/status.types";
 import { formatDateTime } from "@/utils/formatDate";
-import { serviceLabel } from "@/utils/incidents";
 
+import { IncidentServiceTags } from "./IncidentServiceTags";
+import { IncidentTypeBadge } from "./IncidentTypeBadge";
 import { formatSince, INCIDENT_TYPE_DISPLAY } from "./utils/statusDisplay";
 
 interface IncidentCardProps {
@@ -28,14 +29,7 @@ export function IncidentCard({ incident, onResolve }: IncidentCardProps) {
             <h3 className="text-content font-semibold break-words">
               {incident.title}
             </h3>
-            <span
-              className={cn(
-                "rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap",
-                type.soft,
-              )}
-            >
-              {type.label}
-            </span>
+            <IncidentTypeBadge type={incident.platform_status} />
           </div>
           <p
             className="text-content-muted mt-2 line-clamp-2 text-sm leading-relaxed break-words"
@@ -44,14 +38,7 @@ export function IncidentCard({ incident, onResolve }: IncidentCardProps) {
             {incident.description}
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            {incident.affected_services.map((service) => (
-              <span
-                key={service}
-                className="bg-surface-input text-content-muted rounded-md px-2 py-1 text-xs"
-              >
-                {serviceLabel(service)}
-              </span>
-            ))}
+            <IncidentServiceTags services={incident.affected_services} />
             <time
               dateTime={incident.created_at}
               title={formatDateTime(incident.created_at)}

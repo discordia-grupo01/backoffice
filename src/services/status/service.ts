@@ -3,6 +3,7 @@ import "server-only";
 import { apiRequest, type ApiResult } from "@/lib/apiClient";
 import type {
   Incident,
+  IncidentHistoryQuery,
   IncidentInput,
   PlatformStatusResponse,
 } from "@/types/status.types";
@@ -11,6 +12,34 @@ export function getPlatformStatus(
   token: string,
 ): Promise<ApiResult<PlatformStatusResponse>> {
   return apiRequest<PlatformStatusResponse>("/v1/status", { token });
+}
+
+/** Como llega de metrics: `created_by` y `resolved_by` son ids y faltan en los incidentes viejos. */
+export interface RawIncident extends Incident {
+  created_by?: string;
+  resolved_by?: string;
+}
+
+export interface RawIncidentHistoryPage {
+  incidents: RawIncident[];
+  total: number;
+}
+
+export function listIncidentHistory(
+  token: string,
+  { search, type, service, from, limit, offset }: IncidentHistoryQuery,
+): Promise<ApiResult<RawIncidentHistoryPage>> {
+  return apiRequest<RawIncidentHistoryPage>("/v1/metrics/incidents", {
+    token,
+    params: {
+      limit,
+      offset,
+      ...(search ? { search } : {}),
+      ...(type !== "all" ? { type } : {}),
+      ...(service !== "all" ? { service } : {}),
+      ...(from ? { from } : {}),
+    },
+  });
 }
 
 export function createIncident(

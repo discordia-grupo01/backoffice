@@ -3,6 +3,9 @@ import { REQUEST_FAILED_MESSAGE } from "@discordia/client-shared";
 import { api } from "@/lib/browserApiClient";
 import type {
   IncidentActionResult,
+  IncidentHistoryPage,
+  IncidentHistoryQuery,
+  IncidentHistoryResult,
   IncidentInput,
   PlatformStatusResponse,
   StatusResult,
@@ -19,6 +22,32 @@ export async function getPlatformStatus(): Promise<StatusResult> {
     const { data, status } = await api.get<StatusBody>("/status");
     if (status === 200 && data.ok && data.data) {
       return { ok: true, data: data.data };
+    }
+    return {
+      ok: false,
+      status,
+      message: data?.message ?? REQUEST_FAILED_MESSAGE,
+    };
+  } catch {
+    return { ok: false, status: 0, message: REQUEST_FAILED_MESSAGE };
+  }
+}
+
+interface HistoryBody {
+  ok?: boolean;
+  message?: string;
+  page?: IncidentHistoryPage;
+}
+
+export async function getIncidentHistory(
+  query: IncidentHistoryQuery,
+): Promise<IncidentHistoryResult> {
+  try {
+    const { data, status } = await api.get<HistoryBody>("/incidents", {
+      params: query,
+    });
+    if (status === 200 && data.ok && data.page) {
+      return { ok: true, page: data.page };
     }
     return {
       ok: false,

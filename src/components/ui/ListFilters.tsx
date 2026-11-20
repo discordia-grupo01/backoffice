@@ -1,5 +1,4 @@
-import { X } from "lucide-react";
-
+import { FilterSummary } from "@/components/ui/FilterSummary";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { ToggleGroup, type ToggleOption } from "@/components/ui/ToggleGroup";
 import { ViewModeToggle } from "@/components/ui/ViewModeToggle";
@@ -51,24 +50,11 @@ export function ListFilters<S extends string>({
         <ViewModeToggle value={view} onChange={onViewChange} />
       </div>
 
-      <div className="flex min-h-6 items-center justify-between gap-3">
-        <p
-          aria-live="polite"
-          className="text-content-muted text-[13px] tabular-nums"
-        >
-          {countLabel}
-        </p>
-        {hasActiveFilters ? (
-          <button
-            type="button"
-            onClick={onClear}
-            className="text-content-muted hover:text-content focus-visible:ring-bo -mr-1 flex cursor-pointer items-center gap-1.5 rounded-md px-1 py-0.5 text-[13px] font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
-          >
-            <X size={14} aria-hidden="true" />
-            Limpiar filtros
-          </button>
-        ) : null}
-      </div>
+      <FilterSummary
+        countLabel={countLabel}
+        hasActiveFilters={hasActiveFilters}
+        onClear={onClear}
+      />
     </div>
   );
 }
