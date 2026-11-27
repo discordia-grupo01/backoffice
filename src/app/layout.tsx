@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { themeToCss } from "@discordia/client-shared";
 
+import { OfflineScreen } from "@/components/connection/OfflineScreen";
 import { APP_NAME, BACKOFFICE_NAME, THEME_STORAGE_KEY } from "@/lib/constants";
 
 import "./globals.css";
@@ -51,7 +52,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <OfflineScreen />
+      </body>
     </html>
   );
 }
