@@ -11,6 +11,7 @@ import {
   RECENT_LIMIT,
   type RecentIncidentsState,
 } from "./history/hooks/useRecentIncidents";
+import { IncidentServiceTags } from "./IncidentServiceTags";
 import { IncidentTypeBadge } from "./IncidentTypeBadge";
 import { incidentDurationLabel } from "./utils/statusDisplay";
 
@@ -61,7 +62,7 @@ function RecentIncidentsBody({ state, onRetry }: RecentIncidentsCardProps) {
         className="space-y-2 p-4 min-[481px]:px-5"
       >
         {Array.from({ length: RECENT_LIMIT }, (_, index) => (
-          <Skeleton key={index} className="h-9 w-full rounded-lg" />
+          <Skeleton key={index} className="h-12 w-full rounded-lg" />
         ))}
       </div>
     );
@@ -103,14 +104,17 @@ function RecentIncidentsBody({ state, onRetry }: RecentIncidentsCardProps) {
           >
             {formatDate(incident.created_at)}
           </time>
-          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-            <span
+          <div className="min-w-0">
+            <p
               className="text-content truncate font-semibold"
               title={incident.title}
             >
               {incident.title}
-            </span>
-            <IncidentTypeBadge type={incident.platform_status} />
+            </p>
+            <div className="mt-1.5 flex flex-wrap items-center gap-2">
+              <IncidentTypeBadge type={incident.platform_status} />
+              <IncidentServiceTags services={incident.affected_services} />
+            </div>
           </div>
           <span className="text-content-muted text-xs whitespace-nowrap tabular-nums">
             {incidentDurationLabel(incident)}

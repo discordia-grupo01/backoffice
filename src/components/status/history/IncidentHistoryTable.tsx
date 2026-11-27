@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/Button";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import type { ResolvedIncident } from "@/types/status.types";
 import { formatDateTime } from "@/utils/formatDate";
-import { serviceLabel } from "@/utils/incidents";
 
+import { IncidentServiceTags } from "../IncidentServiceTags";
 import { IncidentTypeBadge } from "../IncidentTypeBadge";
 import { incidentDurationLabel } from "../utils/statusDisplay";
 
@@ -39,17 +39,11 @@ export function IncidentHistoryTable({
     {
       header: "Servicios",
       width: "12rem",
-      cellClassName: "text-content-muted text-xs",
-      cell: (incident) => {
-        const services = incident.affected_services
-          .map(serviceLabel)
-          .join(", ");
-        return (
-          <p className="line-clamp-2" title={services}>
-            {services}
-          </p>
-        );
-      },
+      cell: (incident) => (
+        <div className="flex flex-wrap gap-1.5">
+          <IncidentServiceTags services={incident.affected_services} />
+        </div>
+      ),
     },
     {
       header: "Tipo",
