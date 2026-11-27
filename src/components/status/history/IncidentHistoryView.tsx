@@ -9,6 +9,7 @@ import { PanelBody } from "@/components/layout/PanelBody";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { ListSkeleton } from "@/components/ui/ListSkeleton";
 import { PaginationBar } from "@/components/ui/PaginationBar";
+import { useViewMode } from "@/hooks/useViewMode";
 import { cn } from "@/lib/cn";
 import { ROUTES } from "@/lib/constants";
 import type { ResolvedIncident } from "@/types/status.types";
@@ -21,11 +22,12 @@ import {
   IncidentHistoryEmptyState,
   IncidentHistoryErrorState,
 } from "./IncidentHistoryStates";
-import { IncidentHistoryTable } from "./IncidentHistoryTable";
+import { IncidentHistoryList } from "./IncidentHistoryList";
 
 export function IncidentHistoryView() {
   const history = useIncidentHistory();
   const [selected, setSelected] = useState<ResolvedIncident | null>(null);
+  const { viewMode, setViewMode } = useViewMode();
   const { status, incidents, filters, setFilters } = history;
   const hasData = incidents.length > 0;
 
@@ -37,7 +39,7 @@ export function IncidentHistoryView() {
     if (status === "loading" && !hasData) {
       return (
         <ListSkeleton
-          view="table"
+          view={viewMode}
           label="Cargando historial"
           rowHeightPx={65}
         />
@@ -59,7 +61,11 @@ export function IncidentHistoryView() {
           status === "loading" && "opacity-60",
         )}
       >
-        <IncidentHistoryTable incidents={incidents} onOpen={setSelected} />
+        <IncidentHistoryList
+          incidents={incidents}
+          view={viewMode}
+          onOpen={setSelected}
+        />
         <PaginationBar
           page={history.page}
           pageSize={history.pageSize}
@@ -93,6 +99,8 @@ export function IncidentHistoryView() {
             period={filters.period}
             countLabel={status === "success" ? totalLabel(history.total) : ""}
             hasActiveFilters={history.hasActiveFilters}
+            view={viewMode}
+            onViewChange={setViewMode}
             onQueryChange={history.setSearch}
             onTypeChange={(type) => setFilters({ type })}
             onServiceChange={(service) => setFilters({ service })}

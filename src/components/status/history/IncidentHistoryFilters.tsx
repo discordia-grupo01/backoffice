@@ -2,6 +2,8 @@ import { FilterSummary } from "@/components/ui/FilterSummary";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Select } from "@/components/ui/Select";
 import { ToggleGroup, type ToggleOption } from "@/components/ui/ToggleGroup";
+import { ViewModeToggle } from "@/components/ui/ViewModeToggle";
+import type { ViewMode } from "@/hooks/useViewMode";
 import type {
   IncidentServiceFilter,
   IncidentTypeFilter,
@@ -31,6 +33,8 @@ interface IncidentHistoryFiltersProps {
   period: HistoryPeriod;
   countLabel: string;
   hasActiveFilters: boolean;
+  view: ViewMode;
+  onViewChange: (view: ViewMode) => void;
   onQueryChange: (query: string) => void;
   onTypeChange: (type: IncidentTypeFilter) => void;
   onServiceChange: (service: IncidentServiceFilter) => void;
@@ -45,6 +49,8 @@ export function IncidentHistoryFilters({
   period,
   countLabel,
   hasActiveFilters,
+  view,
+  onViewChange,
   onQueryChange,
   onTypeChange,
   onServiceChange,
@@ -92,6 +98,7 @@ export function IncidentHistoryFilters({
             }}
           />
         </div>
+        <ViewModeToggle value={view} onChange={onViewChange} />
       </div>
 
       <FilterSummary
