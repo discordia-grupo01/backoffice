@@ -16,11 +16,13 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   /** Texto a la derecha del label (ej: contador de caracteres). */
   hint?: string;
   error?: string;
+  /** Muestra el asterisco rojo de campo obligatorio, sin activar la validación nativa del navegador. */
+  required?: boolean;
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   function TextField(
-    { label, icon, trailing, hint, error, id, className, ...props },
+    { label, icon, trailing, hint, error, required, id, className, ...props },
     ref,
   ) {
     const generatedId = useId();
@@ -35,6 +37,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             className="text-content-subtle block text-xs font-semibold tracking-wider uppercase"
           >
             {label}
+            {required ? <span className="text-danger"> *</span> : null}
           </label>
           {hint ? (
             <span className="text-content-subtle font-mono text-xs tabular-nums">
@@ -59,6 +62,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           <input
             ref={ref}
             id={inputId}
+            aria-required={required || undefined}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : undefined}
             className={cn(

@@ -7,6 +7,8 @@ interface TextAreaFieldProps extends TextareaHTMLAttributes<HTMLTextAreaElement>
   /** Texto a la derecha del label (ej: contador de caracteres). */
   hint?: string;
   error?: string;
+  /** Muestra el asterisco rojo de campo obligatorio, sin activar la validación nativa del navegador. */
+  required?: boolean;
 }
 
 /** Versión multilínea de `TextField`, con el mismo estilo. */
@@ -14,6 +16,7 @@ export function TextAreaField({
   label,
   hint,
   error,
+  required,
   id,
   className,
   ...props
@@ -30,6 +33,7 @@ export function TextAreaField({
           className="text-content-subtle block text-xs font-semibold tracking-wider uppercase"
         >
           {label}
+          {required ? <span className="text-danger"> *</span> : null}
         </label>
         {hint ? (
           <span className="text-content-subtle font-mono text-xs tabular-nums">
@@ -39,6 +43,7 @@ export function TextAreaField({
       </div>
       <textarea
         id={inputId}
+        aria-required={required || undefined}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
         className={cn(

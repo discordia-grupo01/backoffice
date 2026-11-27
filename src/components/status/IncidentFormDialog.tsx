@@ -87,6 +87,7 @@ export function IncidentFormDialog({
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5">
           <TextField
             label="Título"
+            required
             hint={`${[...draft.title].length}/${INCIDENT_TITLE_MAX}`}
             value={draft.title}
             maxLength={INCIDENT_TITLE_MAX}
@@ -97,6 +98,7 @@ export function IncidentFormDialog({
 
           <TextAreaField
             label="Descripción"
+            required
             hint={`${[...draft.description].length}/${INCIDENT_DESCRIPTION_MAX}`}
             value={draft.description}
             maxLength={INCIDENT_DESCRIPTION_MAX}
